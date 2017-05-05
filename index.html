@@ -1,0 +1,150 @@
+<!--
+   index.html
+   
+   Copyright 2017 Hoan My TRAN <hoanmytran@Hoan-My.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>Storiq One</title>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.30.1" />
+	<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css"/>
+	<link rel="stylesheet" href="css/index.css"/>
+	<script src="js/jquery-1.12.4.js"></script>
+	<script src="js/jquery.mobile-1.4.5.js"></script>
+	<script src="js/index.js"></script>
+
+<body>
+	<!--PAGE D'AUTHENTIFICATION-->
+		<div data-role="page" id="pageAuthenfication">
+			<div data-role="header" id="header" class="ui-grid-solo">
+				<img id="headerStone" class="ui-grid-a" src="storiq-one-bandeau.png" alt="Storiq one's image"/>
+			</div>
+			<div role="main" class="ui-content" id="authentification">
+				<form>
+					<div class="ui-field-contain">
+						<label for="identifiant">
+							Identifiant
+						</label>
+						<input type="text" name="login" id="identifiant" placeholder="Saisir votre identifiant">
+					</div>
+					<div class="ui-field-contain">
+						<label for="mdp">
+							Mot de passe
+						</label>
+						<input type="password" name="password" id="mdp" placeholder="Saisir votre mot de passe">
+					</div>
+					<div class="ui-content">
+						<input type="submit" value="Valider" id="bValider" data-icon="action" class="ui-grid-solo"></input>
+					</div>
+				</form>
+			</div>
+			<div data-role="footer" id="copyright">
+				<p>Copyright &copy; 2017 Intellique</p>
+			</div>
+		</div>
+		
+		<div data-role="popup" id="popup" class="ui-content" data-theme="b" data-overlay-theme="a">
+				<p>
+					Votre identifiant ou mot de passe invalide, veuillez resaisir !
+				</p>
+		</div>
+		
+		
+		<!--PAGE D'ACCUEIL-->
+		
+		<div data-role="page" id="homePage">
+			<div data-role="header" id="header" class="ui-grid-solo">
+				<h1>
+					Page d'accueil
+				</h1>
+			</div>
+			<div id="archive" role="main" class="ui-content">
+				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Chercher une archive">
+				<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table">
+					<thead>
+						<tr class="ui-bar-d" />
+					</thead>
+					<tbody />
+				</table>
+				<div class="ui-grid-a">
+					<div class="ui-block-c">
+						<select id="menuLimit">
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+						</select>
+					</div>
+					<div class="ui-block-c infoLines">
+					</div>
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="bTransitions">
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" id="copyright">
+				<p>Copyright &copy; 2017 Intellique</p>
+			</div>
+		</div>
+		
+		<div data-role="page" id="archiveFilesPage">
+			<div data-role="header" id="header" class="ui-grid-solo">
+				<h1>
+					Archive Files
+				</h1>
+			</div>
+			<div id="archiveFiles" role="main" class="ui-content">
+				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Chercher une archive">
+				<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table">
+						<thead>
+							<tr class="ui-bar-d" />
+						</thead>
+						<tbody />
+				</table>
+				<div class="ui-grid-a">
+					<div class="ui-block-c">
+						<select id="menuLimit">
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+							<option value="150">150</option>
+							<option value="200">200</option>
+							<option value="250">250</option>
+							<option value="300">300</option>
+						</select>
+					</div>
+					<div class="ui-block-c infoLines">
+					</div>
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="bTransitions">
+					</div>
+				</div>
+				<a href="#homePage">Archive</a>
+			</div>
+			<div data-role="footer" id="copyright">
+				<p>Copyright &copy; 2017 Intellique</p>
+			</div>
+	</body>
+
+</html>

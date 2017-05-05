@@ -1,0 +1,91 @@
+/*
+ * HEADER
+ */
+#header
+{
+	background-color : white;
+	text-align : center;
+}
+#headerStone
+{
+	margin-left : auto;
+	margin-right : auto;
+}
+/*
+ * MAIN
+ */
+
+
+#authentification
+{
+	color : white;
+	background-color : #53A7D8;
+	max-width : 480px;
+	margin-left : auto;
+	margin-right : auto;
+	line-height : 25px;
+	margin-bottom:10px;
+	margin-top : 10px;
+}
+
+#identifiant
+{
+	min-height : 3.3em;
+}
+
+#mdp
+{
+	min-height : 3.3em;
+}
+
+#bValider
+{
+	margin-left : auto;
+	margin-right : auto;
+}
+
+.bTransitions {
+	text-align: right;
+}
+.bTransitions a{
+	display: inline-block;
+}
+
+.disabled {
+	cursor : default;
+	opacity : 0.5;
+}
+
+
+.infoLines {
+	padding-top : 20px;
+	color : blue;
+}
+
+#archive table tr td p {
+	display : inline-block;
+}
+
+/*
+ * FOOTER
+ */
+
+#copyright
+{
+	background-color : white;
+	text-align : center;
+}
+
+
+
+
+/*
+ * POPUP
+ */
+.ui-btn.my-tooltip-btn,
+.ui-btn.my-tooltip-btn:hover,
+.ui-btn.my-tooltip-btn:active {
+    background: none;
+    border: 0;
+}
+
