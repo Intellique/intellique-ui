@@ -90,7 +90,7 @@ $(document).ready(function()
 						'keyData': 'archive',
 						'keySearch': 'archives',
 						'dataSearch': {
-							//id : data.id
+							id : data.id
 										},
 						'headers': [{
 							'name': 'name',
@@ -320,7 +320,7 @@ function Model(config)
 			{
 				totalRows = response.total_rows;
 				
-				//if(response[config.keySearch] instanceof Array) {
+				if(response[config.keySearch] instanceof Array) {
 					tabIds = response[config.keySearch];
 					var got = 0;
 					for(var i = 0, n = tabIds.length; i < n; i++)
@@ -354,7 +354,7 @@ function Model(config)
 							
 						});
 					}
-				/*}
+				}
 				else {
 					for (var i = 0, n = response.archive.volumes.length; i < n; i++)
 						tabIds[i] = response.archive.volumes[i].id;
@@ -362,7 +362,7 @@ function Model(config)
 						var obj = response.archive.volumes[i];
 						tabResults[obj.id] = obj;
 					}
-				}*/
+				}
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				tabIds = [];
