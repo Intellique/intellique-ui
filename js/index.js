@@ -287,8 +287,130 @@ $(document).ready(function()
 	 */
 	
 	
+class Model {
+
+	constructor(config) {
 	
-function Model(config)
+		this.observeurs = [];
+		this.tabIds = [];
+		this.tabResults ={};
+		this.total_rows = 0;
+	
+		if (!('limit' in config.dataSearch))
+			config.dataSearch.limit = 10;
+		if (!('offset' in config.dataSearch))
+			config.dataSearch.offset = 0;
+		this.config = config;
+	}
+
+	addObserver(o) {
+		if (this.observeurs.indexOf(o) == -1)
+			this.observeurs.push(o);
+		if (this.observeurs.length == 1)
+			this.fetch();
+	}
+
+	fetch() {
+		$.ajax({
+			type : "GET",
+			context: this,
+			url : this.config.url,
+			data : this.config.dataSearch,
+			success : function(response) {
+				this.total_rows = response.total_rows;
+
+				this.tabIds = response[this.config.keySearch];
+				var got = 0;
+				for (var i = 0, n = this.tabIds.length; i < n; i++) {
+					if (this.tabIds[i] in this.tabResults) {
+						got++;
+						if (got == n)
+							for (var j in this.observeurs)
+								this.observeurs[j](this);
+						continue;
+					}
+
+					$.ajax({
+						type : "GET",
+						context: this,
+						url : this.config.url,
+						data : {
+							id : this.tabIds[i]
+						},
+						success : function(response) {
+							var obj = response[this.config.keyData];
+							this.tabResults[obj.id] = obj;
+							got++;
+
+							if (got == n)
+								for (var j in this.observeurs)
+									this.observeurs[j](this.model);
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							this.tabIds = [];
+							this.total_rows = 0;
+							for (var j in this.observeurs)
+								this.observeurs[j](this);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	get getConfig() {
+		return this.config;
+	}
+
+	get getLimit() {
+		return this.config.dataSearch.limit;
+	}
+
+	get getOffset() {
+		return this.config.dataSearch.offset || 0;
+	}
+
+	get getResults() {
+		var results = [];
+		for (var i = 0, n = this.tabIds.length; i < n; i++)
+			results.push(this.tabResults[this.tabIds[i]]);
+		return results;
+	}
+	
+	get getTotalRows() {
+		return this.total_rows;
+	}
+
+	set setLimit(l) {
+		if (this.config.dataSearch.limit != l) {
+			this.config.dataSearch.limit = l;
+			this.config.dataSearch.offset-= this.config.dataSearch.offset%l;
+			if (this.observeurs.length > 0)
+				this.fetch();
+		}
+	}
+
+	set setOffset(o) {
+		if (this.config.dataSearch.offset != o) {
+			this.config.dataSearch.offset = o;
+			if(this.observeurs.length > 0)
+				this.fetch();
+		}
+	}
+
+	removeObserver(o) {
+		var index = observers.indexOf(o);
+		if (index > -1)
+			this.observeurs.splice(o,1)
+	}
+
+	update() {
+		if (this.observeurs.length > 0)
+			this.fetch();
+	}
+}
+	
+/*function Model(config)
 {
 	var model = this;
 	var observeurs = [];
@@ -433,14 +555,14 @@ function Model(config)
 		if (observeurs.length > 0)
 			fetch();
 	}
-}
+}*/
 
 /*
  * VUE 
  */
 function dataModelView(model, elt)
 {
-	var config = model.getConfig();
+	var config = model.getConfig;
 	
 	elt.data('model', model);
 	elt.data('view', this);
@@ -508,7 +630,7 @@ function dataModelView(model, elt)
 	
 	function display() {
 		table_body.empty();
-		var results = model.getResults();
+		var results = model.getResults;
 		for (var i = 0, n = results.length; i < n; i++) {
 			var row = $('<tr />');
 			row.data('data', results[i]);
@@ -531,8 +653,8 @@ function dataModelView(model, elt)
 	function bTransitions() {
 		lButtons.empty();
 		
-		var limit = model.getLimit();
-		var offset = model.getOffset();
+		var limit = model.getLimit;
+		var offset = model.getOffset;
 		var bFirst = $('<a class="ui-btn ui-corner-all ui-icon-arrow-u-l ui-btn-icon-bottom"></a>');
 		var bPrevious = $('<a class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-bottom"></a>');
 		var bNext = $('<a class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-bottom"></a>');
@@ -543,7 +665,7 @@ function dataModelView(model, elt)
 		lButtons.append(bNext);
 		lButtons.append(bLast);
 		
-		var total_rows = model.getTotalRows();
+		var total_rows = model.getTotalRows;
 
 		
 		var current_page = offset / limit;
@@ -595,18 +717,18 @@ function dataModelView(model, elt)
 	
 	function go(new_index) {
 		return function() {
-			model.setOffset(new_index);
+			model.setOffset = new_index;
 		};
 	}
 	
 
 	var limit = elt.find('#menuLimit');
 	limit.on('click', function() {
-		model.setLimit(parseInt(limit.val()));
-		model.setOffset(0);
+		model.setLimit = parseInt(limit.val());
+		model.setOffset = 0;	
 	});
 	model.addObserver(function() {
-		limit.val(model.getLimit());
+		limit.val(model.getLimit);
 		//limit.selectmenu( "refresh" );
 	});
 }
