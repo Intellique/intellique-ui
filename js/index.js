@@ -55,7 +55,7 @@ $(document).ready(function()
 							}
 					};
 					
-					var model = new Model(configSearchArchiveFiles);
+					var model = new ModelAjax(configSearchArchiveFiles);
 					var view = new dataModelView(model, $('#archiveFiles'));
 						
 					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archiveFilesPage");
@@ -85,39 +85,112 @@ $(document).ready(function()
 					popup.attr('id','popupInfo'+data.id);
 					
 					
+					var tabVolumes = $('<table class="ui-responsive table-stripe table-stroke ui-table ui-content ui-table-reflow" data-mode="reflow" data-role="table">');
+					var tableHead = $('<thead><tr/></thead>');
+					var tabBody = $('<tbody></tbody>');
+					
 					var configArchiveInfo = {
-						'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
-						'keyData': 'archive',
-						'keySearch': 'archives',
 						'dataSearch': {
 							id : data.id
 										},
 						'headers': [{
-							'name': 'name',
-							'sortable': true,
+							'name': 'id',
+							'sortable': 'false',
 							'translatable': true,
 							'transform': function(elt, field, data) {
-								elt.text(data.name);
+								elt.text(data[field]);
+							}
+						}, {
+							'name': 'sequence',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								elt.text(data[field]);
 								}
-							}, {
-								'name': 'size',
-								'sortable': false,
-								'translatable': true,
-								'transform': function(elt, field, data) {
-									elt.text(convertSize(data[field]));
+						}, {
+							'name': 'size',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								elt.text(convertSize(data[field]));
 								}
-							}]
-					};
-					
-					
-					var tabVolumes = $('<table class="ui-responsive table-stripe table-stroke ui-table ui-content ui-table-reflow" data-mode="reflow" data-role="table">');
-					var tableHead = $('<thead></thead>');	
-					var tabBody = $('<tbody></tbody>');
+						}, {
+							'name': 'starttime',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								elt.text(data[field].date);
+							}
+						}, {
+							'name': 'endtime',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								elt.text(data[field].date);
+							}
+						}, {
+							'name': 'checktime',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								if (data[field] != null)
+									elt.text(data[field].date);
+								else
+									elt.text("");
+							}
+						}, {
+							'name': 'checksumok',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								elt.text(data[field]);
+								}
+						}, {
+							'name': 'media',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								elt.text(data[field]);
+								}
+						}, {
+							'name': 'mediaposition',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								elt.text(data[field]);
+								}
+						}/*
+						  * bouton
+							, {
+							'name': 'jobrun',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								if(data[field] != null)
+									elt.text(data[field]);
+								else
+									elt.text("");
+								}
+						}, {
+							'name': 'purged',
+							'sortable': 'false',
+							'translatable': true,
+							'transform': function(elt, field, data) {
+								if(data[field] != null)
+									elt.text(data[field]);
+								else
+									elt.text("");
+								}
+						}*/]
+					}
 					
 					tabVolumes.append(tableHead);
 					tabVolumes.append(tabBody);
 					popup.append(tabVolumes);
-					var model = new Model(configArchiveInfo);
+//					var model = new Model(configArchiveInfo);
+//					var view = new dataModelView(model, popup);
+
+					var model = new ModelVolume(configArchiveInfo, data);
 					var view = new dataModelView(model, popup);
 					
 					
@@ -213,7 +286,7 @@ $(document).ready(function()
 		success: function(reponse){
 			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#homePage");
 			
-			var model = new Model(configSearchArchive);
+			var model = new ModelAjax(configSearchArchive);
 			var view = new dataModelView(model, $('#archive'));
 			
 		},
@@ -240,7 +313,7 @@ $(document).ready(function()
 			dataType : "json",
 			contentType : "application/json",
 			success: function(reponse){
-				var model = new Model(configSearchArchive);
+				var model = new ModelAjax(configSearchArchive);
 				var view = new dataModelView(model, $('#archive'));
 				
 				$( ":mobile-pagecontainer" ).pagecontainer( "change", "#homePage");
@@ -266,14 +339,9 @@ $(document).ready(function()
 		table_body.empty();
 		
 		
-		var model = new Model(configSearchArchive);
+		var model = new ModelAjax(configSearchArchive);
 		var view = new dataModelView(model, $('#archive'));
 	});
-	
-	
-	
-	
-	
 });
 	
 	
@@ -282,13 +350,19 @@ $(document).ready(function()
 	
 	
 	
-	/*
-	 * MODÈLE
-	 */
-	
-	
+/*
+ * MODEL
+ */
+
 class Model {
 
+	addObserver(o) {
+		if (this.observeurs.indexOf(o) == -1)
+			this.observeurs.push(o);
+		if (this.observeurs.length == 1)
+			this.fetch();
+	}
+	
 	constructor(config) {
 	
 		this.observeurs = [];
@@ -303,59 +377,9 @@ class Model {
 		this.config = config;
 	}
 
-	addObserver(o) {
-		if (this.observeurs.indexOf(o) == -1)
-			this.observeurs.push(o);
-		if (this.observeurs.length == 1)
-			this.fetch();
-	}
-
 	fetch() {
-		$.ajax({
-			type : "GET",
-			context: this,
-			url : this.config.url,
-			data : this.config.dataSearch,
-			success : function(response) {
-				this.total_rows = response.total_rows;
-
-				this.tabIds = response[this.config.keySearch];
-				var got = 0;
-				for (var i = 0, n = this.tabIds.length; i < n; i++) {
-					if (this.tabIds[i] in this.tabResults) {
-						got++;
-						if (got == n)
-							for (var j in this.observeurs)
-								this.observeurs[j](this);
-						continue;
-					}
-
-					$.ajax({
-						type : "GET",
-						context: this,
-						url : this.config.url,
-						data : {
-							id : this.tabIds[i]
-						},
-						success : function(response) {
-							var obj = response[this.config.keyData];
-							this.tabResults[obj.id] = obj;
-							got++;
-
-							if (got == n)
-								for (var j in this.observeurs)
-									this.observeurs[j](this.model);
-						},
-						error : function(XMLHttpRequest, textStatus, errorThrown) {
-							this.tabIds = [];
-							this.total_rows = 0;
-							for (var j in this.observeurs)
-								this.observeurs[j](this);
-						}
-					});
-				}
-			}
-		});
+		for (var j in this.observeurs)
+			this.observeurs[j](this.model);
 	}
 
 	get getConfig() {
@@ -407,6 +431,73 @@ class Model {
 	update() {
 		if (this.observeurs.length > 0)
 			this.fetch();
+	}
+}
+	
+class ModelAjax extends Model{
+	
+	fetch() {
+		$.ajax({
+			type : "GET",
+			context: this,
+			url : this.config.url,
+			data : this.config.dataSearch,
+			success : function(response) {
+				this.total_rows = response.total_rows;
+
+				this.tabIds = response[this.config.keySearch];
+				var got = 0;
+				for (var i = 0, n = this.tabIds.length; i < n; i++) {
+					if (this.tabIds[i] in this.tabResults) {
+						got++;
+						if (got == n)
+							for (var j in this.observeurs)
+								this.observeurs[j](this);
+						continue;
+					}
+
+					$.ajax({
+						type : "GET",
+						context: this,
+						url : this.config.url,
+						data : {
+							id : this.tabIds[i]
+						},
+						success : function(response) {
+							var obj = response[this.config.keyData];
+							this.tabResults[obj.id] = obj;
+							got++;
+
+							if (got == n)
+								for (var j in this.observeurs)
+									this.observeurs[j](this.model);
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							this.tabIds = [];
+							this.total_rows = 0;
+							for (var j in this.observeurs)
+								this.observeurs[j](this);
+						}
+					});
+				}
+			}
+		});
+	}
+}
+
+class ModelVolume extends Model {
+	constructor(config, archive) {
+		super(config);
+		this.archive = archive;
+
+		this.total_rows = archive.volumes.length;
+
+		for (var i = 0, n = this.total_rows; i < n; i++) {
+			if (i < config.dataSearch.limit)
+				this.tabIds[i] = archive.volumes[i]['id'];
+
+			this.tabResults[archive.volumes[i]['id']] = archive.volumes[i];
+		}
 	}
 }
 	
@@ -625,6 +716,7 @@ function dataModelView(model, elt)
 		if (config.headers[i].sortable)
 			th.on('click', sort(config.headers[i].name));
 		table_head.append(th);
+		console.log(table_head);
 	}
 	//table.table('rebuild');
 	
@@ -721,16 +813,17 @@ function dataModelView(model, elt)
 		};
 	}
 	
-
 	var limit = elt.find('#menuLimit');
-	limit.on('click', function() {
-		model.setLimit = parseInt(limit.val());
-		model.setOffset = 0;	
-	});
-	model.addObserver(function() {
-		limit.val(model.getLimit);
-		//limit.selectmenu( "refresh" );
-	});
+	if (limit.length > 0) {
+		limit.on('click', function() {
+			model.setLimit = parseInt(limit.val());
+			model.setOffset = 0;	
+		});
+		model.addObserver(function() {
+			limit.val(model.getLimit);
+			//limit.selectmenu( "refresh" );
+		});
+	}
 }
 
 	/*function listeArchives() {
