@@ -1,35 +1,39 @@
 $(document).ready(function()
 {
+	// Research archive's configuration
 	var configSearchArchive = {
 		'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
 		'keyData': 'archive',
 		'keySearch': 'archives',
 		'dataSearch': {},
 		'headers': [{
+			// Archive's name
 			'name': 'name',
 			'sortable': true,
 			'translatable': true,
 			'transform': function(elt, field, data) {
-				aArchiveFiles = $('<p></p>');
-				aArchiveFiles.text(data.name);
-				elt.append(aArchiveFiles);
+				elt.append('<p>'+data.name+'</p>');
 
+				// Event listener when we click on Archive's name
+				// It allows opening Archive Files's page
 				$(elt).find('p').on('click',function()
 				{
+					// Archive Files's page
+					// Create Archive Files table
 					var archiveFilesPage = $('#archiveFilesPage');
-					var table_head = archiveFilesPage.find('thead tr');
-					var table_body = archiveFilesPage.find('tbody');
-					table_head.empty();
-					table_body.empty();
+					var tableHeadArchiveFiles = archiveFilesPage.find('thead tr');
+					var tableBodyArchiveFiles = archiveFilesPage.find('tbody');
 
-
+					// Research Archive Files's configuration
 					var configSearchArchiveFiles = {
 						'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile',
 						'keyData': 'archivefile',
 						'keySearch': 'archivefiles',
 						'dataSearch': {
+							// Provide an archive's ID to get its files's information
 							archive : data.id
-										},
+						},
+						// File's name
 						'headers': [{
 							'name': 'name',
 							'sortable': true,
@@ -38,6 +42,7 @@ $(document).ready(function()
 								elt.text(data.name);
 								}
 							}, {
+								// File's size by byte
 								'name': 'size',
 								'sortable': false,
 								'translatable': true,
@@ -45,8 +50,10 @@ $(document).ready(function()
 									elt.text(convertSize(data[field]));
 								}
 							}],
+							// Search filter bar
 							'search': function(input) {
 								var text = input.val();
+
 								if (text.length > 0)
 									this.dataSearch.name = text;
 								else
@@ -54,22 +61,37 @@ $(document).ready(function()
 							}
 					};
 
-					var model = new ModelAjax(configSearchArchiveFiles);
-					var view = new dataModelView(model, $('#archiveFiles'));
+					// Clear Archive Files table's head and body for each research
+					tableHeadArchiveFiles.empty();
+					tableBodyArchiveFiles.empty();
 
+					// Create a model and a view for Archive Files's table
+					var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
+					var archiveFilesView = new dataModelView(model, $('#archiveFiles'));
+
+					// Change to Archive Files's page
 					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archiveFilesPage");
 				});
 
-				var a = $('<a data-rel="popup" data-transition="pop" class="my-tooltip-btn ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext" title="Plus d\'informations" aria-haspopup="true" aria-owns="popupInfo" aria-expanded="false"></a>');
-				elt.append(a);
+				// "More informations" button next to archive's name for more informations
+				var archiveInfoButton = $('<a data-rel="popup" data-transition="pop" class="my-tooltip-btn ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext" title="More informations" aria-haspopup="true" aria-owns="popupInfo" aria-expanded="false"></a>');
 
+				// Add Archive Info button
+				elt.append(archiveInfoButton);
+
+				// Event listener when we click on "More informations" button
+				// Create a pop-up to show Archive's informations in detail
 				elt.find('a').on('click',function(event)
 				{
+					// Archive's information pop-up
+					var archiveInfoPopup = $('<div id="infoArchive" data-role="popup" class="ui-content ui-popup ui-body-a ui-overlay-shadow ui-corner-all" data-theme="a"></div>');
+					// Close button
+					var archiveInfoCloseButton = $('<a data-rel="back" class="ui-btn ui-btn-a ui-btn-icon-notext ui-btn-right  ui-corner-all ui-icon-delete ui-shadow ">Close</a>');
+					// Archive's information in detail
+					var archiveInfo = $('<p></p>');
 
-					var popup = $('<div id="infoArchive" data-role="popup" class="ui-content ui-popup ui-body-a ui-overlay-shadow ui-corner-all" data-theme="a"></div>');
-					var sentence = $('<p></p>');
-
-					sentence.html("name : "+data.name+"<br/>"
+					archiveInfoPopup.append(archiveInfoCloseButton);
+					archiveInfo.html("name : "+data.name+"<br/>"
 					+"uuid : "+data.uuid+"<br/>"
 					+"date de création : "+data.volumes[0].starttime.date+"<br/>"
 					+"date de fin : "+data.volumes[data.volumes.length-1].endtime.date+"<br/>"
@@ -80,8 +102,8 @@ $(document).ready(function()
 					+"canappend : "+data.canappend+"<br/>"
 					+"deleted : "+data.deleted+"<br/>");
 
-					var creator = sentence.find('.creator');
-					var owner = sentence.find('.owner');
+					var creator = archiveInfo.find('.creator');
+					var owner = archiveInfo.find('.owner');
 
 					$.ajax({
 						type : "GET",
@@ -111,20 +133,25 @@ $(document).ready(function()
 						}
 					});
 
-					popup.append(sentence);
-					a.attr('href','#popupInfo'+data.id);
-					popup.attr('id','popupInfo'+data.id);
+					archiveInfoPopup.append(archiveInfo);
 
+					// Add a link for the "More informations" button and pop-up
+					archiveInfoButton.attr('href','#popupArchiveInfo'+data.id);
+					archiveInfoPopup.attr('id','popupArchiveInfo'+data.id);
 
-					var tabVolumes = $('<table class="ui-responsive table-stripe table-stroke ui-table ui-content ui-table-reflow" data-mode="reflow" data-role="table">');
-					var tableHead = $('<thead><tr/></thead>');
-					var tabBody = $('<tbody></tbody>');
-					var divButtons = $('<div class="ui-grid-a"></div>');
-					var configArchiveInfo = {
+					// Create "Volumes" table
+					var tableVolumes = $('<table class="ui-responsive table-stripe table-stroke ui-table ui-content ui-table-reflow" data-mode="reflow" data-role="table">');
+					var tableHeadVolumes = $('<thead><tr/></thead>');
+					var tabBodyVolumes = $('<tbody></tbody>');
+
+					// Archive Volumes's configuration
+					var configArchiveVolumes = {
 						'dataSearch': {
+							// Provide an archive file's ID to get its information
 							id : data.id
 										},
 						'headers': [{
+							// Volume's ID
 							'name': 'id',
 							'sortable': 'false',
 							'translatable': true,
@@ -132,13 +159,15 @@ $(document).ready(function()
 								elt.text(data[field]);
 							}
 						}, {
+							// Volume's sequence
 							'name': 'sequence',
 							'sortable': 'false',
 							'translatable': true,
 							'transform': function(elt, field, data) {
 								elt.text(data[field]);
 								}
-						}, {
+					}, {
+							// Volume's size by byte
 							'name': 'size',
 							'sortable': 'false',
 							'translatable': true,
@@ -146,6 +175,7 @@ $(document).ready(function()
 								elt.text(convertSize(data[field]));
 								}
 						}, {
+							// Volume's start time
 							'name': 'starttime',
 							'sortable': 'false',
 							'translatable': true,
@@ -153,6 +183,7 @@ $(document).ready(function()
 								elt.text(data[field].date);
 							}
 						}, {
+							// Volume's end time
 							'name': 'endtime',
 							'sortable': 'false',
 							'translatable': true,
@@ -160,6 +191,7 @@ $(document).ready(function()
 								elt.text(data[field].date);
 							}
 						}, {
+							// Volume's checktime
 							'name': 'checktime',
 							'sortable': 'false',
 							'translatable': true,
@@ -170,6 +202,7 @@ $(document).ready(function()
 									elt.text("");
 							}
 						}, {
+							// Volume's checksum
 							'name': 'checksumok',
 							'sortable': 'false',
 							'translatable': true,
@@ -177,21 +210,118 @@ $(document).ready(function()
 								elt.text(data[field]);
 								}
 						}, {
+							// Volume's media
 							'name': 'media',
 							'sortable': 'false',
 							'translatable': true,
-							'transform': function(elt, field, data) {
-								elt.text(data[field]);
-								}
+							'transform': function(elt, field, data) {								
+								// Create Media's name, pop-up, close button and pop-up's information
+								var mediaName = $('<a class=\"media\" class="ui-corner-all ui-shadow" data-rel="popup" data-transition="pop"></a>');
+								var mediaPopup = $('<div data-role="popup" class="ui-content ui-popup ui-body-a ui-overlay-shadow ui-corner-all" data-theme="a"></div>');
+								var mediaCloseButton = $('<a data-rel="back" class="ui-btn ui-btn-a ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-delete ui-shadow" href="#">Close</a>');
+								var mediaInfo = $('<p/>');
+
+								// Add close Media button and Media information
+								mediaPopup.append(mediaCloseButton);
+								mediaPopup.append(mediaInfo);
+								// Add Media name in Volume's table
+								elt.append(mediaName);
+
+								// Get Media's information
+								$.ajax({
+									type : "GET",
+									context : this,
+									url : "http://taiko/storiqone-backend-my/api/v1/media/",
+									data : {
+										// Provide Media's ID to get its information
+										id : data[field]
+									},
+									success : function(response) {
+										elt.data('data', response);
+										// Write Media's name
+										mediaName.text(response[field].label);
+										// Add a link for Media's pop-up and Media's name
+										mediaPopup.attr('id','popupMedia'+response[field].id);
+										mediaName.attr('href','#popupMedia'+response[field].id);
+
+										// Event listener when click on Media's name
+										// Create a table which contains Media's information
+										mediaName.on('click',function() {
+											// Media's configuration
+											var configMedia = {
+												'url' : 'http://taiko/storiqone-backend-my/api/v1/media/',
+												'keyData' : 'media',
+												'keySearch' : 'media',
+												'dataSearch' : {
+													// Provide a Media's ID to get its information
+													id : response[field].id
+												},
+												'headers' : [{
+													// Media's name
+													'name' : 'name',
+													'sortable' : true,
+													'translatable' : true,
+													'transform' : function(elt, field, data) {
+														elt.text(data[field]);
+													}
+												}, {
+													// Media's label	
+													'name' : 'label',
+													'sortable' : false,
+													'translatable' : true,
+													'transform' : function(elt, field, data) {
+														elt.text(data[field]);
+													}
+												}]
+											};
+
+											// Create a model and a view for Media
+											var mediaModel = new ModelAjax(configMedia);
+											var mediaView = new dataModelView(mediaModel, mediaPopup);
+										
+											// Autoinitialize Media pop-up
+											mediaPopup.popup();
+											mediaPopup.parent().attr('class','ui-popup-container ui-popup-active');
+											// Open Media pop-up
+											mediaPopup.popup('open');
+											mediaPopup.on('popupafteropen',function(event, ui) {
+												alert("gogogo");
+											});
+											var styles = {
+												"background-color" : "white",
+												"padding-left" : "500px",
+												"padding-right" : "auto",
+												"text-align" : "center"
+											};
+											mediaPopup.css(styles);
+											mediaPopup.on('popupafterclose', function(event) {
+												mediaPopup.popup("destroy");
+											});
+
+											archiveInfoPopup.popup('close');
+										});
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {}
+									});
+
+									// Event listener when click on Media's close button
+									// Popup-up destroys itself
+									mediaCloseButton.on('click', function(event) {
+										mediaPopup.popup("destroy");
+									});
+
+
+							}
 						}, {
 							'name': 'mediaposition',
 							'sortable': 'false',
 							'translatable': true,
 							'transform': function(elt, field, data) {
+								// Volume's media position
 								elt.text(data[field]);
 								}
 						}/*
-						  * bouton
+						  * button for jobrun and purged
 							, {
 							'name': 'jobrun',
 							'sortable': 'false',
@@ -212,35 +342,46 @@ $(document).ready(function()
 								else
 									elt.text("");
 								}
-						}*/]
-					}
+						}*/
+						]};
+					
+					// Add head and body in Volumes Table
+					tableVolumes.append(tableHeadVolumes);
+					tableVolumes.append(tabBodyVolumes);
+					archiveInfoPopup.append(tableVolumes);
 
-					tabVolumes.append(tableHead);
-					tabVolumes.append(tabBody);
-					popup.append(tabVolumes);
+					// Create Volume's model and view
+					var volumesModel = new ModelVolume(configArchiveVolumes, data);
+					var volumesView = new dataModelView(volumesModel, archiveInfoPopup);
 
-					var model = new ModelVolume(configArchiveInfo, data);
-					var view = new dataModelView(model, popup);
-
-					popup.popup();
-					popup.popup("open");
+					// Autoinitialize pop-up
+					archiveInfoPopup.popup();
+					// Open Archive pop-up
+					archiveInfoPopup.popup("open");
+					// Event listener Archive pop-up's after close, it destroys itself 
+					archiveInfoPopup.on("popupafterclose", function(event) {
+						archiveInfoPopup.popup("destroy");
 					});
+				});
 			}
 		},{
-			'name': 'date de création',
+			// Archive's start time
+			'name': 'starttime',
 			'sortable': false,
 			'translatable': true,
 			'transform': function(elt, field, data) {
 				elt.text(data.volumes[0].starttime.date);
 			}
 		},{
-			'name': 'date de fin',
+			// Archive's end time
+			'name': 'endtime',
 			'sortable': false,
 			'translatable': true,
 			'transform': function(elt, field, data) {
 				elt.text(data.volumes[data.volumes.length-1].endtime.date);
 			}
 		}, {
+			// Archive's size by byte
 			'name': 'size',
 			'sortable': false,
 			'translatable': true,
@@ -248,14 +389,20 @@ $(document).ready(function()
 				elt.text(convertSize(data[field]));
 			}
 		}],
+		// Archive Search filter bar
 		'search': function(input) {
 			var text = input.val();
+
 			if (text.length > 0)
 				this.dataSearch.name = text;
 			else
 				delete this.dataSearch.name;
 		}
 	};
+
+
+
+
 
 	/*
 	 * AUTHENTIFICATION
@@ -265,10 +412,8 @@ $(document).ready(function()
 		url: "http://taiko/storiqone-backend-my/api/v1/auth/",
 		success: function(reponse){
 			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#homePage");
-
 			var model = new ModelAjax(configSearchArchive);
 			var view = new dataModelView(model, $('#archive'));
-
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#pageAuthenfication");
@@ -481,156 +626,11 @@ class ModelVolume extends Model {
 	}
 }
 
-/*function Model(config)
-{
-	var model = this;
-	var observeurs = [];
-	var tabIds = [];
-	var tabResults = {};
-	var totalRows = 0;
-
-	if (!('limit' in config.dataSearch))
-		config.dataSearch.limit = 10;
-	if (!('offset' in config.dataSearch))
-		config.dataSearch.offset = 0;
-
-	this.addObserver = function(o)
-	{
-		if(observeurs.indexOf(o) == -1)
-			observeurs.push(o);
-		if (observeurs.length == 1)
-			fetch();
-	}
-
-	function fetch()
-	{
-		$.ajax(
-		{
-			type : "GET",
-			url : config.url,
-			data : config.dataSearch,
-			success : function(response)
-			{
-				totalRows = response.total_rows;
-
-				if(response[config.keySearch] instanceof Array) {
-					tabIds = response[config.keySearch];
-					var got = 0;
-					for(var i = 0, n = tabIds.length; i < n; i++)
-					{
-						if (tabIds[i] in tabResults) {
-							got++;
-							if (got == n)
-								for (var j in observeurs)
-									observeurs[j](model);
-							continue;
-						}
-
-						$.ajax(
-						{
-							type : "GET",
-							url : config.url,
-							data :
-							{
-								id : tabIds[i]
-							},
-							success : function(response)
-							{
-								var obj = response[config.keyData];
-								tabResults[obj.id] = obj;
-								got++;
-
-								if (got == n)
-									for (var j in observeurs)
-										observeurs[j](model);
-							}
-
-						});
-					}
-				}
-				else {
-					for (var i = 0, n = response.archive.volumes.length; i < n; i++)
-						tabIds[i] = response.archive.volumes[i].id;
-					for (var i = 0, n = tabIds.length; i < n; i++) {
-						var obj = response.archive.volumes[i];
-						tabResults[obj.id] = obj;
-					}
-				}
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				tabIds = [];
-				totalRows = 0;
-				for (var j in observeurs)
-					observeurs[j](model);
-			}
-		});
-	}
-
-	this.getConfig = function()
-	{
-		return config;
-	}
-
-	this.getLimit = function()
-	{
-		return config.dataSearch.limit;
-	}
-
-	this.getOffset = function()
-	{
-		return config.dataSearch.offset || 0;
-	}
-
-	this.getResults = function()
-	{
-		var results = [];
-		for (var i = 0, n = tabIds.length; i < n; i++)
-			results.push(tabResults[tabIds[i]]);
-		return results;
-	}
-
-	this.getTotalRows = function()
-	{
-		return totalRows;
-	}
-
-	this.setLimit = function(l)
-	{
-		if(config.dataSearch.limit != l)
-		{
-			config.dataSearch.limit = l;
-			config.dataSearch.offset-= config.dataSearch.offset%l;
-			if(observeurs.length > 0)
-				fetch();
-		}
-	}
-
-	this.setOffset = function(o)
-	{
-		if(config.dataSearch.offset != o)
-		{
-			config.dataSearch.offset = o;
-			if(observeurs.length > 0)
-				fetch();
-		}
-	}
-
-	this.removeObserver = function(o)
-	{
-		var index = observers.indexOf(o);
-		if (index > -1)
-			observeurs.splice(o, 1);
-	}
-
-	this.update = function() {
-		if (observeurs.length > 0)
-			fetch();
-	}
-}*/
 
 /*
  * VUE
  */
+
 function dataModelView(model, elt)
 {
 	var config = model.getConfig;
@@ -805,127 +805,20 @@ function dataModelView(model, elt)
 	}
 }
 
-	/*function listeArchives() {
-		var search = $('#archiveTable tbody');
-
-		search.empty();
-
-		$.ajax(
-		{
-			type : "GET",
-			url : "http://taiko/storiqone-backend-my/api/v1/archive",
-			success : function(reponse)
-			{
-				for(i=0;i<reponse.archives.length;i++)
-				{
-					$.ajax(
-					{
-						type : "GET",
-						url : "http://taiko/storiqone-backend-my/api/v1/archive/",
-						data :
-						{
-							id : reponse.archives[i]
-						},
-						success : function(rep)
-						{
-							$('#archiveTable thead').removeClass('ui-screen-hidden');
-							search.removeClass('ui-screen-hidden');
-							var ligne=$('<tr class="ui-screen-hidden"></tr>');
-							var name=$('<td></td>');
-							var dateCreation=$('<td></td>');
-							var dateFin=$('<td></td>');
-							var taille=$('<td></td>');
-							var pool=$('<td></td>');
-							var dernierElement = rep.archive.volumes.length-1;
-
-
-							var a = $('<a data-rel="popup" data-transition="pop" class="my-tooltip-btn ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext" title="Plus d\'informations" aria-haspopup="true" aria-owns="popupInfo" aria-expanded="false"></a>');
-							//a.attr('href','#popupInfo'+rep.archive.id);
-							//console.log(a.attr('href'));
-							name.text(rep.archive.name);
-							name.append(a);
-							var popup = $('<div data-role="popup" class="ui-content ui-popup ui-body-a ui-overlay-shadow ui-corner-all" data-theme="a"></div>');
-							//popup.attr('id','popupInfo'+rep.archive.id);
-							//console.log(popup.attr('id'));
-							popup.popup();
-							var phrase = $('<p></p>');*/
-
-							/*
-							 * Files
-							 */
-				/*			for(j=0;j<rep.archive.volumes.length;j++)
-							{
-								$.ajax(
-								{
-									type : "GET",
-									url : "http://taiko/storiqone-backend-my/api/v1/archivefile/",
-									data :
-									{
-										id : rep.archive.volumes[j].id
-									},
-									success : function(repFile)
-									{
-										a.attr('href','#popupInfo'+rep.archive.id+repFile.archivefile.id);
-										popup.attr('id','popupInfo'+rep.archive.id+repFile.archivefile.id);
-										if(phrase.text().length>0)
-											phrase.html(phrase.text()+"<br/>"+repFile.archivefile.name);
-										else
-											phrase.text(repFile.archivefile.name);
-										//console.log(repFile);
-										//console.log(phrase.text());
-									}
-								});
-							}
-
-							//console.log(phrase.text());
-							console.log(rep);
-							popup.append(phrase);
-
-							dateCreation.text(rep.archive.volumes[0].starttime.date);
-							dateFin.text(rep.archive.volumes[dernierElement].endtime.date);
-							taille.text(convertSize(rep.archive.size));
-							$.ajax(
-							{
-								type : "GET",
-								url : "http://taiko/storiqone-backend-my/api/v1/media",
-								data :
-								{
-									id : rep.archive.volumes[0].media
-								},
-								success : function(reponse)
-								{
-								pool.text(reponse.media.pool.name);
-								}
-							});
-							ligne.append(name);
-							ligne.append(dateCreation);
-							ligne.append(dateFin);
-							ligne.append(taille);
-							ligne.append(pool);
-							search.append(ligne);
-						},
-					});
-				}
-			}
-		});
-	}*/
-
-
-function convertSize(size)
-{
+function convertSize(size) {
 	if (typeof size == "string")
-	size = parseInt(size);
-/*
- * Conversion des tailles
- */
+		size = parseInt(size);
+	
 	var mult = 0;
 	var type;
+	
 	while (size >= 1024) {
 		mult++;
 		size /= 1024;
 	}
 
 	var width = 0;
+	
 	if (size < 10)
 		width = 2;
 	else if (size < 100)
