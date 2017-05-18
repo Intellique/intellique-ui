@@ -38,7 +38,7 @@
 
 <body>
 	<!--PAGE D'AUTHENTIFICATION-->
-		<div data-role="page" id="pageAuthenfication">
+		<div data-role="page" id="authentificationPage">
 			<div data-role="header" id="header" class="ui-grid-solo">
 				<img id="headerStone" class="ui-grid-a" src="storiq-one-bandeau.png" alt="Storiq one's image"/>
 			</div>
@@ -116,6 +116,45 @@
 			</div>
 			<div id="archiveFiles" role="main" class="ui-content">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Chercher une archive">
+				<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table">
+						<thead>
+							<tr class="ui-bar-d" />
+						</thead>
+						<tbody />
+				</table>
+				<div class="ui-grid-a">
+					<div class="ui-block-c">
+						<select id="menuLimit">
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+							<option value="150">150</option>
+							<option value="200">200</option>
+							<option value="250">250</option>
+							<option value="300">300</option>
+						</select>
+					</div>
+					<div class="ui-block-c infoLines">
+					</div>
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="bTransitions">
+					</div>
+				</div>
+				<a href="#homePage">Archive</a>
+			</div>
+			<div data-role="footer" id="copyright">
+				<p>Copyright &copy; 2017 Intellique</p>
+			</div>
+		</div>
+
+		<div data-role="page" id="mediaPage">
+			<div data-role="header" id="header" class="ui-grid-solo">
+				<h1>
+					Media
+				</h1>
+			</div>
+			<div id="media" role="main" class="ui-content">
+				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a media">
 				<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table">
 						<thead>
 							<tr class="ui-bar-d" />

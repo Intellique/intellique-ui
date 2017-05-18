@@ -67,7 +67,7 @@ $(document).ready(function()
 
 					// Create a model and a view for Archive Files's table
 					var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
-					var archiveFilesView = new dataModelView(model, $('#archiveFiles'));
+					var archiveFilesView = new dataModelView(archiveFilesModel, $('#archiveFiles'));
 
 					// Change to Archive Files's page
 					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archiveFilesPage");
@@ -87,7 +87,7 @@ $(document).ready(function()
 					var archiveInfoPopup = $('<div id="infoArchive" data-role="popup" class="ui-content ui-popup ui-body-a ui-overlay-shadow ui-corner-all" data-theme="a"></div>');
 					// Close button
 					var archiveInfoCloseButton = $('<a data-rel="back" class="ui-btn ui-btn-a ui-btn-icon-notext ui-btn-right  ui-corner-all ui-icon-delete ui-shadow ">Close</a>');
-					// Archive's information in detail
+				/*	// Archive's information in detail
 					var archiveInfo = $('<p></p>');
 
 					archiveInfoPopup.append(archiveInfoCloseButton);
@@ -100,7 +100,21 @@ $(document).ready(function()
 					+"creator :  <span class=\"creator\">" + data.creator + "</span><br/>"
 					+"metadata : "+data.metadata+"<br/>"
 					+"canappend : "+data.canappend+"<br/>"
-					+"deleted : "+data.deleted+"<br/>");
+					+"deleted : "+data.deleted+"<br/>");*/
+					var archiveInfo = $('<ul data-role="listview"></ul>');
+					archiveInfo.append("<li><b>name</b> : "+data.name+"</li>");
+					archiveInfo.append("<li><b>uuid</b> : "+data.uuid+"</li>");
+					archiveInfo.append("<li><b>starttime</b> : "+data.volumes[0].starttime.date+"</li>");
+					archiveInfo.append("<li><b>endtime</b> : "+data.volumes[data.volumes.length-1].endtime.date+"</li>");
+					archiveInfo.append("<li><b>size</b> : "+convertSize(data.size)+"</li>");
+					archiveInfo.append("<li><b>owner</b> : <span class=\"owner\"></span></li>");
+					archiveInfo.append("<li><b>creator</b> : <span class=\"creator\"></span></li>");
+					archiveInfo.append("<li><b>metadata</b> : "+data.metadata+"</li>");
+					archiveInfo.append("<li><b>canappend</b> : "+data.canappend+"</li>");
+					archiveInfo.append("<li><b>deleted</b> : "+data.deleted+"</li>");
+					archiveInfo.css('list-style-type','none');
+
+					archiveInfoPopup.append(archiveInfoCloseButton);
 
 					var creator = archiveInfo.find('.creator');
 					var owner = archiveInfo.find('.owner');
@@ -217,13 +231,7 @@ $(document).ready(function()
 							'transform': function(elt, field, data) {								
 								// Create Media's name, pop-up, close button and pop-up's information
 								var mediaName = $('<a class=\"media\" class="ui-corner-all ui-shadow" data-rel="popup" data-transition="pop"></a>');
-								var mediaPopup = $('<div data-role="popup" class="ui-content ui-popup ui-body-a ui-overlay-shadow ui-corner-all" data-theme="a"></div>');
-								var mediaCloseButton = $('<a data-rel="back" class="ui-btn ui-btn-a ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-delete ui-shadow" href="#">Close</a>');
-								var mediaInfo = $('<p/>');
 
-								// Add close Media button and Media information
-								mediaPopup.append(mediaCloseButton);
-								mediaPopup.append(mediaInfo);
 								// Add Media name in Volume's table
 								elt.append(mediaName);
 
@@ -238,15 +246,19 @@ $(document).ready(function()
 									},
 									success : function(response) {
 										elt.data('data', response);
+
 										// Write Media's name
 										mediaName.text(response[field].label);
-										// Add a link for Media's pop-up and Media's name
-										mediaPopup.attr('id','popupMedia'+response[field].id);
-										mediaName.attr('href','#popupMedia'+response[field].id);
 
 										// Event listener when click on Media's name
 										// Create a table which contains Media's information
 										mediaName.on('click',function() {
+											// Archive Files's page
+											// Create Archive Files table
+											var mediaPage = $('#mediaPage');
+											var mediaTableHead = mediaPage.find('thead tr');
+											var mediaTableBody = mediaPage.find('tbody');
+
 											// Media's configuration
 											var configMedia = {
 												'url' : 'http://taiko/storiqone-backend-my/api/v1/media/',
@@ -274,43 +286,16 @@ $(document).ready(function()
 													}
 												}]
 											};
-
-											// Create a model and a view for Media
+											// Create Media's model and view
 											var mediaModel = new ModelAjax(configMedia);
-											var mediaView = new dataModelView(mediaModel, mediaPopup);
-										
-											// Autoinitialize Media pop-up
-											mediaPopup.popup();
-											mediaPopup.parent().attr('class','ui-popup-container ui-popup-active');
-											// Open Media pop-up
-											mediaPopup.popup('open');
-											mediaPopup.on('popupafteropen',function(event, ui) {
-												alert("gogogo");
-											});
-											var styles = {
-												"background-color" : "white",
-												"padding-left" : "500px",
-												"padding-right" : "auto",
-												"text-align" : "center"
-											};
-											mediaPopup.css(styles);
-											mediaPopup.on('popupafterclose', function(event) {
-												mediaPopup.popup("destroy");
-											});
+											var mediaView = new dataModelView(mediaModel, $('#media'));
 
-											archiveInfoPopup.popup('close');
+											// Change to Archive Files's page
+											$( ":mobile-pagecontainer" ).pagecontainer( "change", "#mediaPage");
 										});
 									},
 									error : function(XMLHttpRequest, textStatus, errorThrown) {}
 									});
-
-									// Event listener when click on Media's close button
-									// Popup-up destroys itself
-									mediaCloseButton.on('click', function(event) {
-										mediaPopup.popup("destroy");
-									});
-
-
 							}
 						}, {
 							'name': 'mediaposition',
@@ -416,7 +401,7 @@ $(document).ready(function()
 			var view = new dataModelView(model, $('#archive'));
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
-			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#pageAuthenfication");
+			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#authentificationPage");
 		}
 	});
 
@@ -625,7 +610,6 @@ class ModelVolume extends Model {
 		}
 	}
 }
-
 
 /*
  * VUE
