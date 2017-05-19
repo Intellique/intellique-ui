@@ -73,22 +73,18 @@
 		</div>
 		
 		
-		<!--PAGE D'ACCUEIL-->
+		<!--ARCHIVE PAGE-->
 		
-		<div data-role="page" id="homePage">
-			<div data-role="header" id="header" class="ui-grid-solo">
+		<div data-role="page" id="archivePage">
+			<div class="ui-grid-solo" data-role="header" id="header">
 				<h1>
-					Page d'accueil
-				</h1>
-			</div>
-			<div id="archive" role="main" class="ui-content">
-				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Chercher une archive">
-				<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table">
-					<thead>
-						<tr class="ui-bar-d" />
-					</thead>
-					<tbody />
-				</table>
+					Archive Page
+				</h1> <!-- End h1 -->
+			</div> <!-- End header -->
+			<div class="ui-content" role="main" id="archive">
+				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive">
+				<div data-role="collapsibleset" id="archiveList">
+				</div> <!-- End archive list -->
 				<div class="ui-grid-a">
 					<div class="ui-block-c">
 						<select id="menuLimit">
@@ -99,7 +95,7 @@
 					</div>
 					<div class="ui-block-c infoLines">
 					</div>
-					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="bTransitions">
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
 					</div>
 				</div>
 			</div>

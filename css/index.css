@@ -44,10 +44,10 @@
 	margin-right : auto;
 }
 
-.bTransitions {
+.paginationButton {
 	text-align: right;
 }
-.bTransitions a{
+.paginationButton a{
 	display: inline-block;
 }
 
@@ -62,10 +62,10 @@
 	color : blue;
 }
 
-#archive table tr td p {
+/*#archive table tr td p {
 	display : inline-block;
 }
-
+*/
 /*
  * FOOTER
  */

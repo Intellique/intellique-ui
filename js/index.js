@@ -397,8 +397,66 @@ $(document).ready(function()
 		url: "http://taiko/storiqone-backend-my/api/v1/auth/",
 		success: function(reponse){
 			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#homePage");
-			var model = new ModelAjax(configSearchArchive);
-			var view = new dataModelView(model, $('#archive'));
+			var archiveConfig = {
+				'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
+				'keyData': 'archive',
+				'keySearch': 'archives',
+				'dataSearch': {},
+				'informations': {
+					'title' : 'name',
+					'template': 'template/archive.html',
+					'transform': function(elt, data) {
+						elt.find('#uuid').text(data.uuid);	
+						elt.find('#starttime').text(data.volumes[0].starttime.date);
+						elt.find('#endtime').text(data.volumes[data.volumes.length-1].endtime.date);
+						elt.find('#size').text(convertSize(data.size));
+						elt.find('#metadata').text(data.metadata);
+						elt.find('#canappend').text(data.canappend);
+						elt.find('#deleted').text(data.deleted);
+
+						var creator = elt.find('#creator');
+						var owner = elt.find('#owner');
+
+						$.ajax({
+							type : "GET",
+							context : this,
+							url : "http://taiko/storiqone-backend-my/api/v1/user/",
+							data : {
+								id : data.creator
+							},
+							success : function(response) {
+								creator.text(response.user.login);
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+							}
+						});
+
+						$.ajax({
+							type : "GET",
+							context : this,
+							url : "http://taiko/storiqone-backend-my/api/v1/user/",
+							data : {
+								id : data.owner
+							},
+							success : function(response) {
+								owner.text(response.user.login);
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+							}
+						});
+					} // End function transform
+				}, // End informations
+				'search': function(input) {
+					var text = input.val();
+
+					if (text.length > 0)
+						this.dataSearch.name = text;
+					else
+						delete this.dataSearch.name;
+				}
+			};
+			var model = new ModelAjax(archiveConfig);
+			var view = new listView(model, $('#archiveList'));
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#authentificationPage");
@@ -423,10 +481,69 @@ $(document).ready(function()
 			dataType : "json",
 			contentType : "application/json",
 			success: function(reponse){
-				var model = new ModelAjax(configSearchArchive);
-				var view = new dataModelView(model, $('#archive'));
+		
+			var archiveConfig = {
+				'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
+				'keyData': 'archive',
+				'keySearch': 'archives',
+				'dataSearch': {},
+				'informations': {
+					'title' : 'name',
+					'template': 'template/archive.html',
+					'transform': function(elt, data) {
+						elt.find('#uuid').text(data.uuid);	
+						elt.find('#starttime').text(data.volumes[0].starttime.date);
+						elt.find('#endtime').text(data.volumes[data.volumes.length-1].endtime.date);
+						elt.find('#size').text(convertSize(data.size));
+						elt.find('#metadata').text(data.metadata);
+						elt.find('#canappend').text(data.canappend);
+						elt.find('#deleted').text(data.deleted);
 
-				$( ":mobile-pagecontainer" ).pagecontainer( "change", "#homePage");
+						var creator = elt.find('#creator');
+						var owner = elt.find('#owner');
+
+						$.ajax({
+							type : "GET",
+							context : this,
+							url : "http://taiko/storiqone-backend-my/api/v1/user/",
+							data : {
+								id : data.creator
+							},
+							success : function(response) {
+								creator.text(response.user.login);
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+							}
+						});
+
+						$.ajax({
+							type : "GET",
+							context : this,
+							url : "http://taiko/storiqone-backend-my/api/v1/user/",
+							data : {
+								id : data.owner
+							},
+							success : function(response) {
+								owner.text(response.user.login);
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+							}
+						});
+					} // End function transform
+				}, // End informations
+				'search': function(input) {
+					var text = input.val();
+
+					if (text.length > 0)
+						this.dataSearch.name = text;
+					else
+						delete this.dataSearch.name;
+				}
+			}; // End config
+			var model = new ModelAjax(archiveConfig);
+			var view = new listView(model, $('#archiveList'));
+
+				$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archivePage");
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				var popup = $('#popup');
@@ -788,6 +905,227 @@ function dataModelView(model, elt)
 		});
 	}
 }
+
+
+function listView(model, elt) {
+	var paginationButton = elt.parent().find('.paginationButton');
+	console.log(elt);
+	// Configuration
+	var config = model.getConfig;
+
+	// More informations for developers
+	elt.data('model', model);
+	elt.data('view', this);
+
+	// Research
+	var search = elt.parent().find('.search');
+	var delaySearch = null;
+
+	function searchDelayed() {
+		if (delaySearch)
+			clearTimeout(delaySearch);
+		delaySearch = setTimeout(searchNow, 1000);
+	}
+
+	function searchNow() {
+		if (delaySearch)
+			clearTimeout(delaySearch);
+		delaySearch = null;
+
+		var url = config.url;
+
+		config.url+="/search"
+		config.search(search);
+		config.dataSearch.offset = 0;
+		model.update();
+		config.url = url;
+		
+	}
+
+	function searchInput(evt) {
+		if (evt.which == 13)
+			searchNow();
+		else
+			searchDelayed();
+	}
+
+	search.on('change', searchNow);
+	search.on('keypress', searchInput);
+	search.on('delete', function() {
+		search.off();
+	});
+
+	function sort(name) {
+		return function() {
+			if (config.dataSearch.order_by == name)
+				config.dataSearch.order_asc = 'order_asc' in config.dataSearch ? !config.dataSearch.order_asc : false;
+			else
+				config.dataSearch.order_by = name;
+			model.update();
+		};
+	}
+
+	// Collapsible set Listview
+	var collapsibleSet = elt;
+
+
+	// Create collapsible and list view
+	function display() {
+		// Erase all items to update everytime
+		collapsibleSet.empty();
+
+		// Get results from model
+		var results = model.getResults;
+
+		// Create an item and its name after each iteration
+		for (var i = 0, n = results.length; i < n; i++) {
+			var item = $('<div data-role="collapsible"></div>');
+
+			var title = $('<h2 class="ui-collapsible-heading"></h2>');
+			var a = $('<a class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-left ui-btn-a ui-icon-plus">' + results[i][config.informations.title] + '</a>');
+
+			// If element is already existed, it will be hided or showed
+			title.on('click', {'item': item, 'loaded': false, 'result': results[i]}, function(evt) {
+				$(evt.target).toggleClass('ui-icon-plus ui-icon-minus');
+
+				if (evt.data.loaded) {
+					evt.data.item.children().eq(1).finish().slideToggle(500);
+					return;
+				} // End if
+
+				evt.data.loaded = true;
+				$.ajax({
+					'url': config.informations.template,
+					'success': function(childNode) {
+						evt.data.item.append(childNode);
+						config.informations.transform(evt.data.item, evt.data.result);
+					} // End function
+				}); // End ajax
+			}); // End event listener
+
+			title.append(a);
+			item.append(title);
+
+			collapsibleSet.append(item);
+		} // End loop
+		pagination();
+	} // End function display
+
+	model.addObserver(display);
+
+	// Page to another page with buttons
+	function pagination() {
+		// Update everytime
+		paginationButton.empty();
+
+		var limit = model.getLimit;
+		var offset = model.getOffset;
+		var totalRows = model.getTotalRows;
+
+		// Buttons for the pagination
+		var firstButton = $('<a class="ui-btn ui-corner-all ui-icon-arrow-u-l ui-btn-icon-bottom"></a>');
+		var previousButton = $('<a class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-bottom"></a>');
+		var nextButton = $('<a class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-bottom"></a>');
+		var lastButton = $('<a class="ui-btn ui-corner-all ui-icon-arrow-d-r ui-btn-icon-bottom"></a>');
+
+		var currentPage = offset / limit;
+		var pageCount = totalRows / limit;
+
+		// Add all buttons
+		paginationButton.append(firstButton);
+		paginationButton.append(previousButton);
+		paginationButton.append(nextButton);
+		paginationButton.append(lastButton);
+
+		// Disable the "first" and "previous" buttons
+		if (offset == 0) {
+			firstButton.addClass('disabled');
+			previousButton.addClass('disabled');
+		} // End if
+
+		else {
+			firstButton.on('click', go(0));
+			previousButton.on('click', go(offset - limit));
+		} // End else
+
+		// Disabled the "next" and "last" buttons
+		if (offset + limit >= totalRows) {
+			nextButton.addClass('disabled');
+			lastButton.addClass('disabled');
+		} // End if
+
+		else {
+			nextButton.on('click', go(offset + limit));
+
+			if (totalRows % limit == 0)
+				lastButton.on('click', go(totalRows - limit));
+
+			else
+				lastButton.on('click', go(totalRows - totalRows % limit));
+		} //End else
+
+		for (i = currentPage - 3; i < currentPage + 4 && i < pageCount; i++) {
+			if (i < 0)
+				continue;
+			
+			var pageNumber = $('<a class="ui-btn ui-corner-all"></a>');
+
+			pageNumber.text(i+1);
+			
+			if (offset == i * limit) 
+				pageNumber.addClass('disabled');	
+
+			else
+				pageNumber.on('click', go(i * limit));
+
+			nextButton.before(pageNumber);
+		} // End loop
+
+		// Informations about rows
+		var informations = elt.parent().find('.infoLines');
+		var text = "";
+		if(totalRows == 0)
+			text = "Ligne " + offset + " à " + Math.min(offset + limit, totalRows)+" sur "+totalRows +" lignes";
+		else
+			text = "Ligne " + (offset + 1) + " à "+Math.min(offset + limit, totalRows)+" sur "+totalRows+" lignes";
+		informations.text(text);
+
+	} // End function paginationButton
+	
+	// Allows paging
+	function go(newIndex) {
+		return function() {
+			model.setOffset = newIndex;
+		}
+	} // End function go
+
+	// Limit from list
+	var limit = elt.find('#menuLimit');
+
+	if (limit.length > 0) {
+		limit.on('click', function() {
+			model.setLimit = parseInt(limit.val());
+			model.setOffset = 0;
+		});
+		model.addObserver(function() {
+			limit.val(model.getLimit);
+			//limit.selectmenu( "refresh" );
+		});
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function convertSize(size) {
 	if (typeof size == "string")
