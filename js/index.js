@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-	// Research archive's configuration
+/*	// Research archive's configuration
 	var configSearchArchive = {
 		'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
 		'keyData': 'archive',
@@ -87,7 +87,7 @@ $(document).ready(function()
 					var archiveInfoPopup = $('<div id="infoArchive" data-role="popup" class="ui-content ui-popup ui-body-a ui-overlay-shadow ui-corner-all" data-theme="a"></div>');
 					// Close button
 					var archiveInfoCloseButton = $('<a data-rel="back" class="ui-btn ui-btn-a ui-btn-icon-notext ui-btn-right  ui-corner-all ui-icon-delete ui-shadow ">Close</a>');
-				/*	// Archive's information in detail
+					// Archive's information in detail
 					var archiveInfo = $('<p></p>');
 
 					archiveInfoPopup.append(archiveInfoCloseButton);
@@ -100,7 +100,7 @@ $(document).ready(function()
 					+"creator :  <span class=\"creator\">" + data.creator + "</span><br/>"
 					+"metadata : "+data.metadata+"<br/>"
 					+"canappend : "+data.canappend+"<br/>"
-					+"deleted : "+data.deleted+"<br/>");*/
+					+"deleted : "+data.deleted+"<br/>");
 					var archiveInfo = $('<ul data-role="listview"></ul>');
 					archiveInfo.append("<li><b>name</b> : "+data.name+"</li>");
 					archiveInfo.append("<li><b>uuid</b> : "+data.uuid+"</li>");
@@ -305,7 +305,7 @@ $(document).ready(function()
 								// Volume's media position
 								elt.text(data[field]);
 								}
-						}/*
+						}
 						  * button for jobrun and purged
 							, {
 							'name': 'jobrun',
@@ -327,7 +327,7 @@ $(document).ready(function()
 								else
 									elt.text("");
 								}
-						}*/
+						}
 						]};
 					
 					// Add head and body in Volumes Table
@@ -384,9 +384,259 @@ $(document).ready(function()
 				delete this.dataSearch.name;
 		}
 	};
+*/
 
 
 
+
+
+
+
+
+
+	// Archive's configuration
+	var archiveConfig = {
+		'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
+		'keyData': 'archive',
+		'keySearch': 'archives',
+		'dataSearch': {},
+		'informations': {
+			'title' : 'name',
+			'template': 'template/archive.html',
+			'transform': function(elt, data) {
+				elt.find('#uuid').text(data.uuid);	
+				elt.find('#starttime').text(data.volumes[0].starttime.date);
+				elt.find('#endtime').text(data.volumes[data.volumes.length-1].endtime.date);
+				elt.find('#size').text(convertSize(data.size));
+				elt.find('#metadata').text(data.metadata);
+				elt.find('#canappend').text(data.canappend);
+				elt.find('#deleted').text(data.deleted);
+
+				var creator = elt.find('#creator');
+				var owner = elt.find('#owner');
+
+				// Get informations from creator
+				$.ajax({
+					type : "GET",
+					context : this,
+					url : "http://taiko/storiqone-backend-my/api/v1/user/",
+					data : {
+						id : data.creator
+					},
+					success : function(response) {
+						creator.text(response.user.login);
+					},
+					error : function(XMLHttpRequest, textStatus, errorThrown) {
+					}
+				});
+
+				// Get informations from owner
+				$.ajax({
+					type : "GET",
+					context : this,
+					url : "http://taiko/storiqone-backend-my/api/v1/user/",
+					data : {
+						id : data.owner
+					},
+					success : function(response) {
+						owner.text(response.user.login);
+					},
+					error : function(XMLHttpRequest, textStatus, errorThrown) {
+					}
+				});
+
+				// Archive Volumes's configuration
+				var configArchiveVolumes = {
+					'dataSearch': {
+						// Provide an archive file's ID to get its information
+						id : data.id
+									},
+					'headers': [{
+						// Volume's ID
+						'name': 'id',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+						}
+					}, {
+						// Volume's sequence
+						'name': 'sequence',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+							}
+					}, {
+						// Volume's size by byte
+						'name': 'size',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(convertSize(data[field]));
+							}
+					}, {
+						// Volume's start time
+						'name': 'starttime',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field].date);
+						}
+					}, {
+						// Volume's end time
+						'name': 'endtime',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field].date);
+						}
+					}, {
+						// Volume's checktime
+						'name': 'checktime',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							if (data[field] != null)
+								elt.text(data[field].date);
+							else
+								elt.text("");
+						}
+					}, {
+						// Volume's checksum
+						'name': 'checksumok',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+							}
+					}, {
+						// Volume's media
+						'name': 'media',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {								
+							elt.text(data[field]);
+						/*	// Create Media's name, pop-up, close button and pop-up's information
+							var mediaName = $('<a class=\"media\" class="ui-corner-all ui-shadow" data-rel="popup" data-transition="pop"></a>');
+
+							// Add Media name in Volume's table
+							elt.append(mediaName);
+
+							// Get Media's information
+							$.ajax({
+								type : "GET",
+								context : this,
+								url : "http://taiko/storiqone-backend-my/api/v1/media/",
+								data : {
+									// Provide Media's ID to get its information
+									id : data[field]
+								},
+								success : function(response) {
+									elt.data('data', response);
+
+									// Write Media's name
+									mediaName.text(response[field].label);
+
+									// Event listener when click on Media's name
+									// Create a table which contains Media's information
+									mediaName.on('click',function() {
+										// Archive Files's page
+										// Create Archive Files table
+										var mediaPage = $('#mediaPage');
+										var mediaTableHead = mediaPage.find('thead tr');
+										var mediaTableBody = mediaPage.find('tbody');
+
+										// Media's configuration
+										var configMedia = {
+											'url' : 'http://taiko/storiqone-backend-my/api/v1/media/',
+											'keyData' : 'media',
+											'keySearch' : 'media',
+											'dataSearch' : {
+												// Provide a Media's ID to get its information
+												id : response[field].id
+											},
+											'headers' : [{
+												// Media's name
+												'name' : 'name',
+												'sortable' : true,
+												'translatable' : true,
+												'transform' : function(elt, field, data) {
+													elt.text(data[field]);
+												}
+											}, {
+												// Media's label	
+												'name' : 'label',
+												'sortable' : false,
+												'translatable' : true,
+												'transform' : function(elt, field, data) {
+													elt.text(data[field]);
+												}
+											}]
+										};
+										// Create Media's model and view
+										var mediaModel = new ModelAjax(configMedia);
+										var mediaView = new dataModelView(mediaModel, $('#media'));
+
+										// Change to Archive Files's page
+										$( ":mobile-pagecontainer" ).pagecontainer( "change", "#mediaPage");
+									});
+								},
+								error : function(XMLHttpRequest, textStatus, errorThrown) {}
+								});*/
+						}
+					}, {
+						'name': 'mediaposition',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							// Volume's media position
+							elt.text(data[field]);
+							}
+					}/*
+					  * button for jobrun and purged
+						, {
+						'name': 'jobrun',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							if(data[field] != null)
+								elt.text(data[field]);
+							else
+								elt.text("");
+							}
+					}, {
+						'name': 'purged',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							if(data[field] != null)
+								elt.text(data[field]);
+							else
+								elt.text("");
+							}
+					}*/
+				]};
+				
+				var volumeTab = elt.find('#volume').parent();
+				
+				// Create Volume's model and view
+				var volumeModel = new ModelVolume(configArchiveVolumes, data);
+				var volumeView = new dataModelView(volumeModel, volumeTab);
+
+
+			} // End function transform
+
+		}, // End informations
+		'search': function(input) {
+			var text = input.val();
+
+			if (text.length > 0)
+				this.dataSearch.name = text;
+			else
+				delete this.dataSearch.name;
+		}
+	};
 
 
 	/*
@@ -397,64 +647,7 @@ $(document).ready(function()
 		url: "http://taiko/storiqone-backend-my/api/v1/auth/",
 		success: function(reponse){
 			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#homePage");
-			var archiveConfig = {
-				'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
-				'keyData': 'archive',
-				'keySearch': 'archives',
-				'dataSearch': {},
-				'informations': {
-					'title' : 'name',
-					'template': 'template/archive.html',
-					'transform': function(elt, data) {
-						elt.find('#uuid').text(data.uuid);	
-						elt.find('#starttime').text(data.volumes[0].starttime.date);
-						elt.find('#endtime').text(data.volumes[data.volumes.length-1].endtime.date);
-						elt.find('#size').text(convertSize(data.size));
-						elt.find('#metadata').text(data.metadata);
-						elt.find('#canappend').text(data.canappend);
-						elt.find('#deleted').text(data.deleted);
 
-						var creator = elt.find('#creator');
-						var owner = elt.find('#owner');
-
-						$.ajax({
-							type : "GET",
-							context : this,
-							url : "http://taiko/storiqone-backend-my/api/v1/user/",
-							data : {
-								id : data.creator
-							},
-							success : function(response) {
-								creator.text(response.user.login);
-							},
-							error : function(XMLHttpRequest, textStatus, errorThrown) {
-							}
-						});
-
-						$.ajax({
-							type : "GET",
-							context : this,
-							url : "http://taiko/storiqone-backend-my/api/v1/user/",
-							data : {
-								id : data.owner
-							},
-							success : function(response) {
-								owner.text(response.user.login);
-							},
-							error : function(XMLHttpRequest, textStatus, errorThrown) {
-							}
-						});
-					} // End function transform
-				}, // End informations
-				'search': function(input) {
-					var text = input.val();
-
-					if (text.length > 0)
-						this.dataSearch.name = text;
-					else
-						delete this.dataSearch.name;
-				}
-			};
 			var model = new ModelAjax(archiveConfig);
 			var view = new listView(model, $('#archiveList'));
 		},
@@ -482,64 +675,6 @@ $(document).ready(function()
 			contentType : "application/json",
 			success: function(reponse){
 		
-			var archiveConfig = {
-				'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
-				'keyData': 'archive',
-				'keySearch': 'archives',
-				'dataSearch': {},
-				'informations': {
-					'title' : 'name',
-					'template': 'template/archive.html',
-					'transform': function(elt, data) {
-						elt.find('#uuid').text(data.uuid);	
-						elt.find('#starttime').text(data.volumes[0].starttime.date);
-						elt.find('#endtime').text(data.volumes[data.volumes.length-1].endtime.date);
-						elt.find('#size').text(convertSize(data.size));
-						elt.find('#metadata').text(data.metadata);
-						elt.find('#canappend').text(data.canappend);
-						elt.find('#deleted').text(data.deleted);
-
-						var creator = elt.find('#creator');
-						var owner = elt.find('#owner');
-
-						$.ajax({
-							type : "GET",
-							context : this,
-							url : "http://taiko/storiqone-backend-my/api/v1/user/",
-							data : {
-								id : data.creator
-							},
-							success : function(response) {
-								creator.text(response.user.login);
-							},
-							error : function(XMLHttpRequest, textStatus, errorThrown) {
-							}
-						});
-
-						$.ajax({
-							type : "GET",
-							context : this,
-							url : "http://taiko/storiqone-backend-my/api/v1/user/",
-							data : {
-								id : data.owner
-							},
-							success : function(response) {
-								owner.text(response.user.login);
-							},
-							error : function(XMLHttpRequest, textStatus, errorThrown) {
-							}
-						});
-					} // End function transform
-				}, // End informations
-				'search': function(input) {
-					var text = input.val();
-
-					if (text.length > 0)
-						this.dataSearch.name = text;
-					else
-						delete this.dataSearch.name;
-				}
-			}; // End config
 			var model = new ModelAjax(archiveConfig);
 			var view = new listView(model, $('#archiveList'));
 
@@ -909,7 +1044,7 @@ function dataModelView(model, elt)
 
 function listView(model, elt) {
 	var paginationButton = elt.parent().find('.paginationButton');
-	console.log(elt);
+	
 	// Configuration
 	var config = model.getConfig;
 
@@ -1100,7 +1235,7 @@ function listView(model, elt) {
 	} // End function go
 
 	// Limit from list
-	var limit = elt.find('#menuLimit');
+	var limit = elt.parent().find('#menuLimit');
 
 	if (limit.length > 0) {
 		limit.on('click', function() {
