@@ -624,6 +624,47 @@ $(document).ready(function()
 				var volumeModel = new ModelVolume(configArchiveVolumes, data);
 				var volumeView = new dataModelView(volumeModel, volumeTab);
 
+				// Event listener when clicked, change to archive's files page
+				elt.find('#archiveFilesButton a').on('click', function() {
+					// Research Archive Files's configuration
+					var configSearchArchiveFiles = {
+						'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile',
+						'keyData': 'archivefile',
+						'keySearch': 'archivefiles',
+						'dataSearch': {
+							// Provide an archive's ID to get its files's information
+							archive : data.id
+						},
+						'informations': {
+							'title' : 'name',
+							'template' : 'template/archiveFiles.html',
+							'transform' : function(elt, data) {
+								elt.find('#name').text(data.name);
+								elt.find('#mimetype').text(data.mimetype);
+								elt.find('#owner').text(data.owner);
+								elt.find('#groups').text(data.groups);
+								elt.find('#ctime').text(data.ctime);
+								elt.find('#mtime').text(data.mtime);
+								elt.find('#size').text(convertSize(data.size));
+							}
+						}, // End function transform
+						// Search filter bar
+						'search': function(input) {
+							var text = input.val();
+
+							if (text.length > 0)
+								this.dataSearch.name = text;
+							else
+								delete this.dataSearch.name;
+						} // End search
+					}; // End archive's files configuration
+
+					// Create a model and a view for Archive Files's list
+					var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
+					var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
+
+				}); // End event listener
+
 
 			} // End function transform
 
@@ -639,6 +680,23 @@ $(document).ready(function()
 	};
 
 
+
+
+ 
+/*	// Archive's files configuration
+					// Archive Files's page
+					// Create Archive Files table
+
+					// Clear Archive Files table's head and body for each research
+					tableHeadArchiveFiles.empty();
+					tableBodyArchiveFiles.empty();
+
+
+					// Change to Archive Files's page
+					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archiveFilesPage");
+	var archiveFilesConfig = {
+
+	}*/
 	/*
 	 * AUTHENTIFICATION
 	 */
@@ -646,7 +704,7 @@ $(document).ready(function()
 		type: "GET",
 		url: "http://taiko/storiqone-backend-my/api/v1/auth/",
 		success: function(reponse){
-			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#homePage");
+			$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archivePage");
 
 			var model = new ModelAjax(archiveConfig);
 			var view = new listView(model, $('#archiveList'));
@@ -692,18 +750,18 @@ $(document).ready(function()
 		return false;
 	});
 
-	$('#archiveFiles').find('a').click(function()
+/*	$('#archiveFiles').find('a').click(function()
 	{
-		var archiveFilesPage = $('#homePage');
+		var archiveFilesPage = $('#archivePage');
 		var table_head = archiveFilesPage.find('thead tr');
 		var table_body = archiveFilesPage.find('tbody');
 		table_head.empty();
 		table_body.empty();
 
 
-		var model = new ModelAjax(configSearchArchive);
-		var view = new dataModelView(model, $('#archive'));
-	});
+		var model = new ModelAjax(archiveConfig);
+		var view = new listView(model, $('#archive'));
+	});*/
 });
 
 
@@ -1244,7 +1302,7 @@ function listView(model, elt) {
 		});
 		model.addObserver(function() {
 			limit.val(model.getLimit);
-			//limit.selectmenu( "refresh" );
+			limit.selectmenu( "refresh" );
 		});
 	}
 }
