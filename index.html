@@ -113,7 +113,7 @@
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="archiveFiles">
-				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive">
+				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive's file">
 				<div data-role="collapsibleset" id="archiveFilesList">
 				</div> <!-- End archive's files list -->
 				<div class="ui-grid-a">
@@ -137,20 +137,18 @@
 			</div>
 		</div> 	<!-- End ARCHIVE's FILES PAGE-->
 		
+		<!--MEDIA PAGE-->
+		
 		<div data-role="page" id="mediaPage">
-			<div data-role="header" id="header" class="ui-grid-solo">
+			<div class="ui-grid-solo" data-role="header" id="header">
 				<h1>
-					Media
-				</h1>
-			</div>
-			<div id="media" role="main" class="ui-content">
+					Media  Page
+				</h1> <!-- End h1 -->
+			</div> <!-- End header -->
+			<div class="ui-content" role="main" id="media">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a media">
-				<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table">
-						<thead>
-							<tr class="ui-bar-d" />
-						</thead>
-						<tbody />
-				</table>
+				<div data-role="collapsibleset" id="mediaList">
+				</div> <!-- End archive's files list -->
 				<div class="ui-grid-a">
 					<div class="ui-block-c">
 						<select id="menuLimit">
@@ -158,22 +156,19 @@
 							<option value="25">25</option>
 							<option value="50">50</option>
 							<option value="100">100</option>
-							<option value="150">150</option>
-							<option value="200">200</option>
-							<option value="250">250</option>
-							<option value="300">300</option>
 						</select>
 					</div>
 					<div class="ui-block-c infoLines">
 					</div>
-					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="bTransitions">
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
 					</div>
-				</div>
 				<a href="#archivePage">Archive</a>
+				</div>
 			</div>
 			<div data-role="footer" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
+		</div> 	<!-- End MEDIA PAGE-->
 	</body>
 
 </html>

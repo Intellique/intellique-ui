@@ -396,7 +396,7 @@ $(document).ready(function()
 
 	// Archive's configuration
 	var archiveConfig = {
-		'url': 'http://taiko/storiqone-backend-my/api/v1/archive',
+		'url': 'http://taiko/storiqone-backend-my/api/v1/archive/',
 		'keyData': 'archive',
 		'keySearch': 'archives',
 		'dataSearch': {},
@@ -404,6 +404,7 @@ $(document).ready(function()
 			'title' : 'name',
 			'template': 'template/archive.html',
 			'transform': function(elt, data) {
+				elt.data('data', data);
 				elt.find('#uuid').text(data.uuid);	
 				elt.find('#starttime').text(data.volumes[0].starttime.date);
 				elt.find('#endtime').text(data.volumes[data.volumes.length-1].endtime.date);
@@ -516,74 +517,69 @@ $(document).ready(function()
 						'sortable': 'false',
 						'translatable': true,
 						'transform': function(elt, field, data) {								
-							elt.text(data[field]);
-						/*	// Create Media's name, pop-up, close button and pop-up's information
-							var mediaName = $('<a class=\"media\" class="ui-corner-all ui-shadow" data-rel="popup" data-transition="pop"></a>');
+						//	elt.text(data[field]);
+							// Create Media's name, pop-up, close button and pop-up's information
+							var mediaName = $('<a href="#mediaPage" class="ui-btn ui-shadow ui-corner-all ui-icon-arrow-r ui-btn-icon-right">Media</a>');
 
 							// Add Media name in Volume's table
 							elt.append(mediaName);
+							
+							// Media's configuration
+							var mediaConfig = {
+								'url' : 'http://taiko/storiqone-backend-my/api/v1/media',
+								'keyData' : 'media',
+								'keySearch' : 'medias',
+								'dataSearch' : {
+									// Provide a Media's ID to get its information
+								//	id : data.media
+								}, // End dataSearch
+								'informations' : {
+									'title' : 'name',
+									'template' : 'template/media.html',
+									'transform' : function(elt, data) {
+										elt.find('#name').text(data.name);
+										elt.find('#label').text(data.label);
+										elt.find('#pool').text(data.pool.name);
+										elt.find('#format').text(data.mediaformat.name);
+										elt.find('#uuid').text(data.uuid);
+										elt.find('#firstused').text(data.firstused.date);
+										elt.find('#usebefore').text(data.usebefore.date);
+										elt.find('#espaceused').text(convertSize((data.totalblock * data.blocksize) - (data.blocksize * data.freeblock)));
+									//	elt.find('#');
 
-							// Get Media's information
-							$.ajax({
-								type : "GET",
-								context : this,
-								url : "http://taiko/storiqone-backend-my/api/v1/media/",
-								data : {
-									// Provide Media's ID to get its information
-									id : data[field]
-								},
-								success : function(response) {
-									elt.data('data', response);
+									}, // End transform
+								
+								}, // End informations
+								'search': function(input) {
+									var text = input.val();
 
-									// Write Media's name
-									mediaName.text(response[field].label);
+									if (text.length > 0)
+										this.dataSearch.name = text;
+									else
+										delete this.dataSearch.name;
+								}
+							}; // End configMedia
 
-									// Event listener when click on Media's name
-									// Create a table which contains Media's information
-									mediaName.on('click',function() {
-										// Archive Files's page
-										// Create Archive Files table
-										var mediaPage = $('#mediaPage');
-										var mediaTableHead = mediaPage.find('thead tr');
-										var mediaTableBody = mediaPage.find('tbody');
-
-										// Media's configuration
-										var configMedia = {
-											'url' : 'http://taiko/storiqone-backend-my/api/v1/media/',
-											'keyData' : 'media',
-											'keySearch' : 'media',
-											'dataSearch' : {
-												// Provide a Media's ID to get its information
-												id : response[field].id
-											},
-											'headers' : [{
-												// Media's name
-												'name' : 'name',
-												'sortable' : true,
-												'translatable' : true,
-												'transform' : function(elt, field, data) {
-													elt.text(data[field]);
-												}
-											}, {
-												// Media's label	
-												'name' : 'label',
-												'sortable' : false,
-												'translatable' : true,
-												'transform' : function(elt, field, data) {
-													elt.text(data[field]);
-												}
-											}]
-										};
-										// Create Media's model and view
-										var mediaModel = new ModelAjax(configMedia);
-										var mediaView = new dataModelView(mediaModel, $('#media'));
-
-										// Change to Archive Files's page
-										$( ":mobile-pagecontainer" ).pagecontainer( "change", "#mediaPage");
-									});
-								},
-								error : function(XMLHttpRequest, textStatus, errorThrown) {}
-								});*/
+							// Event listener when click, change to media's page
+							mediaName.on('click', function() {
+								// Create Media's model and view
+								var mediaModel = new ModelAjax(mediaConfig);
+								var mediaView = new listView(mediaModel, $('#mediaList'));
+								$.ajax({
+									type : "GET",
+									context: this,
+									url : 'http://taiko/storiqone-backend-my/api/v1/media',
+									data : {
+										id : data.media
+									},
+									success : function(response) {
+										$('#media .search').val(response.media.name);
+										$('#media .search').trigger('change');
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {
+									}
+								});
+							});
 						}
 					}, {
 						'name': 'mediaposition',
@@ -628,7 +624,7 @@ $(document).ready(function()
 				elt.find('#archiveFilesButton a').on('click', function() {
 					// Research Archive Files's configuration
 					var configSearchArchiveFiles = {
-						'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile',
+						'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile/',
 						'keyData': 'archivefile',
 						'keySearch': 'archivefiles',
 						'dataSearch': {
@@ -646,6 +642,28 @@ $(document).ready(function()
 								elt.find('#ctime').text(data.ctime);
 								elt.find('#mtime').text(data.mtime);
 								elt.find('#size').text(convertSize(data.size));
+
+
+								var archiveTableConfig = {
+									'url' : 'http://taiko/storiqone-backend-my/api/v1/archive/',
+									'urlSearch' : 'http://taiko/storiqone-backend-my/api/v1/archive/search/',
+									'keyData' : 'archive',
+									'keySearch' : 'archives',
+									'dataSearch' : {
+										archivefile : data.id
+									},
+									'headers' : [{
+										// Archive's name
+										'name' : 'name',
+										'sortable' : true,
+										'translatable' : true,
+										'transform' : function (elt, field, data) {
+											elt.text(data[field]);
+										}
+									}]
+								};
+								var archiveTableModel = new ModelAjax(archiveTableConfig);
+								var archiveTableView = new dataModelView(archiveTableModel, elt);								
 							}
 						}, // End function transform
 						// Search filter bar
@@ -680,23 +698,7 @@ $(document).ready(function()
 	};
 
 
-
-
  
-/*	// Archive's files configuration
-					// Archive Files's page
-					// Create Archive Files table
-
-					// Clear Archive Files table's head and body for each research
-					tableHeadArchiveFiles.empty();
-					tableBodyArchiveFiles.empty();
-
-
-					// Change to Archive Files's page
-					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archiveFilesPage");
-	var archiveFilesConfig = {
-
-	}*/
 	/*
 	 * AUTHENTIFICATION
 	 */
@@ -750,23 +752,7 @@ $(document).ready(function()
 		return false;
 	});
 
-/*	$('#archiveFiles').find('a').click(function()
-	{
-		var archiveFilesPage = $('#archivePage');
-		var table_head = archiveFilesPage.find('thead tr');
-		var table_body = archiveFilesPage.find('tbody');
-		table_head.empty();
-		table_body.empty();
-
-
-		var model = new ModelAjax(archiveConfig);
-		var view = new listView(model, $('#archive'));
-	});*/
 });
-
-
-
-
 
 
 
@@ -860,7 +846,7 @@ class ModelAjax extends Model{
 		$.ajax({
 			type : "GET",
 			context: this,
-			url : this.config.url,
+			url : this.config.urlSearch || this.config.url,
 			data : this.config.dataSearch,
 			success : function(response) {
 				this.total_rows = response.total_rows;
@@ -1132,6 +1118,8 @@ function listView(model, elt) {
 		config.dataSearch.offset = 0;
 		model.update();
 		config.url = url;
+
+		console.log(config.url);
 		
 	}
 
