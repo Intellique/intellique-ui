@@ -1,28 +1,4 @@
-<!--
-   index.html
-   
-   Copyright 2017 Hoan My TRAN <hoanmytran@Hoan-My.local>
-   
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-   MA 02110-1301, USA.
-   
-   
--->
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
@@ -35,52 +11,61 @@
 	<script src="js/jquery-1.12.4.js"></script>
 	<script src="js/jquery.mobile-1.4.5.js"></script>
 	<script src="js/index.js"></script>
+</head> <!-- end head -->
+
 
 <body>
-	<!--PAGE D'AUTHENTIFICATION-->
-		<div data-role="page" id="authentificationPage">
-			<div data-role="header" id="header" class="ui-grid-solo">
-				<img id="headerStone" class="ui-grid-a" src="storiq-one-bandeau.png" alt="Storiq one's image"/>
-			</div>
-			<div role="main" class="ui-content" id="authentification">
+
+	<!-- authentification page -->
+
+		<div data-role="page" id="authentification_page">
+
+			<div class="header ui-grid-solo" data-role="header">
+				<img alt="Storiq one image" id="header_stone_image" src="storiq-one-bandeau.png"/>
+			</div> <!-- end header -->
+
+			<div  class="ui-content" id="authentification" role="main">
 				<form>
 					<div class="ui-field-contain">
-						<label for="identifiant">
-							Identifiant
-						</label>
-						<input type="text" name="login" id="identifiant" placeholder="Saisir votre identifiant">
-					</div>
+						<label for="identifiant">Login</label>
+						<input id="identifiant" name="login" type="text">
+					</div> <!-- end login -->
 					<div class="ui-field-contain">
-						<label for="mdp">
-							Mot de passe
-						</label>
-						<input type="password" name="password" id="mdp" placeholder="Saisir votre mot de passe">
-					</div>
+						<label for="mdp">Password</label>
+						<input id="password" name="password" type="password">
+					</div> <!-- end password -->
 					<div class="ui-content">
-						<input type="submit" value="Valider" id="bValider" data-icon="action" class="ui-grid-solo"></input>
-					</div>
-				</form>
-			</div>
+						<input id="log_in_button" type="submit" value="Log in"></input>
+					</div> <!-- end log in button -->
+				</form> <!-- end form -->
+			</div> <!-- end main -->
+
 			<div data-role="footer" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
-			</div>
-		</div>
-		
-		<div data-role="popup" id="popup" class="ui-content" data-theme="b" data-overlay-theme="a">
-				<p>
-					Votre identifiant ou mot de passe invalide, veuillez resaisir !
-				</p>
-		</div>
-		
+			</div> <!-- end footer -->
+
+		</div> <!--end authentification page-->
 		
 		<!--ARCHIVE PAGE-->
 		
 		<div data-role="page" id="archivePage">
 			<div class="ui-grid-solo" data-role="header" id="header">
+					<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<h1>
 					Archive Page
 				</h1> <!-- End h1 -->
+				
 			</div> <!-- End header -->
+			<div data-display="push" data-position="left" data-role="panel" id="menu">
+				<ul data-role="listview">
+					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
+					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton disconnection_button" href="#authentification_page">Disconnection</a></li>
+				</ul>
+			</div> <!--End Menu-->
 			<div class="ui-content" role="main" id="archive">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive">
 				<div data-role="collapsibleset" id="archiveList">
@@ -108,10 +93,20 @@
 
 		<div data-role="page" id="archiveFilesPage">
 			<div class="ui-grid-solo" data-role="header" id="header">
+				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<h1>
 					Archive's Files  Page
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
+			<div data-display="push" data-position="left" data-role="panel" id="menu">
+				<ul data-role="listview">
+					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
+					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
+				</ul> <!-- end list view -->
+			</div> <!--End Menu-->
 			<div class="ui-content" role="main" id="archiveFiles">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive's file">
 				<div data-role="collapsibleset" id="archiveFilesList">
@@ -129,7 +124,6 @@
 					</div>
 					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
 					</div>
-				<a href="#archivePage">Archive</a>
 				</div>
 			</div>
 			<div data-role="footer" id="copyright">
@@ -141,10 +135,20 @@
 		
 		<div data-role="page" id="mediaPage">
 			<div class="ui-grid-solo" data-role="header" id="header">
+			<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<h1>
 					Media  Page
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
+			<div data-display="push" data-position="left" data-role="panel" id="menu">
+				<ul data-role="listview">
+					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
+					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
+				</ul> <!-- end list view -->
+			</div> <!--End Menu-->
 			<div class="ui-content" role="main" id="media">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a media">
 				<div data-role="collapsibleset" id="mediaList">
@@ -162,13 +166,54 @@
 					</div>
 					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
 					</div>
-				<a href="#archivePage">Archive</a>
 				</div>
 			</div>
 			<div data-role="footer" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
 		</div> 	<!-- End MEDIA PAGE-->
+
+		<!--POOL PAGE-->
+
+		<div data-role="page" id="poolPage">
+			<div class="ui-grid-solo" data-role="header" id="header">
+					<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+				<h1>
+					Pool Page
+				</h1> <!-- End h1 -->
+				
+			</div> <!-- End header -->
+			<div data-display="push" data-position="left" data-role="panel" id="menu">
+				<ul data-role="listview">
+					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
+					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
+					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
+				</ul> <!-- end list view -->
+			</div> <!--End Menu-->
+			<div class="ui-content" role="main" id="pool">
+				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a pool">
+				<div data-role="collapsibleset" id="poolList">
+				</div> <!-- End archive list -->
+				<div class="ui-grid-a">
+					<div class="ui-block-c">
+						<select id="menuLimit">
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+						</select>
+					</div>
+					<div class="ui-block-c infoLines">
+					</div>
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" id="copyright">
+				<p>Copyright &copy; 2017 Intellique</p>
+			</div>
+		</div>
 	</body>
 
 </html>

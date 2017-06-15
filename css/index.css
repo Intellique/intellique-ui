@@ -1,48 +1,39 @@
 /*
- * HEADER
- */
-#header
-{
-	background-color : white;
+ * authentification
+ */ 
+
+div#authentification_page div.header {
+	background-color : #FFFFFF;
 	text-align : center;
 }
-#headerStone
-{
+
+div #identifiant {
+	min-height : 3em;
+}
+
+div #password {
+	min-height : 3em;
+}
+
+#authentification {
+	background-color : #53A7D8;
+	border-radius : 30px;
+	color : white;
+	line-height : 25px;
+	max-width : 480px;
 	margin-left : auto;
 	margin-right : auto;
+	margin-bottom:10px;
+	margin-top : 10px;
 }
+
 /*
  * MAIN
  */
 
 
-#authentification
-{
-	color : white;
-	background-color : #53A7D8;
-	max-width : 480px;
-	margin-left : auto;
-	margin-right : auto;
-	line-height : 25px;
-	margin-bottom:10px;
-	margin-top : 10px;
-}
 
-#identifiant
-{
-	min-height : 3.3em;
-}
 
-#mdp
-{
-	min-height : 3.3em;
-}
-
-#bValider
-{
-	margin-left : auto;
-	margin-right : auto;
-}
 
 .paginationButton {
 	text-align: right;
