@@ -1,5 +1,4 @@
-$(document).ready(function()
-{
+$(document).ready(function() {
 	// Archive's configuration
 	var archiveConfig = {
 		'url': 'http://taiko/storiqone-backend-my/api/v1/archive/',
