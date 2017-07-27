@@ -1,20 +1,31 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-<head>
-	<title>Storiq One</title>
-	<meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<meta name="generator" content="Geany 1.30.1" />
-	<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css"/>
-	<link rel="stylesheet" href="css/index.css"/>
-	<script src="js/jquery-3.2.1.js"></script>
-	<script src="js/jquery-migrate-3.0.0.js"></script>
-	<script src="js/jquery.mobile-1.4.5.js"></script>
-	<script src="js/index.js"></script>
-</head>
+	<head>
+		<title>Storiq One</title>
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+		<meta name="generator" content="Geany 1.30.1" />
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css"/>
+		<link rel="stylesheet" href="css/index.css"/>
+		<script src="js/jquery-3.2.1.js"></script>
+		<script src="js/jquery-migrate-3.0.0.js"></script>
+		<script src="js/jquery.mobile-1.4.5.js"></script>
+		<script src="js/index.js"></script>
+	</head>
 
-<body>
+	<body>
+
+		<div data-display="overlay" data-position="left" data-role="panel" id="menu" data-theme="a">
+			<ul data-role="listview">
+				<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
+				<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
+				<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
+				<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
+			</ul> <!-- end list view -->
+
+		</div> <!--End Menu-->
+
 	<!-- authentification page -->
 
 		<div data-role="page" id="authentification_page">
@@ -43,27 +54,22 @@
 			</div> <!-- end footer -->
 
 		</div> <!--end authentification page-->
-		
+
+
+
+
+
 		<!--ARCHIVE PAGE-->
 		
 		<div data-role="page" id="archivePage">
 			<div class="ui-grid-solo" data-role="header" id="header">
 					<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+					<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
 				<h1>
 					Archive Page
 				</h1> <!-- End h1 -->
 				
 			</div> <!-- End header -->
-			<div data-display="push" data-position="left" data-role="panel" id="menu">
-				<ul data-role="listview">
-					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
-					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton disconnection_button" href="#authentification_page">Disconnection</a></li>
-				</ul>
-			</div> <!--End Menu-->
 			<div class="ui-content" role="main" id="archive">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive">
 				<div data-role="collapsibleset" id="archiveList">
@@ -92,19 +98,11 @@
 		<div data-role="page" id="archiveFilesPage">
 			<div class="ui-grid-solo" data-role="header" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
 				<h1>
 					Archive's Files  Page
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
-			<div data-display="push" data-position="left" data-role="panel" id="menu">
-				<ul data-role="listview">
-					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
-					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
-				</ul> <!-- end list view -->
-			</div> <!--End Menu-->
 			<div class="ui-content" role="main" id="archiveFiles">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive's file">
 				<div data-role="collapsibleset" id="archiveFilesList">
@@ -134,19 +132,11 @@
 		<div data-role="page" id="mediaPage">
 			<div class="ui-grid-solo" data-role="header" id="header">
 			<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+			<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
 				<h1>
 					Media  Page
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
-			<div data-display="push" data-position="left" data-role="panel" id="menu">
-				<ul data-role="listview">
-					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
-					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
-				</ul> <!-- end list view -->
-			</div> <!--End Menu-->
 			<div class="ui-content" role="main" id="media">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a media">
 				<div data-role="collapsibleset" id="mediaList">
@@ -176,20 +166,12 @@
 		<div data-role="page" id="poolPage">
 			<div class="ui-grid-solo" data-role="header" id="header">
 					<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+					<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
 				<h1>
 					Pool Page
 				</h1> <!-- End h1 -->
 				
 			</div> <!-- End header -->
-			<div data-display="push" data-position="left" data-role="panel" id="menu">
-				<ul data-role="listview">
-					<li data-icon="delete"><a data-rel="close" href="#">Close menu</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
-					<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
-					<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
-				</ul> <!-- end list view -->
-			</div> <!--End Menu-->
 			<div class="ui-content" role="main" id="pool">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a pool">
 				<div data-role="collapsibleset" id="poolList">
