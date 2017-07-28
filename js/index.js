@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  	$("[data-role=panel]").enhanceWithin().panel(); //Initialize panel function
+
 	// Archive's configuration
 	var archiveConfig = {
 		'url': 'http://taiko/storiqone-backend-my/api/v1/archive/',
@@ -51,7 +53,7 @@ $(document).ready(function() {
 					}
 				});
 
-				// Archive Volumes's configuration
+				// Archive Volumes' configuration
 				var configArchiveVolumes = {
 					'dataSearch': {
 						// Provide an archive file's ID to get its information
@@ -199,7 +201,7 @@ $(document).ready(function() {
 												else
 													delete this.dataSearch.name;
 											}
-										}; // End configMedia
+										}; // End mediaConfig
 										// Event listener when click, change to pool's page
 										poolName.on('click', function() {
 										var poolModel = new ModelAjax(poolConfig);
@@ -234,13 +236,14 @@ $(document).ready(function() {
 									else
 										delete this.dataSearch.name;
 								}
-							}; // End configMedia
+							}; // End mediaConfig
 
 							// Event listener when click, change to media's page
 							mediaName.on('click', function() {
 								// Create Media's model and view
 								var mediaModel = new ModelAjax(mediaConfig);
 								var mediaView = new listView(mediaModel, $('#mediaList'));
+								debugger;
 								$.ajax({
 									type : "GET",
 									context: this,
@@ -359,6 +362,32 @@ $(document).ready(function() {
 
 				}); // End event listener
 
+				/*
+				elt.find('#RestoreButton a').on('click', function() {
+					
+					$.ajax({
+						type : "GET",
+						context: this,
+						url : 'http://taiko/storiqone-backend-my/api/v1/archive',
+						data : {
+							id : 
+						},
+						success : function(response) {
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+						}
+					});
+
+					var params = {
+
+					}
+
+
+					
+
+				});
+
+			*/
 
 			} // End function transform
 
@@ -562,7 +591,7 @@ $(document).ready(function() {
 				else
 					delete this.dataSearch.name;
 			}
-		}; // End configMedia
+		}; // End mediaConfig
 
 		// Create Media's model and view
 		var mediaModel = new ModelAjax(mediaConfig);
