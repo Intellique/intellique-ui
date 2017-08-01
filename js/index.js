@@ -363,30 +363,14 @@ $(document).ready(function() {
 									},
 									success : function(response) {
 										elt.find('#archivePage a').text(response.archive.name);
+										$('#archivePage a').on('click', function() {
+											$('#archive .search').val(response.archive.name);
+											$('#archive .search').trigger('change');
+										});
 									},
 									error : function(XMLHttpRequest, textStatus, errorThrown) {
 									}
-								});
-								var archiveTableConfig = {
-									'url' : 'http://taiko/storiqone-backend-paul/api/v1/archive/',
-									'urlSearch' : 'http://taiko/storiqone-backend-paul/api/v1/archive/search/',
-									'keyData' : 'archive',
-									'keySearch' : 'archives',
-									'dataSearch' : {
-										archivefile : data.id
-									},
-									'headers' : [{
-										// Archive's name
-										'name' : 'name',
-										'sortable' : true,
-										'translatable' : true,
-										'transform' : function (elt, field, data) {
-											elt.text(data[field]);
-										}
-									}]
-								};
-								var archiveTableModel = new ModelAjax(archiveTableConfig);
-								var archiveTableView = new dataModelView(archiveTableModel, elt);								
+								});								
 							}
 						}, // End function transform
 						// Search filter bar
@@ -530,11 +514,13 @@ $(document).ready(function() {
 	 *
 	 */ 
 	$('.archiveButtonPage').on('click', function() {
+		$('#archive .search').val(null);
 		var model = new ModelAjax(archiveConfig);
 		var view = new listView(model, $('#archiveList'));
 	});
 	
 	$('.filesButtonPage').on('click', function() {
+		$('#archiveFiles .search').val(null);
 		// Research Archive Files's configuration
 		var configSearchArchiveFiles = {
 			'url': 'http://taiko/storiqone-backend-paul/api/v1/archivefile/',
@@ -623,6 +609,7 @@ $(document).ready(function() {
 	});
 
 	$('.mediaButtonPage').on('click', function() {
+		$('#media .search').val(null);
 		// Media's configuration
 		var mediaConfig = {
 			'url' : 'http://taiko/storiqone-backend-paul/api/v1/media',
