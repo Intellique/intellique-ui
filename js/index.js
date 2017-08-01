@@ -1,9 +1,19 @@
-$(document).ready(function() {
+var config = null;
+$.ajax({
+	type: "GET",
+	url: "config.json",
+	success: function(response) {
+		config = response;
+		$(document).ready(main);
+	}
+});
+
+function main() {
   	$("[data-role=panel]").enhanceWithin().panel(); //Initialize panel function
 
 	// Archive's configuration
 	var archiveConfig = {
-		'url': 'http://taiko/storiqone-backend-my/api/v1/archive/',
+		'url': config["api url"]+"/api/v1/archive/",
 		'keyData': 'archive',
 		'keySearch': 'archives',
 		'dataSearch': {},
@@ -27,7 +37,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "GET",
 					context : this,
-					url : "http://taiko/storiqone-backend-my/api/v1/user/",
+					url : config["api url"]+"/api/v1/user/",
 					data : {
 						id : data.creator
 					},
@@ -42,7 +52,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "GET",
 					context : this,
-					url : "http://taiko/storiqone-backend-my/api/v1/user/",
+					url : config["api url"]+"/api/v1/user/",
 					data : {
 						id : data.owner
 					},
@@ -130,7 +140,7 @@ $(document).ready(function() {
 							$.ajax({
 								type : "GET",
 								context: this,
-								url : 'http://taiko/storiqone-backend-my/api/v1/media',
+								url : config["api url"]+"/api/v1/media",
 								data : {
 									id : data.media
 								},
@@ -146,7 +156,7 @@ $(document).ready(function() {
 							
 							// Media's configuration
 							var mediaConfig = {
-								'url' : 'http://taiko/storiqone-backend-my/api/v1/media',
+								'url' : config["api url"]+"/api/v1/media",
 								'keyData' : 'media',
 								'keySearch' : 'medias',
 								'dataSearch' : {
@@ -177,7 +187,7 @@ $(document).ready(function() {
 										espace_used.find('label').css('text-align','center');
 
 										var poolConfig = {
-											'url' : 'http://taiko/storiqone-backend-my/api/v1/pool',
+											'url' : config["api url"]+"/api/v1/pool",
 											'keyData' : 'pool',
 											'keySearch' : 'pools',
 											'dataSearch' : {
@@ -210,7 +220,7 @@ $(document).ready(function() {
 										$.ajax({
 											type : "GET",
 											context: this,
-											url : 'http://taiko/storiqone-backend-my/api/v1/pool',
+											url : config["api url"]+"/api/v1/pool",
 											data : {
 												id : data.pool.id
 											},
@@ -247,7 +257,7 @@ $(document).ready(function() {
 								$.ajax({
 									type : "GET",
 									context: this,
-									url : 'http://taiko/storiqone-backend-my/api/v1/media',
+									url : config["api url"]+"/api/v1/media",
 									data : {
 										id : data.media
 									},
@@ -303,7 +313,7 @@ $(document).ready(function() {
 				elt.find('#archiveFilesButton a').on('click', function() {
 					// Research Archive Files's configuration
 					var configSearchArchiveFiles = {
-						'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile/',
+						'url': config["api url"]+"/api/v1/archivefile/",
 						'keyData': 'archivefile',
 						'keySearch': 'archivefiles',
 						'dataSearch': {
@@ -324,8 +334,8 @@ $(document).ready(function() {
 
 
 								var archiveTableConfig = {
-									'url' : 'http://taiko/storiqone-backend-my/api/v1/archive/',
-									'urlSearch' : 'http://taiko/storiqone-backend-my/api/v1/archive/search/',
+									'url' : config["api url"]+"/api/v1/archive/",
+									'urlSearch' : config["api url"]+"/api/v1/archive/search/",
 									'keyData' : 'archive',
 									'keySearch' : 'archives',
 									'dataSearch' : {
@@ -362,32 +372,31 @@ $(document).ready(function() {
 
 				}); // End event listener
 
-				/*
+				
 				elt.find('#RestoreButton a').on('click', function() {
-					
+
 					$.ajax({
-						type : "GET",
-						context: this,
-						url : 'http://taiko/storiqone-backend-my/api/v1/archive',
-						data : {
-							id : 
-						},
+						type : "POST", //Restoration task is triggered with a POST request
+						url : config["api url"]+"/api/v1/archive/restore/",
+						contentType : "application/json",
+						dataType: 'json',
+						data : JSON.stringify({
+							archive : data.id,
+							nextstart: "now",
+							destination: config["restore path"]
+						}),
 						success : function(response) {
+							alert("Restoration task creation has succeeded");
+
 						},
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							alert("Restoration task creation has failed");
 						}
 					});
 
-					var params = {
-
-					}
-
-
-					
-
 				});
 
-			*/
+			
 
 			} // End function transform
 
@@ -408,7 +417,7 @@ $(document).ready(function() {
 	 */
 	$.ajax({
 		type: "GET", 
-		url: "http://taiko/storiqone-backend-my/api/v1/auth/", 
+		url: config["api url"]+"/api/v1/auth/", 
 		success: function(response) {
 			// create model and view for "archive page" after login
 			var model = new ModelAjax(archiveConfig);
@@ -441,7 +450,7 @@ $(document).ready(function() {
 
 		$.ajax({
 			type: "POST", 
-			url: "http://taiko/storiqone-backend-my/api/v1/auth/", 
+			url: config["api url"]+"/api/v1/auth/", 
 			data: json, 
 			dataType : "json", 
 			contentType : "application/json", 
@@ -477,7 +486,7 @@ $(document).ready(function() {
 	$('.disconnection_button').on('click', function() {
 		$.ajax({
 			type : "DELETE",
-			url : "http://taiko/storiqone-backend-my/api/v1/auth/",
+			url : config["api url"]+"/api/v1/auth/",
 			success : function() {},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {}
 		}); // end ajax
@@ -494,8 +503,8 @@ $(document).ready(function() {
 	$('.filesButtonPage').on('click', function() {
 		// Research Archive Files's configuration
 		var configSearchArchiveFiles = {
-			'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile/',
-			'urlSearch': 'http://taiko/storiqone-backend-my/api/v1/archivefile/search',
+			'url': config["api url"]+"/api/v1/archivefile/",
+			'urlSearch': config["api url"]+"/api/v1/archivefile/search",
 			'keyData': 'archivefile',
 			'keySearch': 'archivefiles',
 			'dataSearch': {},
@@ -513,8 +522,8 @@ $(document).ready(function() {
 
 
 					var archiveTableConfig = {
-						'url' : 'http://taiko/storiqone-backend-my/api/v1/archive/',
-						'urlSearch' : 'http://taiko/storiqone-backend-my/api/v1/archive/search/',
+						'url' : config["api url"]+"/api/v1/archive/",
+						'urlSearch' : config["api url"]+"/api/v1/archive/search/",
 						'keyData' : 'archive',
 						'keySearch' : 'archives',
 						'dataSearch' : {
@@ -554,7 +563,7 @@ $(document).ready(function() {
 	$('.mediaButtonPage').on('click', function() {
 		// Media's configuration
 		var mediaConfig = {
-			'url' : 'http://taiko/storiqone-backend-my/api/v1/media',
+			'url' : config["api url"]+"/api/v1/media",
 			'keyData' : 'media',
 			'keySearch' : 'medias',
 			'dataSearch' : {
@@ -599,7 +608,7 @@ $(document).ready(function() {
 
 
 	});
-});
+}
 
 
 
@@ -1142,19 +1151,6 @@ function listView(model, elt) {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 function convertSize(size) {
 	if (typeof size == "string")
 		size = parseInt(size);
@@ -1197,7 +1193,35 @@ function convertSize(size) {
 
 return size.toFixed(width) + type;
 }
+/*
 
+debugger;
+var cookieName = 'sessionMsg';
+var message = 'Your session is going to be end by 5 min, Please click OK to continue';
 
+function getCookie(name)
+{
+    var name = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++)
+    {
+        var c = ca[i].trim();
+        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
 
+function setSessionPrompt() {
+    var timeout = getCookie(cookieName) - new Date().getTime();
+    setTimeout(function(){
+        if (new Date().getTime() < getCookie(cookieName)) {
+            setSessionPrompt();
+        } else {
+            if(confirm(message)) {
+            }
+        }
+    }, timeout);
+}
 
+setSessionPrompt();
+*/
