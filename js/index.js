@@ -331,28 +331,56 @@ function main() {
 								elt.find('#ctime').text(data.ctime);
 								elt.find('#mtime').text(data.mtime);
 								elt.find('#size').text(convertSize(data.size));
+								elt.find('#media').text(data.medias);
 
-
-								var archiveTableConfig = {
-									'url' : config["api url"]+"/api/v1/archive/",
-									'urlSearch' : config["api url"]+"/api/v1/archive/search/",
-									'keyData' : 'archive',
-									'keySearch' : 'archives',
-									'dataSearch' : {
-										archivefile : data.id
+								var metadata = elt.find('#metadata');
+								$.ajax({
+									type : "GET",
+									context : this,
+									url : config["api url"]+"/api/v1/archivefile/metadata/",
+									data : {
+										id : data.id
 									},
-									'headers' : [{
-										// Archive's name
-										'name' : 'name',
-										'sortable' : true,
-										'translatable' : true,
-										'transform' : function (elt, field, data) {
-											elt.text(data[field]);
-										}
-									}]
-								};
-								var archiveTableModel = new ModelAjax(archiveTableConfig);
-								var archiveTableView = new dataModelView(archiveTableModel, elt);								
+									success : function(response) {
+										var meta = "{";
+										Object.keys(response.metadata).forEach(function (key) {
+											meta = meta + '"' + key + '" : ';
+											if((response.metadata[key]).constructor === Object){
+												var meta1 = "{";
+												Object.keys(response.metadata[key]).forEach(function (key2) {
+													meta1 = meta1 + '"'+ key2 + '" : "' + (response.metadata[key])[key2] + '"';
+												});
+												meta1 = meta1 + "}";
+												meta = meta + meta1;
+											}
+											else
+												meta = meta + '"'+ response.metadata[key]+'"';
+											meta = meta + ' , ';
+										});
+										meta = meta + "}";
+										metadata.text(meta);
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {
+										metadata.text("No metadata found for this object");
+									}
+								});
+								$.ajax({
+									type : "GET",
+									context : this,
+									url : "http://taiko/storiqone-backend-paul/api/v1/archive/",
+									data : {
+										id : data.archive
+									},
+									success : function(response) {
+										elt.find('#archivePage a').text(response.archive.name);
+										$('#archivePage a').on('click', function() {
+											$('#archive .search').val(response.archive.name);
+											$('#archive .search').trigger('change');
+										});
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {
+									}
+								});								
 							}
 						}, // End function transform
 						// Search filter bar
@@ -392,8 +420,7 @@ function main() {
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
 							alert("Restoration task creation has failed");
 						}
-					});
-
+					});					
 				});
 
 			
@@ -441,18 +468,17 @@ function main() {
 	{
 		var log = $('#identifiant').val();
 		var pw = $('#password').val();
-		var apik = "727fbb26-cc9a-43b8-a68a-78ca86d9cd31";
-		var data = { login : log,
+		var authdata = { login : log,
 					password : pw,
 					apikey : '727fbb26-cc9a-43b8-a68a-78ca86d9cd31'
 					};
-		var json = JSON.stringify(data);
+		var authjson = JSON.stringify(authdata);
 
 		$.ajax({
 			type: "POST", 
 			url: config["api url"]+"/api/v1/auth/", 
-			data: json, 
-			dataType : "json", 
+			data: authjson, 
+			dataType : "json",
 			contentType : "application/json", 
 			success: function(reponse) {
 				// create model and view for "archive page" after login
@@ -496,11 +522,13 @@ function main() {
 	 *
 	 */ 
 	$('.archiveButtonPage').on('click', function() {
+		$('#archive .search').val(null);
 		var model = new ModelAjax(archiveConfig);
 		var view = new listView(model, $('#archiveList'));
 	});
 	
 	$('.filesButtonPage').on('click', function() {
+		$('#archiveFiles .search').val(null);
 		// Research Archive Files's configuration
 		var configSearchArchiveFiles = {
 			'url': config["api url"]+"/api/v1/archivefile/",
@@ -519,34 +547,63 @@ function main() {
 					elt.find('#ctime').text(data.ctime);
 					elt.find('#mtime').text(data.mtime);
 					elt.find('#size').text(convertSize(data.size));
+					elt.find('#media').text(data.medias);
 
-
-					var archiveTableConfig = {
-						'url' : config["api url"]+"/api/v1/archive/",
-						'urlSearch' : config["api url"]+"/api/v1/archive/search/",
-						'keyData' : 'archive',
-						'keySearch' : 'archives',
-						'dataSearch' : {
-							archivefile : data.id
+					var metadata = elt.find('#metadata');
+					$.ajax({
+						type : "GET",
+						context : this,
+						url : "http://taiko/storiqone-backend-paul/api/v1/archivefile/metadata/",
+						data : {
+							id : data.id
 						},
-						'headers' : [{
-							// Archive's name
-							'name' : 'name',
-							'sortable' : true,
-							'translatable' : true,
-							'transform' : function (elt, field, data) {
-								elt.text(data[field]);
-							}
-						}]
-					};
-					var archiveTableModel = new ModelAjax(archiveTableConfig);
-					var archiveTableView = new dataModelView(archiveTableModel, elt);								
+						success : function(response) {
+							var meta = "{";
+							Object.keys(response.metadata).forEach(function (key) {
+								meta = meta + '"' + key + '" : ';
+								if((response.metadata[key]).constructor === Object){
+									var meta1 = "{";
+									Object.keys(response.metadata[key]).forEach(function (key2) {
+										meta1 = meta1 + '"'+ key2 + '" : "' + (response.metadata[key])[key2] + '"';
+									});
+									meta1 = meta1 + "}";
+									meta = meta + meta1;
+								}
+								else
+									meta = meta + '"'+ response.metadata[key]+'"';
+								meta = meta + ' , ';
+							});
+							meta = meta + "}";
+							metadata.text(meta);
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							metadata.text("No metadata found for this object");
+						}
+					});
+
+					$.ajax({
+						type : "GET",
+						context : this,
+						url : config["api url"]+"/api/v1/archive/",
+						data : {
+							id : data.archive
+						},
+						success : function(response) {
+							elt.find('#archivePage a').text(response.archive.name);
+							$('#archivePage a').on('click', function() {
+								$('#archive .search').val(response.archive.name);
+								$('#archive .search').trigger('change');
+							});
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+						}
+					});
+
 				}
 			}, // End function transform
 			// Search filter bar
 			'search': function(input) {
 				var text = input.val();
-
 				if (text.length > 0)
 					this.dataSearch.name = text;
 				else
@@ -557,10 +614,10 @@ function main() {
 		// Create a model and a view for Archive Files's list
 		var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
 		var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
-	
 	});
 
 	$('.mediaButtonPage').on('click', function() {
+		$('#media .search').val(null);
 		// Media's configuration
 		var mediaConfig = {
 			'url' : config["api url"]+"/api/v1/media",
@@ -605,8 +662,6 @@ function main() {
 		// Create Media's model and view
 		var mediaModel = new ModelAjax(mediaConfig);
 		var mediaView = new listView(mediaModel, $('#mediaList'));
-
-
 	});
 }
 

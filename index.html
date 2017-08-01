@@ -18,12 +18,10 @@
 
 		<div data-display="overlay" data-position="left" data-role="panel" id="menu" data-theme="a">
 			<ul data-role="listview">
-				<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>	
+				<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archive</a></li>
 				<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
 				<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Media</a></li>
-				<li><a class="ui-btn ui-corner-all menuButton poolButtonPage" href="#poolPage">Pool</a></li>
 			</ul> <!-- end list view -->
-
 		</div> <!--End Menu-->
 
 	<!-- authentification page -->
@@ -55,20 +53,16 @@
 
 		</div> <!--end authentification page-->
 
-
-
-
-
 		<!--ARCHIVE PAGE-->
-		
+
 		<div data-role="page" id="archivePage">
 			<div class="ui-grid-solo" data-role="header" id="header">
-					<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
-					<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
+				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
 				<h1>
 					Archive Page
 				</h1> <!-- End h1 -->
-				
+
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="archive">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive">
@@ -125,16 +119,16 @@
 			<div data-role="footer" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
-		</div> 	<!-- End ARCHIVE's FILES PAGE-->
-		
+		</div>  <!-- End ARCHIVE's FILES PAGE-->
+
 		<!--MEDIA PAGE-->
 		
 		<div data-role="page" id="mediaPage">
 			<div class="ui-grid-solo" data-role="header" id="header">
-			<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
-			<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
+				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
 				<h1>
-					Media  Page
+					Media Page
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="media">
@@ -159,41 +153,7 @@
 			<div data-role="footer" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
-		</div> 	<!-- End MEDIA PAGE-->
-
-		<!--POOL PAGE-->
-
-		<div data-role="page" id="poolPage">
-			<div class="ui-grid-solo" data-role="header" id="header">
-					<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
-					<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
-				<h1>
-					Pool Page
-				</h1> <!-- End h1 -->
-				
-			</div> <!-- End header -->
-			<div class="ui-content" role="main" id="pool">
-				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a pool">
-				<div data-role="collapsibleset" id="poolList">
-				</div> <!-- End archive list -->
-				<div class="ui-grid-a">
-					<div class="ui-block-c">
-						<select id="menuLimit">
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-						</select>
-					</div>
-					<div class="ui-block-c infoLines">
-					</div>
-					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
-					</div>
-				</div>
-			</div>
-			<div data-role="footer" id="copyright">
-				<p>Copyright &copy; 2017 Intellique</p>
-			</div>
-		</div>
+		</div>  <!-- End MEDIA PAGE-->
 	</body>
 
 </html>
