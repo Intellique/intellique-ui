@@ -3,7 +3,7 @@ $(document).ready(function() {
 
 	// Archive's configuration
 	var archiveConfig = {
-		'url': 'http://taiko/storiqone-backend-my/api/v1/archive/',
+		'url': 'http://taiko/storiqone-backend-paul/api/v1/archive/',
 		'keyData': 'archive',
 		'keySearch': 'archives',
 		'dataSearch': {},
@@ -27,7 +27,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "GET",
 					context : this,
-					url : "http://taiko/storiqone-backend-my/api/v1/user/",
+					url : "http://taiko/storiqone-backend-paul/api/v1/user/",
 					data : {
 						id : data.creator
 					},
@@ -42,7 +42,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "GET",
 					context : this,
-					url : "http://taiko/storiqone-backend-my/api/v1/user/",
+					url : "http://taiko/storiqone-backend-paul/api/v1/user/",
 					data : {
 						id : data.owner
 					},
@@ -130,7 +130,7 @@ $(document).ready(function() {
 							$.ajax({
 								type : "GET",
 								context: this,
-								url : 'http://taiko/storiqone-backend-my/api/v1/media',
+								url : 'http://taiko/storiqone-backend-paul/api/v1/media',
 								data : {
 									id : data.media
 								},
@@ -146,7 +146,7 @@ $(document).ready(function() {
 							
 							// Media's configuration
 							var mediaConfig = {
-								'url' : 'http://taiko/storiqone-backend-my/api/v1/media',
+								'url' : 'http://taiko/storiqone-backend-paul/api/v1/media',
 								'keyData' : 'media',
 								'keySearch' : 'medias',
 								'dataSearch' : {
@@ -177,7 +177,7 @@ $(document).ready(function() {
 										espace_used.find('label').css('text-align','center');
 
 										var poolConfig = {
-											'url' : 'http://taiko/storiqone-backend-my/api/v1/pool',
+											'url' : 'http://taiko/storiqone-backend-paul/api/v1/pool',
 											'keyData' : 'pool',
 											'keySearch' : 'pools',
 											'dataSearch' : {
@@ -210,7 +210,7 @@ $(document).ready(function() {
 										$.ajax({
 											type : "GET",
 											context: this,
-											url : 'http://taiko/storiqone-backend-my/api/v1/pool',
+											url : 'http://taiko/storiqone-backend-paul/api/v1/pool',
 											data : {
 												id : data.pool.id
 											},
@@ -247,7 +247,7 @@ $(document).ready(function() {
 								$.ajax({
 									type : "GET",
 									context: this,
-									url : 'http://taiko/storiqone-backend-my/api/v1/media',
+									url : 'http://taiko/storiqone-backend-paul/api/v1/media',
 									data : {
 										id : data.media
 									},
@@ -303,7 +303,7 @@ $(document).ready(function() {
 				elt.find('#archiveFilesButton a').on('click', function() {
 					// Research Archive Files's configuration
 					var configSearchArchiveFiles = {
-						'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile/',
+						'url': 'http://taiko/storiqone-backend-paul/api/v1/archivefile/',
 						'keyData': 'archivefile',
 						'keySearch': 'archivefiles',
 						'dataSearch': {
@@ -321,11 +321,55 @@ $(document).ready(function() {
 								elt.find('#ctime').text(data.ctime);
 								elt.find('#mtime').text(data.mtime);
 								elt.find('#size').text(convertSize(data.size));
+								elt.find('#media').text(data.medias);
 
-
+								var metadata = elt.find('#metadata');
+								$.ajax({
+									type : "GET",
+									context : this,
+									url : "http://taiko/storiqone-backend-paul/api/v1/archivefile/metadata/",
+									data : {
+										id : data.id
+									},
+									success : function(response) {
+										var meta = "{";
+										Object.keys(response.metadata).forEach(function (key) {
+											meta = meta + '"' + key + '" : ';
+											if((response.metadata[key]).constructor === Object){
+												var meta1 = "{";
+												Object.keys(response.metadata[key]).forEach(function (key2) {
+													meta1 = meta1 + '"'+ key2 + '" : "' + (response.metadata[key])[key2] + '"';
+												});
+												meta1 = meta1 + "}";
+												meta = meta + meta1;
+											}
+											else
+												meta = meta + '"'+ response.metadata[key]+'"';
+											meta = meta + ' , ';
+										});
+										meta = meta + "}";
+										metadata.text(meta);
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {
+										metadata.text("No metadata found for this object");
+									}
+								});
+								$.ajax({
+									type : "GET",
+									context : this,
+									url : "http://taiko/storiqone-backend-paul/api/v1/archive/",
+									data : {
+										id : data.archive
+									},
+									success : function(response) {
+										elt.find('#archivePage a').text(response.archive.name);
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {
+									}
+								});
 								var archiveTableConfig = {
-									'url' : 'http://taiko/storiqone-backend-my/api/v1/archive/',
-									'urlSearch' : 'http://taiko/storiqone-backend-my/api/v1/archive/search/',
+									'url' : 'http://taiko/storiqone-backend-paul/api/v1/archive/',
+									'urlSearch' : 'http://taiko/storiqone-backend-paul/api/v1/archive/search/',
 									'keyData' : 'archive',
 									'keySearch' : 'archives',
 									'dataSearch' : {
@@ -408,7 +452,7 @@ $(document).ready(function() {
 	 */
 	$.ajax({
 		type: "GET", 
-		url: "http://taiko/storiqone-backend-my/api/v1/auth/", 
+		url: "http://taiko/storiqone-backend-paul/api/v1/auth/",
 		success: function(response) {
 			// create model and view for "archive page" after login
 			var model = new ModelAjax(archiveConfig);
@@ -432,18 +476,17 @@ $(document).ready(function() {
 	{
 		var log = $('#identifiant').val();
 		var pw = $('#password').val();
-		var apik = "727fbb26-cc9a-43b8-a68a-78ca86d9cd31";
-		var data = { login : log,
+		var authdata = { login : log,
 					password : pw,
 					apikey : '727fbb26-cc9a-43b8-a68a-78ca86d9cd31'
 					};
-		var json = JSON.stringify(data);
+		var authjson = JSON.stringify(authdata);
 
 		$.ajax({
 			type: "POST", 
-			url: "http://taiko/storiqone-backend-my/api/v1/auth/", 
-			data: json, 
-			dataType : "json", 
+			url: "http://taiko/storiqone-backend-paul/api/v1/auth/",
+			data: authjson, 
+			dataType : "json",
 			contentType : "application/json", 
 			success: function(reponse) {
 				// create model and view for "archive page" after login
@@ -477,7 +520,7 @@ $(document).ready(function() {
 	$('.disconnection_button').on('click', function() {
 		$.ajax({
 			type : "DELETE",
-			url : "http://taiko/storiqone-backend-my/api/v1/auth/",
+			url : "http://taiko/storiqone-backend-paul/api/v1/auth/",
 			success : function() {},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {}
 		}); // end ajax
@@ -494,8 +537,8 @@ $(document).ready(function() {
 	$('.filesButtonPage').on('click', function() {
 		// Research Archive Files's configuration
 		var configSearchArchiveFiles = {
-			'url': 'http://taiko/storiqone-backend-my/api/v1/archivefile/',
-			'urlSearch': 'http://taiko/storiqone-backend-my/api/v1/archivefile/search',
+			'url': 'http://taiko/storiqone-backend-paul/api/v1/archivefile/',
+			'urlSearch': 'http://taiko/storiqone-backend-paul/api/v1/archivefile/search/',
 			'keyData': 'archivefile',
 			'keySearch': 'archivefiles',
 			'dataSearch': {},
@@ -510,34 +553,63 @@ $(document).ready(function() {
 					elt.find('#ctime').text(data.ctime);
 					elt.find('#mtime').text(data.mtime);
 					elt.find('#size').text(convertSize(data.size));
+					elt.find('#media').text(data.medias);
 
-
-					var archiveTableConfig = {
-						'url' : 'http://taiko/storiqone-backend-my/api/v1/archive/',
-						'urlSearch' : 'http://taiko/storiqone-backend-my/api/v1/archive/search/',
-						'keyData' : 'archive',
-						'keySearch' : 'archives',
-						'dataSearch' : {
-							archivefile : data.id
+					var metadata = elt.find('#metadata');
+					$.ajax({
+						type : "GET",
+						context : this,
+						url : "http://taiko/storiqone-backend-paul/api/v1/archivefile/metadata/",
+						data : {
+							id : data.id
 						},
-						'headers' : [{
-							// Archive's name
-							'name' : 'name',
-							'sortable' : true,
-							'translatable' : true,
-							'transform' : function (elt, field, data) {
-								elt.text(data[field]);
-							}
-						}]
-					};
-					var archiveTableModel = new ModelAjax(archiveTableConfig);
-					var archiveTableView = new dataModelView(archiveTableModel, elt);								
+						success : function(response) {
+							var meta = "{";
+							Object.keys(response.metadata).forEach(function (key) {
+								meta = meta + '"' + key + '" : ';
+								if((response.metadata[key]).constructor === Object){
+									var meta1 = "{";
+									Object.keys(response.metadata[key]).forEach(function (key2) {
+										meta1 = meta1 + '"'+ key2 + '" : "' + (response.metadata[key])[key2] + '"';
+									});
+									meta1 = meta1 + "}";
+									meta = meta + meta1;
+								}
+								else
+									meta = meta + '"'+ response.metadata[key]+'"';
+								meta = meta + ' , ';
+							});
+							meta = meta + "}";
+							metadata.text(meta);
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							metadata.text("No metadata found for this object");
+						}
+					});
+
+					$.ajax({
+						type : "GET",
+						context : this,
+						url : "http://taiko/storiqone-backend-paul/api/v1/archive/",
+						data : {
+							id : data.archive
+						},
+						success : function(response) {
+							elt.find('#archivePage a').text(response.archive.name);
+							$('#archivePage a').on('click', function() {
+								$('#archive .search').val(response.archive.name);
+								$('#archive .search').trigger('change');
+							});
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+						}
+					});
+
 				}
 			}, // End function transform
 			// Search filter bar
 			'search': function(input) {
 				var text = input.val();
-
 				if (text.length > 0)
 					this.dataSearch.name = text;
 				else
@@ -548,13 +620,12 @@ $(document).ready(function() {
 		// Create a model and a view for Archive Files's list
 		var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
 		var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
-	
 	});
 
 	$('.mediaButtonPage').on('click', function() {
 		// Media's configuration
 		var mediaConfig = {
-			'url' : 'http://taiko/storiqone-backend-my/api/v1/media',
+			'url' : 'http://taiko/storiqone-backend-paul/api/v1/media',
 			'keyData' : 'media',
 			'keySearch' : 'medias',
 			'dataSearch' : {
@@ -596,8 +667,6 @@ $(document).ready(function() {
 		// Create Media's model and view
 		var mediaModel = new ModelAjax(mediaConfig);
 		var mediaView = new listView(mediaModel, $('#mediaList'));
-
-
 	});
 });
 
