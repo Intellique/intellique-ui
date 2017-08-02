@@ -9,7 +9,7 @@ $.ajax({
 });
 
 function main() {
-  	$("[data-role=panel]").enhanceWithin().panel(); //Initialize panel function
+	$("[data-role=panel]").enhanceWithin().panel(); //Initialize panel function
 
 	// Archive's configuration
 	var archiveConfig = {
@@ -68,7 +68,7 @@ function main() {
 					'dataSearch': {
 						// Provide an archive file's ID to get its information
 						id : data.id
-									},
+					},
 					'headers': [{
 						// Volume's ID
 						'name': 'id',
@@ -92,7 +92,7 @@ function main() {
 						'translatable': true,
 						'transform': function(elt, field, data) {
 							elt.text(convertSize(data[field]));
-							}
+						}
 					}, {
 						// Volume's start time
 						'name': 'starttime',
@@ -127,33 +127,35 @@ function main() {
 						'translatable': true,
 						'transform': function(elt, field, data) {
 							elt.text(data[field]);
-							}
+						}
 					}, {
 						// Volume's media
 						'name': 'media',
 						'sortable': 'false',
 						'translatable': true,
-						'transform': function(elt, field, data) {								
+						'transform': function(elt, field, data) {
 						//	elt.text(data[field]);
 							// Create Media's name, pop-up, close button and pop-up's information
 							var mediaName = $('<a href="#mediaPage" class="ui-btn ui-shadow ui-corner-all"></a>');
 							$.ajax({
 								type : "GET",
-								context: this,
-								url : config["api url"]+"/api/v1/media",
+								context : this,
+								url : config["api url"]+"/api/v1/media/",
 								data : {
 									id : data.media
 								},
 								success : function(response) {
 									mediaName.text(response.media.name);
+									mediaName.on('click', function() {
+										$('#media .search').val(response.media.name);
+										$('#media .search').trigger('change');
+									});
 								},
 								error : function(XMLHttpRequest, textStatus, errorThrown) {
 								}
 							});
-
 							// Add Media name in Volume's table
 							elt.append(mediaName);
-							
 							// Media's configuration
 							var mediaConfig = {
 								'url' : config["api url"]+"/api/v1/media",
@@ -169,11 +171,7 @@ function main() {
 									'transform' : function(elt, data) {
 										elt.find('#name').text(data.name);
 										elt.find('#label').text(data.label);
-//										elt.find('#pool').text(data.pool.name);
-
-										var poolName = $('<a href="#poolPage" class="ui-btn ui-shadow ui-corner-all"></a>');
-										elt.find('#pool').append(poolName.text(data.pool.name));
-
+										elt.find('#pool').text(data.pool.name);
 										elt.find('#format').text(data.mediaformat.name);
 										elt.find('#uuid').text(data.uuid);
 										elt.find('#firstused').text(data.firstused.date);
@@ -185,58 +183,7 @@ function main() {
 										espace_used.find('meter').attr('value',(data.totalblock * data.blocksize) - (data.blocksize * data.freeblock));
 										espace_used.find('label').text(convertSize((data.totalblock * data.blocksize) - (data.blocksize * data.freeblock))+"/"+convertSize(data.totalblock * data.blocksize));
 										espace_used.find('label').css('text-align','center');
-
-										var poolConfig = {
-											'url' : config["api url"]+"/api/v1/pool",
-											'keyData' : 'pool',
-											'keySearch' : 'pools',
-											'dataSearch' : {
-											}, // End dataSearch
-											'informations' : {
-												'title' : 'name',
-												'template' : 'template/pool.html',
-												'transform' : function(elt, data) {
-													elt.find('#uuid').text(data.uuid);
-													elt.find('#archiveformat').text(data.archiveformat.name);
-													elt.find('#mediaformat').text(data.mediaformat.name);
-
-												}, // End transform
-											
-											}, // End informations
-											'search': function(input) {
-												var text = input.val();
-
-												if (text.length > 0)
-													this.dataSearch.name = text;
-												else
-													delete this.dataSearch.name;
-											}
-										}; // End mediaConfig
-										// Event listener when click, change to pool's page
-										poolName.on('click', function() {
-										var poolModel = new ModelAjax(poolConfig);
-										var poolView = new listView(poolModel, $('#poolList'));
-
-										$.ajax({
-											type : "GET",
-											context: this,
-											url : config["api url"]+"/api/v1/pool",
-											data : {
-												id : data.pool.id
-											},
-											success : function(response) {
-												$('#pool .search').val(response.pool.name);
-
-												$('#pool .search').trigger('change');
-											},
-											error : function(XMLHttpRequest, textStatus, errorThrown) {
-											}
-										});
-
-										});
-
 									}, // End transform
-								
 								}, // End informations
 								'search': function(input) {
 									var text = input.val();
@@ -248,27 +195,9 @@ function main() {
 								}
 							}; // End mediaConfig
 
-							// Event listener when click, change to media's page
-							mediaName.on('click', function() {
-								// Create Media's model and view
-								var mediaModel = new ModelAjax(mediaConfig);
-								var mediaView = new listView(mediaModel, $('#mediaList'));
-								debugger;
-								$.ajax({
-									type : "GET",
-									context: this,
-									url : config["api url"]+"/api/v1/media",
-									data : {
-										id : data.media
-									},
-									success : function(response) {
-										$('#media .search').val(response.media.name);
-										$('#media .search').trigger('change');
-									},
-									error : function(XMLHttpRequest, textStatus, errorThrown) {
-									}
-								});
-							});
+							// Create Media's model and view
+							var mediaModel = new ModelAjax(mediaConfig);
+							var mediaView = new listView(mediaModel, $('#mediaList'));
 						}
 					}, {
 						'name': 'mediaposition',
@@ -367,7 +296,7 @@ function main() {
 								$.ajax({
 									type : "GET",
 									context : this,
-									url : "http://taiko/storiqone-backend-paul/api/v1/archive/",
+									url : config["api url"]+"/api/v1/archive/",
 									data : {
 										id : data.archive
 									},
@@ -380,7 +309,7 @@ function main() {
 									},
 									error : function(XMLHttpRequest, textStatus, errorThrown) {
 									}
-								});								
+								});
 							}
 						}, // End function transform
 						// Search filter bar
@@ -420,11 +349,8 @@ function main() {
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
 							alert("Restoration task creation has failed");
 						}
-					});					
+					});
 				});
-
-			
-
 			} // End function transform
 
 		}, // End informations
@@ -645,9 +571,7 @@ function main() {
 					espace_used.find('meter').attr('value',(data.totalblock * data.blocksize) - (data.blocksize * data.freeblock));
 					espace_used.find('label').text(convertSize((data.totalblock * data.blocksize) - (data.blocksize * data.freeblock))+"/"+convertSize(data.totalblock * data.blocksize));
 					espace_used.find('label').css('text-align','center');
-
 				}, // End transform
-			
 			}, // End informations
 			'search': function(input) {
 				var text = input.val();
@@ -1031,7 +955,7 @@ function listView(model, elt) {
 		config.url = url;
 
 		console.log(config.url);
-		
+
 	}
 
 	function searchInput(evt) {
@@ -1159,11 +1083,11 @@ function listView(model, elt) {
 		for (i = currentPage - 3; i < currentPage + 4 && i < pageCount; i++) {
 			if (i < 0)
 				continue;
-			
+
 			var pageNumber = $('<a class="ui-btn ui-corner-all"></a>');
 
 			pageNumber.text(i+1);
-			
+
 			if (offset == i * limit) 
 				pageNumber.addClass('disabled');	
 
@@ -1183,7 +1107,7 @@ function listView(model, elt) {
 		informations.text(text);
 
 	} // End function paginationButton
-	
+
 	// Allows paging
 	function go(newIndex) {
 		return function() {
@@ -1246,7 +1170,7 @@ function convertSize(size) {
 		break;
 	}
 
-return size.toFixed(width) + type;
+	return size.toFixed(width) + type;
 }
 /*
 
