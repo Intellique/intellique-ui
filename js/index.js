@@ -394,10 +394,11 @@ function main() {
 	{
 		var log = $('#identifiant').val();
 		var pw = $('#password').val();
-		var authdata = { login : log,
-					password : pw,
-					apikey : '727fbb26-cc9a-43b8-a68a-78ca86d9cd31'
-					};
+		var authdata = {
+			login : log,
+			password : pw,
+			apikey : config["apikey"]
+		};
 		var authjson = JSON.stringify(authdata);
 
 		$.ajax({
@@ -421,9 +422,9 @@ function main() {
 				authentification_popup.popup();
 				authentification_popup.popup("open");
 				setTimeout(function() {
-						authentification_popup.popup("close");
-						}, // end function
-						2000
+					authentification_popup.popup("close");
+					}, // end function
+					2000
 				);
 			} // end error
 		}); // end ajax
