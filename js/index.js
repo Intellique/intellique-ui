@@ -344,11 +344,11 @@ function main() {
 							destination: config["restore path"]
 						}),
 						success : function(response) {
-							alert("Restoration task creation has succeeded");
+							$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/rSuccess.html", { role: "dialog" } );
 
 						},
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
-							alert("Restoration task creation has failed");
+							$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/rFailed.html", { role: "dialog" } );
 						}
 					});
 				});
