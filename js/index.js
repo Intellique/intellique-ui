@@ -1,9 +1,11 @@
 var config = null;
+var validateSession = null; 
 $.ajax({
 	type: "GET",
 	url: "config.json",
 	success: function(response) {
 		config = response;
+
 		$(document).ready(main);
 	}
 });
@@ -252,8 +254,7 @@ function main() {
 							mediaName.on('click', function() {
 								// Create Media's model and view
 								var mediaModel = new ModelAjax(mediaConfig);
-								var mediaView = new listView(mediaModel, $('#mediaList'));
-								debugger;
+								var mediaView = new listView(mediaModel, $('#mediaList'));g
 								$.ajax({
 									type : "GET",
 									context: this,
@@ -484,21 +485,14 @@ function main() {
 				// create model and view for "archive page" after login
 				var model = new ModelAjax(archiveConfig);
 				var view = new listView(model, $('#archiveList'));
+				validateSession = setInterval(session_checking, 20000);
 
 				//change to archive page
 				$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archivePage");
 			}, // end success
 			// popup invalid password or login 
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				var authentification_popup = $('<div class="ui-content" data-overlay-theme="a" data-role="popup" data-theme="b"><p>Login or password invalid</p></div>');
-
-				authentification_popup.popup();
-				authentification_popup.popup("open");
-				setTimeout(function() {
-						authentification_popup.popup("close");
-						}, // end function
-						2000
-				);
+				$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/authfailed.html", { role: "dialog" } );
 			} // end error
 		}); // end ajax
 
@@ -510,10 +504,11 @@ function main() {
 	 * disconnection button
 	 */ 
 	$('.disconnection_button').on('click', function() {
+
 		$.ajax({
 			type : "DELETE",
 			url : config["api url"]+"/api/v1/auth/",
-			success : function() {},
+			success : disconnection,
 			error : function(XMLHttpRequest, textStatus, errorThrown) {}
 		}); // end ajax
 	}); // end disconnection button listener
@@ -1248,35 +1243,28 @@ function convertSize(size) {
 
 return size.toFixed(width) + type;
 }
-/*
 
-debugger;
-var cookieName = 'sessionMsg';
-var message = 'Your session is going to be end by 5 min, Please click OK to continue';
+function disconnection() {
+	clearInterval(validateSession);
+	validateSession = null;
+	$( ":mobile-pagecontainer" ).pagecontainer( "change", "#authentification_page");
+}
 
-function getCookie(name)
+function session_checking() //warn the user of a timeout session
 {
-    var name = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++)
-    {
-        var c = ca[i].trim();
-        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-    }
-    return "";
+
+	$.ajax({
+			type: "GET", 
+			url: config["api url"]+"/api/v1/auth/", 
+			contentType : "application/json", 
+			success: function(reponse) {
+			}, // end success
+			// popup invalid password or login 
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/timeout.html", { role: "dialog" } );
+				disconnection();
+
+			} // end error
+		}); // end ajax
 }
 
-function setSessionPrompt() {
-    var timeout = getCookie(cookieName) - new Date().getTime();
-    setTimeout(function(){
-        if (new Date().getTime() < getCookie(cookieName)) {
-            setSessionPrompt();
-        } else {
-            if(confirm(message)) {
-            }
-        }
-    }, timeout);
-}
-
-setSessionPrompt();
-*/
