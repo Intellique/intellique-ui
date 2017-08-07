@@ -1189,5 +1189,3 @@ function session_checking() //warn the user of a timeout session
 			} // end error
 		}); // end ajax
 }
-setSessionPrompt();
-
