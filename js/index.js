@@ -344,11 +344,11 @@ function main() {
 							destination: config["restore path"]
 						}),
 						success : function(response) {
-							$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/rSuccess.html", { role: "dialog" } );
+							$.mobile.changePage(config["simple-ui url"]+"/dialog/rSuccess.html", { role: "dialog" } );
 
 						},
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
-							$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/rFailed.html", { role: "dialog" } );
+							$.mobile.changePage(config["simple-ui url"]+"/dialog/rFailed.html", { role: "dialog" } );
 						}
 					});
 				});
@@ -418,7 +418,7 @@ function main() {
 			}, // end success
 			// popup invalid password or login 
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/authfailed.html", { role: "dialog" } );
+				$.mobile.changePage(config["simple-ui url"]+"/dialog/authfailed.html", { role: "dialog" } );
 			} // end error
 		}); // end ajax
 
@@ -473,7 +473,7 @@ function main() {
 					$.ajax({
 						type : "GET",
 						context : this,
-						url : "http://taiko/storiqone-backend-paul/api/v1/archivefile/metadata/",
+						url : config["api url"]+"/api/v1/archivefile/metadata/",
 						data : {
 							id : data.id
 						},
@@ -580,6 +580,64 @@ function main() {
 		// Create Media's model and view
 		var mediaModel = new ModelAjax(mediaConfig);
 		var mediaView = new listView(mediaModel, $('#mediaList'));
+	});
+
+	$('.administrationButtonPage').on('click', function() {
+		$('#administration .search').val(null);
+		// Media's configuration
+		var adminConfig = {
+			'url' : config["api url"]+"/api/v1/user",
+			'keyData' : 'user',
+			'keySearch' : 'users',
+			'dataSearch' : {
+			}, // End dataSearch
+			'informations' : {
+				'title' : 'login',
+				'template' : 'template/administration.html',
+				'transform' : function(elt, data) {
+					elt.find('#login').text(data.login);
+					elt.find('#fullname').text(data.fullname);
+					elt.find('#email').text(data.email);
+					elt.find('#homedirectory').text(data.homedirectory);
+					elt.find('#isadmin').text(data.isadmin);
+					elt.find('#canarchive').text(data.canarchive);
+					elt.find('#canrestore').text(data.canrestore);
+					elt.find('#disabled').text(data.disabled);
+
+					$('#RemoveUserButton').on('click', function() {
+						$.ajax({
+							type : "DELETE",
+							url : config["api url"]+"/api/v1/user/?id="+data.id,
+							dataType: 'json',
+							success : function(response) {
+								$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserSuccess.html", {role:"dialog"});
+								$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage",{reload: true});
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+								$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserFail.html", {role:"dialog"});
+								$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage",{reload: true});
+							}
+						});
+					});
+
+					if(data.disabled == true)
+						$('#RemoveUserButton').hide();
+
+				}, // End transform
+			}, // End informations
+			'search': function(input) {
+				var text = input.val();
+
+				if (text.length > 0)
+					this.dataSearch.login = text;
+				else
+					delete this.dataSearch.login;
+			}
+		}; // End adminConfig
+
+		// Create Aministration's model and view
+		var adminModel = new ModelAjax(adminConfig);
+		var adminView = new listView(adminModel, $('#administrationList'));
 	});
 }
 
@@ -1183,7 +1241,7 @@ function session_checking() //warn the user of a timeout session
 			}, // end success
 			// popup invalid password or login 
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				$.mobile.changePage( "http://taiko/storiqone-simple-ui-mouloud/dialog/timeout.html", { role: "dialog" } );
+				$.mobile.changePage(config["simple-ui url"]+"/dialog/timeout.html", { role: "dialog" } );
 				disconnection();
 
 			} // end error

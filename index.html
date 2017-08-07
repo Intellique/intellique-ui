@@ -19,8 +19,9 @@
 		<div data-display="overlay" data-position="left" data-role="panel" id="menu" data-theme="a">
 			<ul data-role="listview">
 				<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archives</a></li>
-				<li><a class=" ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
+				<li><a class="ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
 				<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Medias</a></li>
+				<li><a class="ui-btn ui-corner-all menuButton administrationButtonPage" href="#administrationPage">Administration</a></li>
 			</ul> <!-- end list view -->
 		</div> <!--End Menu-->
 
@@ -154,6 +155,43 @@
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
 		</div>  <!-- End MEDIA PAGE-->
+
+		<!--ADMINISTRATION PAGE-->
+		
+		<div data-role="page" id="administrationPage">
+			<div class="ui-grid-solo" data-role="header" id="header">
+				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
+				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
+				<h1>
+					Administration page
+				</h1> <!-- End h1 -->
+			</div> <!-- End header -->
+			<div class="ui-content" role="main" id="administration">
+				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a user">
+				<div id="AddButton" style="height: 50px;">
+					<a href="#Add" class="ui-btn ui-corner-all ui-icon-plus ui-btn-icon-right ui-btn-left" style="margin-top : 8.5em; margin-left:10px;"> Add a new user</a>
+				</div>
+				<div data-role="collapsibleset" id="administrationList">
+				</div> <!-- End archive's files list -->
+				<div class="ui-grid-a">
+					<div class="ui-block-c">
+						<select id="menuLimit">
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select>
+					</div>
+					<div class="ui-block-c infoLines">
+					</div>
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" id="copyright">
+				<p>Copyright &copy; 2017 Intellique</p>
+			</div>
+		</div>  <!-- End ADMINISTRATION PAGE-->
 	</body>
 
 </html>
