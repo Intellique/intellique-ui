@@ -169,7 +169,7 @@
 			<div class="ui-content" role="main" id="administration">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a user">
 				<div id="AddButton" style="height: 50px;">
-					<a href="#Add" class="ui-btn ui-corner-all ui-icon-plus ui-btn-icon-right ui-btn-left" style="margin-top : 8.5em; margin-left:10px;"> Add a new user</a>
+					<a href="#addUserPage" class="ui-btn ui-corner-all ui-icon-plus ui-btn-icon-right ui-btn-left" style="margin-top : 8.5em; margin-left:10px;"> Add a new user</a>
 				</div>
 				<div data-role="collapsibleset" id="administrationList">
 				</div> <!-- End archive's files list -->
@@ -192,6 +192,73 @@
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
 		</div>  <!-- End ADMINISTRATION PAGE-->
+
+		<!-- add user page -->
+
+		<div data-role="page" id="addUserPage">
+			<div class="header ui-grid-solo" data-role="header">
+				<h1>
+					Add user page
+				</h1> <!-- End h1 -->
+			</div> <!-- end header -->
+
+			<div  class="ui-content" role="main">
+				<form>
+					<div class="ui-field-contain">
+						<label for="login">Login</label>
+						<input id="login" name="login" type="text">
+					</div>
+					<div class="ui-field-contain">
+						<label for="fullname">Fullname</label>
+						<input id="fullname" name="fullname" type="text">
+					</div>
+					<div class="ui-field-contain">
+						<label for="pwd">Password</label>
+						<input id="pwd" name="pwd" type="password">
+					</div>
+					<div class="ui-field-contain">
+						<label for="email">E-mail</label>
+						<input id="email" name="email" type="text">
+					</div>
+					<div class="ui-field-contain">
+						<label for="homedir">Home Directory</label>
+						<input id="homedir" name="homedir" type="text" placeholder="/mnt/raid">
+					</div>
+					<div class="ui-field-contain">
+						<fieldset data-role="controlgroup" data-type="horizontal">
+							<legend>Select a poolgroup:</legend>
+							<label for="poolgroup">Poolgroup</label>
+							<select name="poolgroup" id="poolgroup">
+								<option value=1>storiq</option>
+							</select>
+						</fieldset>
+					</div>
+					<div class="ui-field-contain">
+						<fieldset data-role="controlgroup" data-type="horizontal">
+							<label for="canadmin">Can admin</label>
+							<input id="canadmin" name="canadmin" type="checkbox">
+							<label for="canarchive">Can archive</label>
+							<input id="canarchive" name="canarchive" type="checkbox">
+							<label for="canrestore">Can restore</label>
+							<input id="canrestore" name="canrestore" type="checkbox">
+							<label for="disabled">Disabled</label>
+							<input id="disabled" name="disabled" type="checkbox">
+						</fieldset>
+					</div>
+					<div class="ui-content">
+						<input id="AddUserButton" type="submit" value="Add"></input>
+					</div>
+				</form>
+			</div> <!-- end main -->
+			<div>
+				<h2><a id="backUserPage" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left " href="#administrationPage"> &nbsp; Back to the user page</a></h2>
+			</div>
+
+			<div data-role="footer" id="copyright">
+				<p>Copyright &copy; 2017 Intellique</p>
+			</div> <!-- end footer -->
+
+		</div> <!--end add user page-->
 	</body>
 
 </html>
