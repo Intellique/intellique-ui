@@ -624,6 +624,8 @@ function main() {
 						dataType: 'json',
 						success : function(response) {
 							$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserSuccess.html", {role:"dialog"});
+							var adminModel = new ModelAjax(adminConfig);
+							var adminView = new listView(adminModel, $('#administrationList'));
 							$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage");
 						},
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
