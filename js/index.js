@@ -581,63 +581,128 @@ function main() {
 		var mediaModel = new ModelAjax(mediaConfig);
 		var mediaView = new listView(mediaModel, $('#mediaList'));
 	});
+	
+	var adminConfig = {
+		'url' : config["api url"]+"/api/v1/user",
+		'keyData' : 'user',
+		'keySearch' : 'users',
+		'dataSearch' : {
+		}, // End dataSearch
+		'informations' : {
+			'title' : 'login',
+			'template' : 'template/administration.html',
+			'transform' : function(elt, data) {
+				elt.find('#login').text(data.login);
+				elt.find('#fullname').text(data.fullname);
+				elt.find('#email').text(data.email);
+				elt.find('#homedirectory').text(data.homedirectory);
+				elt.find('#isadmin').text(data.isadmin);
+				elt.find('#canarchive').text(data.canarchive);
+				elt.find('#canrestore').text(data.canrestore);
+				elt.find('#disabled').text(data.disabled);
 
+				if(data.poolgroup === null)
+					elt.find('#poolgroup').text("no poolgroup affected");
+				else{
+					$.ajax({
+						url: config['api url']+'/api/v1/poolgroup/?id='+data.poolgroup,
+						type: "GET",
+						dataType: 'json',
+						success: function(response) {
+							elt.find('#poolgroup').text(response.poolgroup["name"]);
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
+							//alert("error");
+						}
+					});
+				}
+
+				$('#RemoveUserButton').on('click', function() {
+					$.ajax({
+						type : "DELETE",
+						url : config["api url"]+"/api/v1/user/?id="+data.id,
+						dataType: 'json',
+						success : function(response) {
+							$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserSuccess.html", {role:"dialog"});
+							$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage");
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserFail.html", {role:"dialog"});
+							$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage",{reload: true});
+						}
+					});
+				});
+
+				if(data.disabled == true)
+					$('#RemoveUserButton').hide();
+			}, // End transform
+		}, // End informations
+		'search': function(input) {
+			var text = input.val();
+
+			if (text.length > 0)
+				this.dataSearch.login = text;
+			else
+				delete this.dataSearch.login;
+		}
+	}; // End adminConfig
+	
 	$('.administrationButtonPage').on('click', function() {
 		$('#administration .search').val(null);
-		// Media's configuration
-		var adminConfig = {
-			'url' : config["api url"]+"/api/v1/user",
-			'keyData' : 'user',
-			'keySearch' : 'users',
-			'dataSearch' : {
-			}, // End dataSearch
-			'informations' : {
-				'title' : 'login',
-				'template' : 'template/administration.html',
-				'transform' : function(elt, data) {
-					elt.find('#login').text(data.login);
-					elt.find('#fullname').text(data.fullname);
-					elt.find('#email').text(data.email);
-					elt.find('#homedirectory').text(data.homedirectory);
-					elt.find('#isadmin').text(data.isadmin);
-					elt.find('#canarchive').text(data.canarchive);
-					elt.find('#canrestore').text(data.canrestore);
-					elt.find('#disabled').text(data.disabled);
-
-					$('#RemoveUserButton').on('click', function() {
-						$.ajax({
-							type : "DELETE",
-							url : config["api url"]+"/api/v1/user/?id="+data.id,
-							dataType: 'json',
-							success : function(response) {
-								$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserSuccess.html", {role:"dialog"});
-								$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage",{reload: true});
-							},
-							error : function(XMLHttpRequest, textStatus, errorThrown) {
-								$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserFail.html", {role:"dialog"});
-								$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage",{reload: true});
-							}
-						});
-					});
-
-					if(data.disabled == true)
-						$('#RemoveUserButton').hide();
-
-				}, // End transform
-			}, // End informations
-			'search': function(input) {
-				var text = input.val();
-
-				if (text.length > 0)
-					this.dataSearch.login = text;
-				else
-					delete this.dataSearch.login;
-			}
-		}; // End adminConfig
-
 		// Create Aministration's model and view
 		var adminModel = new ModelAjax(adminConfig);
 		var adminView = new listView(adminModel, $('#administrationList'));
+	});
+
+	$.ajax({
+		url: config['api url']+'/api/v1/poolgroup/search',
+		type: "GET",
+		dataType: 'json', 
+		success: function(response) {
+			for(var i = 0; i < response.poolgroups.length; i++){
+				$.ajax({
+					url: config['api url']+'/api/v1/poolgroup/?id='+response.poolgroups[i],
+					type: "GET",
+					dataType: 'json',
+					success: function(response) {
+						$('#poolgroup').append('<option value="'+response.poolgroup["id"]+'">'+response.poolgroup["name"]+'</option>');
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+					}
+				});
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+		}
+	});
+
+	$('#AddUserButton').on('click', function() {
+		$.ajax({
+			url: config['api url']+'/api/v1/user/',
+			type: "POST",
+			dataType: 'json',
+			contentType : 'application/json', 
+			data: JSON.stringify({
+				login: $('#login').val(),
+				fullname: $('#fullname').val(),
+				password: $('#pwd').val(),
+				email: $('#email').val(),
+				homedirectory: $('#homedir').val(),
+				isadmin: $('[name="canadmin"]:checked').length > 0,
+				canarchive: $('[name="canarchive"]:checked').length > 0,
+				canrestore: $('[name="canrestore"]:checked').length > 0,
+				poolgroup: parseInt($('[name="poolgroup"]').val()),
+				disabled: $('[name="disabled"]:checked').length > 0
+			}),
+			success: function(response) {
+				var adminModel = new ModelAjax(adminConfig);
+				var adminView = new listView(adminModel, $('#administrationList'));
+				$.mobile.changePage(config["simple-ui url"]+"/dialog/addUserSuccess.html",{role:"dialog"});
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				$.mobile.changePage(config["simple-ui url"]+"/dialog/addUserFail.html",{role:"dialog"});
+			}
+		});
 	});
 }
 
