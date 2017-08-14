@@ -196,17 +196,23 @@
 		<!-- add user page -->
 
 		<div data-role="page" id="addUserPage">
-			<div class="header ui-grid-solo" data-role="header">
+			<div class="header ui-grid-solo" data-role="header" id="headerAdd">
 				<h1>
 					Add user page
-				</h1> <!-- End h1 -->
-			</div> <!-- end header -->
+				</h1>
+			</div>
+
+			<div class="header ui-grid-solo" data-role="header" id="headerEdit">
+				<h1>
+					Edit user page
+				</h1>
+			</div>
 
 			<div  class="ui-content" role="main">
 				<form>
 					<div class="ui-field-contain">
 						<label for="login">Login</label>
-						<input id="login" name="login" type="text">
+						<input id="login" name="login" type="text"  value="">
 					</div>
 					<div class="ui-field-contain">
 						<label for="fullname">Fullname</label>
@@ -229,13 +235,13 @@
 							<legend>Select a poolgroup:</legend>
 							<label for="poolgroup">Poolgroup</label>
 							<select name="poolgroup" id="poolgroup">
-								<option value></option>
+								<option value=""></option>
 							</select>
 						</fieldset>
 					</div>
 					<div class="ui-field-contain">
-						<fieldset data-role="controlgroup" data-type="horizontal">
-							<legend>Select the user's capacities:</legend>
+						<fieldset data-role="controlgroup" data-type="vertical">
+							<legend>Select the user's access rights:</legend>
 							<label for="canadmin">Can admin</label>
 							<input id="canadmin" name="canadmin" type="checkbox">
 							<label for="canarchive">Can archive</label>
@@ -246,13 +252,17 @@
 							<input id="disabled" name="disabled" type="checkbox">
 						</fieldset>
 					</div>
-					<div class="ui-content">
-						<input id="AddUserButton" type="submit" value="Add"></input>
+					<div class="ui-content" id="addUserButton">
+						<input id="addUserButton" type="submit" value="Add"></input>
+					</div>
+
+					<div class="ui-content" id="editButton">
+						<input id="editButton" type="submit" value="Edit"></input>
 					</div>
 				</form>
 			</div> <!-- end main -->
 			<div>
-				<h2><a id="backUserPage" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left " href="#administrationPage"> &nbsp; Back to the user page</a></h2>
+				<h2><a id="backUserPage" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left " href="#administrationPage"> &nbsp; Back to administration page</a></h2>
 			</div>
 
 			<div data-role="footer" id="copyright">
