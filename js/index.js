@@ -393,6 +393,7 @@ function main() {
 
 				//change to archive page
 				$( ":mobile-pagecontainer" ).pagecontainer( "change", "#archivePage");
+				validateSession = setInterval(session_checking, 20000);
 			}, // end success
 			// popup invalid password or login 
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -570,30 +571,103 @@ function main() {
 			'title' : 'login',
 			'template' : 'template/administration.html',
 			'transform' : function(elt, data) {
-				elt.find('#login').text(data.login);
-				elt.find('#fullname').text(data.fullname);
-				elt.find('#email').text(data.email);
-				elt.find('#homedirectory').text(data.homedirectory);
-				elt.find('#isadmin').text(data.isadmin);
-				elt.find('#canarchive').text(data.canarchive);
-				elt.find('#canrestore').text(data.canrestore);
-				elt.find('#disabled').text(data.disabled);
+				elt.find('#Tid').text(data.id);
+				elt.find('#Tlogin').text(data.login);
+				elt.find('#Tfullname').text(data.fullname);
+				elt.find('#Temail').text(data.email);
+				elt.find('#Thomedirectory').text(data.homedirectory);
+				elt.find('#Tisadmin').text(data.isadmin);
+				elt.find('#Tcanarchive').text(data.canarchive);
+				elt.find('#Tcanrestore').text(data.canrestore);
+				elt.find('#Tdisabled').text(data.disabled);
 
 				if(data.poolgroup === null)
 					elt.find('#poolgroup').text("no poolgroup affected");
-				else{
+				else
+				{
 					$.ajax({
 						url: config['api url']+'/api/v1/poolgroup/?id='+data.poolgroup,
 						type: "GET",
 						dataType: 'json',
+						context : elt,
 						success: function(response) {
-							elt.find('#poolgroup').text(response.poolgroup["name"]);
+							this.find('#poolgroup').text(response.poolgroup["name"]);
 						},
 						error: function(XMLHttpRequest, textStatus, errorThrown) {
 							//alert("error");
 						}
 					});
 				}
+
+				elt.find('#EditUserButton').on('click', data, function(evt) {
+					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#addUserPage");
+					$('#addUserButton').hide();
+					$('#headerAdd').hide();
+					$.ajax({ //Pre-filling user's informations in the edit form
+						type: "GET",
+						url : config["api url"]+"/api/v1/user/?id=" + evt.data.id,
+						ContentType : "application/json",
+						success : function(response) {
+							$('#login').val(response.user['login']);
+							$('#fullname').val(response.user['fullname']);
+							$('#email').val(response.user['email']);
+							$('#homedir').val(response.user['homedirectory']);
+							if(response.user['isadmin']) $("#canadmin").prop("checked",true).checkboxradio("refresh");
+							if(response.user['canarchive']) $("#canarchive").prop("checked",true).checkboxradio("refresh");
+							if(response.user['canrestore']) $("#canrestore").prop("checked",true).checkboxradio("refresh");
+							if(response.user['disabled']) $("#disabled").prop("checked",true).checkboxradio("refresh");
+
+							var bttnEdit = $('#editButton');
+							bttnEdit.on('click', evt.data, function(evt) {
+								$.ajax({
+									type: "PUT",
+									url : config["api url"]+"/api/v1/user/",
+									dataType: 'json',
+									contentType : 'application/json',
+									data: JSON.stringify({
+										id : evt.data.id,
+										login: $('#login').val(),
+										fullname: $('#fullname').val(),
+										password: $('#pwd').val(),
+										email: $('#email').val(),
+										homedirectory: $('#homedir').val(),
+										isadmin: $('[name="canadmin"]:checked').length > 0,
+										canarchive: $('[name="canarchive"]:checked').length > 0,
+										canrestore: $('[name="canrestore"]:checked').length > 0,
+										meta : {},
+										poolgroup: parseInt($('[name="poolgroup"]').val()),
+										disabled: $('[name="disabled"]:checked').length > 0
+									}),
+									success: function(response) {
+										$('#login').val('');
+										$('#fullname').val('');
+										$('#pwd').val('');
+										$('#email').val('');
+										$('#homedir').val('');
+										$("#canadmin").prop("checked",false).checkboxradio("refresh");
+										$("#canarchive").prop("checked",false).checkboxradio("refresh");
+										$("#canrestore").prop("checked",false).checkboxradio("refresh");
+										$("#disabled").prop("checked",false).checkboxradio("refresh");
+										$('[name="poolgroup"]').val('').selectmenu().selectmenu('refresh', true);
+										bttnEdit.off('click');
+
+										$.mobile.changePage(config["simple-ui url"]+"/dialog/editUserSuccess.html",{role:"dialog"});
+
+										var adminModel = new ModelAjax(adminConfig);
+										var adminView = new listView(adminModel, $('#administrationList'));
+										$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage");
+									},
+									error: function(XMLHttpRequest, textStatus, errorThrown) {
+										$.mobile.changePage(config["simple-ui url"]+"/dialog/editUserFail.html",{role:"dialog"});
+										bttnEdit.off('click');
+									}
+								});
+							});
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+						}
+					});
+				});
 
 				$('#RemoveUserButton').on('click', function() {
 					$.ajax({
@@ -658,7 +732,12 @@ function main() {
 		}
 	});
 
-	$('#AddUserButton').on('click', function() {
+	$('#AddButton').on('click', function() {
+		$('#editButton').hide();
+		$('#headerEdit').hide();
+	});
+
+	$('#addUserButton').on('click', function() {
 		$.ajax({
 			url: config['api url']+'/api/v1/user/',
 			type: "POST",
@@ -677,9 +756,10 @@ function main() {
 				disabled: $('[name="disabled"]:checked').length > 0
 			}),
 			success: function(response) {
+				$.mobile.changePage(config["simple-ui url"]+"/dialog/addUserSuccess.html",{role:"dialog"});
 				var adminModel = new ModelAjax(adminConfig);
 				var adminView = new listView(adminModel, $('#administrationList'));
-				$.mobile.changePage(config["simple-ui url"]+"/dialog/addUserSuccess.html",{role:"dialog"});
+				$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage");
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				$.mobile.changePage(config["simple-ui url"]+"/dialog/addUserFail.html",{role:"dialog"});
