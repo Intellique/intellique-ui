@@ -159,7 +159,7 @@ function main() {
 							elt.append(mediaName);
 							// Media's configuration
 							var mediaConfig = {
-								'url' : config["api url"]+"/api/v1/media",
+								'url' : config["api url"]+"/api/v1/media/",
 								'keyData' : 'media',
 								'keySearch' : 'medias',
 								'dataSearch' : {
@@ -208,29 +208,7 @@ function main() {
 							// Volume's media position
 							elt.text(data[field]);
 							}
-					}/*
-					  * button for jobrun and purged
-						, {
-						'name': 'jobrun',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							if(data[field] != null)
-								elt.text(data[field]);
-							else
-								elt.text("");
-							}
-					}, {
-						'name': 'purged',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							if(data[field] != null)
-								elt.text(data[field]);
-							else
-								elt.text("");
-							}
-					}*/
+					}
 				]};
 				
 				var volumeTab = elt.find('#volume').parent();
@@ -452,7 +430,7 @@ function main() {
 		// Research Archive Files's configuration
 		var configSearchArchiveFiles = {
 			'url': config["api url"]+"/api/v1/archivefile/",
-			'urlSearch': config["api url"]+"/api/v1/archivefile/search",
+			'urlSearch': config["api url"]+"/api/v1/archivefile/search/",
 			'keyData': 'archivefile',
 			'keySearch': 'archivefiles',
 			'dataSearch': {},
@@ -540,7 +518,7 @@ function main() {
 		$('#media .search').val(null);
 		// Media's configuration
 		var mediaConfig = {
-			'url' : config["api url"]+"/api/v1/media",
+			'url' : config["api url"]+"/api/v1/media/",
 			'keyData' : 'media',
 			'keySearch' : 'medias',
 			'dataSearch' : {
@@ -583,7 +561,7 @@ function main() {
 	});
 	
 	var adminConfig = {
-		'url' : config["api url"]+"/api/v1/user",
+		'url' : config["api url"]+"/api/v1/user/",
 		'keyData' : 'user',
 		'keySearch' : 'users',
 		'dataSearch' : {
@@ -630,7 +608,9 @@ function main() {
 						},
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
 							$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserFail.html", {role:"dialog"});
-							$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage",{reload: true});
+							var adminModel = new ModelAjax(adminConfig);
+							var adminView = new listView(adminModel, $('#administrationList'));
+							$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage");
 						}
 					});
 				});
@@ -657,7 +637,7 @@ function main() {
 	});
 
 	$.ajax({
-		url: config['api url']+'/api/v1/poolgroup/search',
+		url: config['api url']+'/api/v1/poolgroup/search/',
 		type: "GET",
 		dataType: 'json', 
 		success: function(response) {
