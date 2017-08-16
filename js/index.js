@@ -5,12 +5,29 @@ $.ajax({
 	url: "config.json",
 	success: function(response) {
 		config = response;
-		$(document).ready(main);
+		$(main);
 	}
 });
 
 function main() {
 	$("[data-role=panel]").enhanceWithin().panel(); //Initialize panel function
+
+	$( ":mobile-pagecontainer" ).on( "pagecontainerchange", function(event, ui) {
+		if (location.hash == "#administrationPage")
+		{
+			$('#login').val('');
+			$('#fullname').val('');
+			$('#pwd').val('');
+			$('#email').val('');
+			$('#homedir').val('');
+			$("#canadmin").prop("checked",false).checkboxradio("refresh");
+			$("#canarchive").prop("checked",false).checkboxradio("refresh");
+			$("#canrestore").prop("checked",false).checkboxradio("refresh");
+			$("#disabled").prop("checked",false).checkboxradio("refresh");
+			$('[name="poolgroup"]').val('').selectmenu().selectmenu('refresh', true);
+			$('#editButton').off('click');
+		}	
+	});
 
 	// Archive's configuration
 	var archiveConfig = {
@@ -625,9 +642,11 @@ function main() {
 				}
 
 				elt.find('#EditUserButton').on('click', data, function(evt) {
-					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#addUserPage");
+					$( ":mobile-pagecontainer" ).pagecontainer( "change", "#modUserPage");
 					$('#addUserButton').hide();
 					$('#headerAdd').hide();
+					$('#editButton').show();
+					$('#headerEdit').show();
 					$.ajax({ //Pre-filling user's informations in the edit form
 						type: "GET",
 						url : config["api url"]+"/api/v1/user/?id=" + evt.data.id,
@@ -644,12 +663,9 @@ function main() {
 
 							var bttnEdit = $('#editButton');
 							bttnEdit.on('click', evt.data, function(evt) {
-								$.ajax({
-									type: "PUT",
-									url : config["api url"]+"/api/v1/user/",
-									dataType: 'json',
-									contentType : 'application/json',
-									data: JSON.stringify({
+								var dataEdit = null;
+								if ($('#pwd').val().length > 0){
+									dataEdit = JSON.stringify({
 										id : evt.data.id,
 										login: $('#login').val(),
 										fullname: $('#fullname').val(),
@@ -662,7 +678,29 @@ function main() {
 										meta : {},
 										poolgroup: parseInt($('[name="poolgroup"]').val()),
 										disabled: $('[name="disabled"]:checked').length > 0
-									}),
+									});
+								}
+								else {
+									dataEdit = JSON.stringify({
+										id : evt.data.id,
+										login: $('#login').val(),
+										fullname: $('#fullname').val(),
+										email: $('#email').val(),
+										homedirectory: $('#homedir').val(),
+										isadmin: $('[name="canadmin"]:checked').length > 0,
+										canarchive: $('[name="canarchive"]:checked').length > 0,
+										canrestore: $('[name="canrestore"]:checked').length > 0,
+										meta : {},
+										poolgroup: parseInt($('[name="poolgroup"]').val()),
+										disabled: $('[name="disabled"]:checked').length > 0
+									});
+								}
+								$.ajax({
+									type: "PUT",
+									url : config["api url"]+"/api/v1/user/",
+									dataType: 'json',
+									contentType : 'application/json',
+									data: dataEdit,
 									success: function(response) {
 										$('#login').val('');
 										$('#fullname').val('');
@@ -693,7 +731,7 @@ function main() {
 						}
 					});
 				});
-
+				
 				$('#RemoveUserButton').on('click', function() {
 					$.ajax({
 						type : "DELETE",
@@ -758,6 +796,8 @@ function main() {
 	});
 
 	$('#AddButton').on('click', function() {
+		$('#addUserButton').show();
+		$('#headerAdd').show();
 		$('#editButton').hide();
 		$('#headerEdit').hide();
 	});
