@@ -707,6 +707,8 @@ function main() {
 						},
 						error : function(XMLHttpRequest, textStatus, errorThrown) {
 							$.mobile.changePage(config["simple-ui url"]+"/dialog/removeUserFail.html", {role:"dialog"});
+							var adminModel = new ModelAjax(adminConfig);
+							var adminView = new listView(adminModel, $('#administrationList'));
 							$( ":mobile-pagecontainer" ).pagecontainer( "change", "#administrationPage");
 						}
 					});
