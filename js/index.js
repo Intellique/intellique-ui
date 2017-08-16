@@ -22,6 +22,29 @@ function main() {
 			'title' : 'name',
 			'template': 'template/archive.html',
 			'transform': function(elt, data) {
+				$.ajax({ //Access rights for users
+					type : "GET",
+					dataType : "json",
+					url : config["api url"]+"/api/v1/auth/",
+					success : function(response) {
+						$.ajax({
+							type : "GET",
+							dataType : "json",
+							url : config["api url"]+"/api/v1/user/?id="+response.user_id,
+							success : function(response) {
+								if (response.user.canrestore) elt.find('#RestoreButton').show('fast'); //remove the attribute CSS display:none if the user can restore
+								if (!response.user.isadmin) $('#adminPage').hide(); //hide the administration page tab if the user is not an admin
+
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {
+							},
+
+						});
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+					},
+
+				});
 				elt.data('data', data);
 				elt.find('#uuid').text(data.uuid);	
 				elt.find('#starttime').text(data.volumes[0].starttime.date);
@@ -30,6 +53,7 @@ function main() {
 				elt.find('#metadata').text(data.metadata);
 				elt.find('#canappend').text(data.canappend);
 				elt.find('#deleted').text(data.deleted);
+
 
 				var creator = elt.find('#creator');
 				var owner = elt.find('#owner');
@@ -370,6 +394,7 @@ function main() {
 	 * else, show popup
 	 */
 	$('#log_in_button').on("click", function(evt)
+
 	{
 		var log = $('#identifiant').val();
 		var pw = $('#password').val();
@@ -382,7 +407,7 @@ function main() {
 
 		$.ajax({
 			type: "POST", 
-			url: config["api url"]+"/api/v1/auth/", 
+			url: config["api url"]+"/api/v1/auth/",
 			data: authjson, 
 			dataType : "json",
 			contentType : "application/json", 
@@ -1364,7 +1389,6 @@ function session_checking() //warn the user of a timeout session
 			contentType : "application/json", 
 			success: function(reponse) {
 			}, // end success
-			// popup invalid password or login 
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				$.mobile.changePage(config["simple-ui url"]+"/dialog/timeout.html", { role: "dialog" } );
 				disconnection();
