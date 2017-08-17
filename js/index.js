@@ -12,7 +12,7 @@ $.ajax({
 function main() {
 	$("[data-role=panel]").enhanceWithin().panel(); //Initialize panel function
 
-	$( ":mobile-pagecontainer" ).on( "pagecontainerchange", function(event, ui) {
+	$( ":mobile-pagecontainer" ).on( "pagecontainerchange", function(event, ui) { //wipe values entered in the inputs of the edit form when left
 		if (location.hash == "#administrationPage")
 		{
 			$('#login').val('');
@@ -20,10 +20,10 @@ function main() {
 			$('#pwd').val('');
 			$('#email').val('');
 			$('#homedir').val('');
-			$("#canadmin").prop("checked",false).checkboxradio("refresh");
-			$("#canarchive").prop("checked",false).checkboxradio("refresh");
-			$("#canrestore").prop("checked",false).checkboxradio("refresh");
-			$("#disabled").prop("checked",false).checkboxradio("refresh");
+			$("#canadmin").prop("checked",false).checkboxradio().checkboxradio("refresh");
+			$("#canarchive").prop("checked",false).checkboxradio().checkboxradio("refresh");
+			$("#canrestore").prop("checked",false).checkboxradio().checkboxradio("refresh");
+			$("#disabled").prop("checked",false).checkboxradio().checkboxradio("refresh");
 			$('[name="poolgroup"]').val('').selectmenu().selectmenu('refresh', true);
 			$('#editButton').off('click');
 		}	
@@ -624,7 +624,7 @@ function main() {
 				elt.find('#Tdisabled').text(data.disabled);
 
 				if(data.poolgroup === null)
-					elt.find('#poolgroup').text("no poolgroup affected");
+					elt.find('#Tpoolgroup').text("no poolgroup affected");
 				else
 				{
 					$.ajax({
@@ -691,7 +691,7 @@ function main() {
 										canarchive: $('[name="canarchive"]:checked').length > 0,
 										canrestore: $('[name="canrestore"]:checked').length > 0,
 										meta : {},
-										poolgroup: parseInt($('[name="poolgroup"]').val()),
+										poolgroup: parseInt($('#poolgroup').val()),
 										disabled: $('[name="disabled"]:checked').length > 0
 									});
 								}
@@ -707,10 +707,10 @@ function main() {
 										$('#pwd').val('');
 										$('#email').val('');
 										$('#homedir').val('');
-										$("#canadmin").prop("checked",false).checkboxradio("refresh");
-										$("#canarchive").prop("checked",false).checkboxradio("refresh");
-										$("#canrestore").prop("checked",false).checkboxradio("refresh");
-										$("#disabled").prop("checked",false).checkboxradio("refresh");
+										$("#canadmin").prop("checked",false).checkboxradio().checkboxradio("refresh");
+										$("#canarchive").prop("checked",false).checkboxradio().checkboxradio("refresh");
+										$("#canrestore").prop("checked",false).checkboxradio().checkboxradio("refresh");
+										$("#disabled").prop("checked",false).checkboxradio().checkboxradio("refresh");
 										$('[name="poolgroup"]').val('').selectmenu().selectmenu('refresh', true);
 										bttnEdit.off('click');
 
@@ -731,7 +731,7 @@ function main() {
 						}
 					});
 				});
-				
+
 				$('#RemoveUserButton').on('click', function() {
 					$.ajax({
 						type : "DELETE",
