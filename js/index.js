@@ -801,33 +801,35 @@ function main() {
 		var adminView = new listView(adminModel, $('#administrationList'));
 	});
 
-	$.ajax({
-		url: config['api url']+'/api/v1/poolgroup/search/',
-		type: "GET",
-		dataType: 'json', 
-		success: function(response) {
-			for(var i = 0; i < response.poolgroups.length; i++){
-				$.ajax({
-					url: config['api url']+'/api/v1/poolgroup/?id='+response.poolgroups[i],
-					type: "GET",
-					dataType: 'json',
-					success: function(response) {
-						$('#poolgroup').append('<option value="'+response.poolgroup["id"]+'">'+response.poolgroup["name"]+'</option>');
-					},
-					error: function(XMLHttpRequest, textStatus, errorThrown) {
-					}
-				});
-			}
-		},
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
-		}
-	});
+	function poolGroupMenu() {
+		$('#poolgroup > ~').remove();
+		$.ajax({
+			url: config['api url']+'/api/v1/poolgroup/search/',
+			type: "GET",
+			dataType: 'json', 
+			success: function(response) {
+				for(var i = 0; i < response.poolgroups.length; i++){
+					$.ajax({
+						url: config['api url']+'/api/v1/poolgroup/?id='+response.poolgroups[i],
+						type: "GET",
+						dataType: 'json',
+						success: function(response) {
+							$('#poolgroup').append('<option value="'+response.poolgroup["id"]+'">'+response.poolgroup["name"]+'</option>');
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					});
+				}
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		});
+	}
 
 	$('#AddButton').on('click', function() {
 		$('#addUserButton').show();
 		$('#headerAdd').show();
 		$('#editButton').hide();
 		$('#headerEdit').hide();
+		poolGroupMenu();
 	});
 
 	$('#addUserButton').on('click', function() {
