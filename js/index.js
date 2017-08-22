@@ -205,7 +205,7 @@ function main() {
 								'keySearch' : 'medias',
 								'dataSearch' : {
 									// Provide a Media's ID to get its information
-								//	id : data.media
+									id : data.media
 								}, // End dataSearch
 								'informations' : {
 									'title' : 'name',
@@ -263,10 +263,10 @@ function main() {
 					// Research Archive Files's configuration
 					var configSearchArchiveFiles = {
 						'url': config["api url"]+"/api/v1/archivefile/",
+						'urlSearch': config["api url"]+"/api/v1/archivefile/search/",
 						'keyData': 'archivefile',
 						'keySearch': 'archivefiles',
 						'dataSearch': {
-							// Provide an archive's ID to get its files's information
 							archive : data.id
 						},
 						'informations': {
@@ -313,6 +313,7 @@ function main() {
 										metadata.text("No metadata found for this object");
 									}
 								});
+
 								$.ajax({
 									type : "GET",
 									context : this,
@@ -330,19 +331,38 @@ function main() {
 									error : function(XMLHttpRequest, textStatus, errorThrown) {
 									}
 								});
+
+								if (data.mimetype == "inode/directory") 
+									elt.find('#previewButton').hide(); //Directories cannot use the preview function
+								elt.find('#previewButton').on('click',function(){
+									if (data.size < 500000000) //File size cannot exceed 50MB to be previewed 
+										window.open(config['api url']+"/api/v1/archivefile/preview/?id="+data.id);
+									else
+										$.mobile.changePage(config["simple-ui url"]+"/dialog/fileSizeError.html", { role: "dialog" } );
+									/*$.ajax({
+										type : "GET",
+										url : config["api url"]+"/api/v1/archivefile/preview/?id="+data.id,
+										dataType : 'json',
+										success : function(response) {
+
+										},
+										error : function(XMLHttpRequest, textStatus, errorThrown) {
+											debugger;
+											alert("xhr : "+XMLHttpRequest+ "; text : "+textStatus+"; error : "+errorThrown);
+										}
+									});*/
+								});
 							}
 						}, // End function transform
 						// Search filter bar
 						'search': function(input) {
 							var text = input.val();
-
 							if (text.length > 0)
 								this.dataSearch.name = text;
 							else
 								delete this.dataSearch.name;
 						} // End search
 					}; // End archive's files configuration
-
 					// Create a model and a view for Archive Files's list
 					var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
 					var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
@@ -540,6 +560,15 @@ function main() {
 						}
 					});
 
+					if (data.mimetype == "inode/directory") 
+						elt.find('#previewButton').hide(); //Directories cannot use the preview function
+					elt.find('#previewButton').on('click',function(){
+
+						if (data.size < 500000000)
+							window.open(config['api url']+"/api/v1/archivefile/preview/?id="+data.id);
+						else
+							$.mobile.changePage(config["simple-ui url"]+"/dialog/fileSizeError.html", { role: "dialog" } );
+					});
 				}
 			}, // End function transform
 			// Search filter bar
@@ -556,7 +585,6 @@ function main() {
 		var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
 		var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
 	});
-
 	$('.mediaButtonPage').on('click', function() {
 		$('#media .search').val(null);
 		// Media's configuration
@@ -633,7 +661,7 @@ function main() {
 						dataType: 'json',
 						context : elt,
 						success: function(response) {
-							this.find('#poolgroup').text(response.poolgroup["name"]);
+							this.find('#Tpoolgroup').text(response.poolgroup["name"]);
 						},
 						error: function(XMLHttpRequest, textStatus, errorThrown) {
 							//alert("error");
@@ -676,7 +704,7 @@ function main() {
 										canarchive: $('[name="canarchive"]:checked').length > 0,
 										canrestore: $('[name="canrestore"]:checked').length > 0,
 										meta : {},
-										poolgroup: parseInt($('[name="poolgroup"]').val()),
+										poolgroup: parseInt($('[#poolgroup"]').val()),
 										disabled: $('[name="disabled"]:checked').length > 0
 									});
 								}
@@ -1005,7 +1033,6 @@ function dataModelView(model, elt)
 		if (delaySearch)
 			clearTimeout(delaySearch);
 		delaySearch = setTimeout(searchNow, 1000);
-	//	delaySearch = setTimeout(searchNow);
 	}
 
 	function searchNow() {
@@ -1075,7 +1102,7 @@ function dataModelView(model, elt)
 			}
 			table_body.append(row);
 		}
-		//table.table('rebuild');
+
 		bTransitions();
 	}
 	model.addObserver(display);
@@ -1159,7 +1186,6 @@ function dataModelView(model, elt)
 		});
 		model.addObserver(function() {
 			limit.val(model.getLimit);
-			//limit.selectmenu( "refresh" );
 		});
 	}
 }
@@ -1369,7 +1395,7 @@ function listView(model, elt) {
 		});
 		model.addObserver(function() {
 			limit.val(model.getLimit);
-			limit.selectmenu( "refresh" );
+			limit.selectmenu().selectmenu( "refresh" );
 		});
 	}
 }
@@ -1416,11 +1442,11 @@ function convertSize(size) {
 
 	return size.toFixed(width) + type;
 }
-
 function disconnection() {
 	clearInterval(validateSession);
 	validateSession = null;
 	$( ":mobile-pagecontainer" ).pagecontainer( "change", "#authentification_page");
+	location.reload(); 
 }
 
 function session_checking() //warn the user of a timeout session
