@@ -80,3 +80,14 @@ div #password {
     border: 0;
 }
 
+/*
+ * TEMPLATE
+ */
+.ui-field-contain {
+	margin:4px
+}
+
+.ui-field-contain label {
+	margin:0px
+}
+
