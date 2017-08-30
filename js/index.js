@@ -965,6 +965,12 @@ class ModelAjax extends Model {
 						}
 					});
 				}
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+					this.tabIds = [];
+					this.total_rows = 0;
+					for (var j in this.observeurs)
+						this.observeurs[j](this);
 			}
 		});
 	}
