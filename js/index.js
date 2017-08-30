@@ -408,6 +408,7 @@ function main() {
 
 			// Change to archive page
 			$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
+			validateSession = setInterval(session_checking, 20000);
 		}, // end success
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
