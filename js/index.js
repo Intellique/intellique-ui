@@ -376,10 +376,21 @@ function main() {
 		'search': function(input) {
 			var text = input.val();
 
-			if (text.length > 0)
-				this.dataSearch.name = text;
-			else
-				delete this.dataSearch.name;
+			var match, regex = /(owner|creator|pool):\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)"|(\w+)|'([^'\\]*(?:\\.[^'\\]*)*)')|(?:"([^"\\]*(?:\\.[^"\\]*)*)"|(\w+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+
+			this.dataSearch.name = this.dataSearch.owner = this.dataSearch.creator = this.dataSearch.pool = null;
+			while ((match = regex.exec(text)) != null) {
+				var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
+				if (match[1])
+					this.dataSearch[match[1]] = matched;
+				else
+					this.dataSearch.name = matched;
+			}
+
+			var keys = ['name', 'owner', 'creator', 'pool'];
+			for (var i = 0, n = keys.length; i < n; i++)
+				if (!this.dataSearch[keys[i]])
+					delete this.dataSearch[keys[i]];
 		}
 	};
 
@@ -1172,7 +1183,7 @@ function listView(model, elt) {
 
 		var url = config.url;
 
-		config.url+="/search"
+		config.url+="/search/"
 		config.search(search);
 		config.dataSearch.offset = 0;
 		model.update();
