@@ -33,6 +33,7 @@ function main() {
 	// Archive's configuration
 	var archiveConfig = {
 		'url': config["api url"] + "/api/v1/archive/",
+		'urlSearch': config["api url"] + "/api/v1/archive/search/",
 		'keyData': 'archive',
 		'keySearch': 'archives',
 		'dataSearch': {},
@@ -376,7 +377,7 @@ function main() {
 		'search': function(input) {
 			var text = input.val();
 
-			var match, regex = /(owner|creator|pool):\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n]+)|'([^'\\]*(?:\\.[^'\\]*)*)')|(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+			var match, regex = /(owner|creator|pool):\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')|(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
 
 			this.dataSearch.name = this.dataSearch.owner = this.dataSearch.creator = this.dataSearch.pool = null;
 			while ((match = regex.exec(text)) != null) {
@@ -1189,13 +1190,9 @@ function listView(model, elt) {
 			clearTimeout(delaySearch);
 		delaySearch = null;
 
-		var url = config.url;
-
-		config.url += "search/"
 		config.search(search);
 		config.dataSearch.offset = 0;
 		model.update();
-		config.url = url;
 
 		// console.log(config.url);
 	}
