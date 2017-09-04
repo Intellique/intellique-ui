@@ -376,7 +376,7 @@ function main() {
 		'search': function(input) {
 			var text = input.val();
 
-			var match, regex = /(owner|creator|pool):\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)"|(\w+)|'([^'\\]*(?:\\.[^'\\]*)*)')|(?:"([^"\\]*(?:\\.[^"\\]*)*)"|(\w+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+			var match, regex = /(owner|creator|pool):\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n]+)|'([^'\\]*(?:\\.[^'\\]*)*)')|(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
 
 			this.dataSearch.name = this.dataSearch.owner = this.dataSearch.creator = this.dataSearch.pool = null;
 			while ((match = regex.exec(text)) != null) {
@@ -853,7 +853,7 @@ class Model {
 	constructor(config) {
 		this.observeurs = [];
 		this.tabIds = [];
-		this.tabResults ={};
+		this.tabResults = {};
 		this.total_rows = 0;
 
 		if (!('limit' in config.dataSearch))
@@ -922,6 +922,11 @@ class Model {
 
 class ModelAjax extends Model {
 	fetch() {
+		function dispatch(model) {
+			for (var j in model.observeurs)
+				model.observeurs[j](this);
+		}
+
 		$.ajax({
 			type: "GET",
 			context: this,
@@ -936,8 +941,7 @@ class ModelAjax extends Model {
 					if (this.tabIds[i] in this.tabResults) {
 						got++;
 						if (got == n)
-							for (var j in this.observeurs)
-								this.observeurs[j](this);
+							dispatch(this);
 						continue;
 					}
 
@@ -954,14 +958,12 @@ class ModelAjax extends Model {
 							got++;
 
 							if (got == n)
-								for (var j in this.observeurs)
-									this.observeurs[j](this.model);
+								dispatch(this);
 						},
 						error: function(XMLHttpRequest, textStatus, errorThrown) {
 							this.tabIds = [];
 							this.total_rows = 0;
-							for (var j in this.observeurs)
-								this.observeurs[j](this);
+							dispatch(this);
 						}
 					});
 				}
@@ -969,8 +971,7 @@ class ModelAjax extends Model {
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 					this.tabIds = [];
 					this.total_rows = 0;
-					for (var j in this.observeurs)
-						this.observeurs[j](this);
+					dispatch(this);
 			}
 		});
 	}
@@ -1190,7 +1191,7 @@ function listView(model, elt) {
 
 		var url = config.url;
 
-		config.url+="/search/"
+		config.url += "search/"
 		config.search(search);
 		config.dataSearch.offset = 0;
 		model.update();
