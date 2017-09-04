@@ -33,7 +33,6 @@ function main() {
 	// Archive's configuration
 	var archiveConfig = {
 		'url': config["api url"] + "/api/v1/archive/",
-		'urlSearch': config["api url"] + "/api/v1/archive/search/",
 		'keyData': 'archive',
 		'keySearch': 'archives',
 		'dataSearch': {},
@@ -262,7 +261,6 @@ function main() {
 					// Research Archive Files's configuration
 					var configSearchArchiveFiles = {
 						'url': config["api url"] + "/api/v1/archivefile/",
-						'urlSearch': config["api url"] + "/api/v1/archivefile/search/",
 						'keyData': 'archivefile',
 						'keySearch': 'archivefiles',
 						'dataSearch': {
@@ -483,7 +481,6 @@ function main() {
 		// Research Archive Files's configuration
 		var configSearchArchiveFiles = {
 			'url': config["api url"] + "/api/v1/archivefile/",
-			'urlSearch': config["api url"] + "/api/v1/archivefile/search/",
 			'keyData': 'archivefile',
 			'keySearch': 'archivefiles',
 			'dataSearch': {},
@@ -931,7 +928,7 @@ class ModelAjax extends Model {
 		$.ajax({
 			type: "GET",
 			context: this,
-			url: this.config.urlSearch || this.config.url,
+			url: this.config.url + 'search/',
 			data: this.config.dataSearch,
 			success: function(response) {
 				this.total_rows = response.total_rows;
