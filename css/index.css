@@ -36,10 +36,17 @@ div #password {
 
 
 .paginationButton {
-	text-align: right;
+	display: table;
 }
-.paginationButton a{
-	display: inline-block;
+
+.paginationButton a {
+	display: table-cell;
+	vertical-align: middle;
+	min-width: 11px;
+}
+
+.paginationButton a::after {
+	margin-bottom: 2px;
 }
 
 .disabled {
