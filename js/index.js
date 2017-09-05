@@ -858,7 +858,7 @@ class Model {
 			config.dataSearch.limit = 10;
 		if (!('offset' in config.dataSearch))
 			config.dataSearch.offset = 0;
-		this.config = config;
+		this._config = config;
 	}
 
 	fetch() {
@@ -866,41 +866,41 @@ class Model {
 			this.observeurs[j](this.model);
 	}
 
-	get getConfig() {
-		return this.config;
+	get config() {
+		return this._config;
 	}
 
-	get getLimit() {
-		return this.config.dataSearch.limit;
+	get limit() {
+		return this._config.dataSearch.limit;
 	}
 
-	get getOffset() {
-		return this.config.dataSearch.offset || 0;
+	get offset() {
+		return this._config.dataSearch.offset || 0;
 	}
 
-	get getResults() {
+	get results() {
 		var results = [];
 		for (var i = 0, n = this.tabIds.length; i < n; i++)
 			results.push(this.tabResults[this.tabIds[i]]);
 		return results;
 	}
 
-	get getTotalRows() {
+	get totalRows() {
 		return this.total_rows;
 	}
 
-	set setLimit(l) {
-		if (this.config.dataSearch.limit != l) {
-			this.config.dataSearch.limit = l;
-			this.config.dataSearch.offset -= this.config.dataSearch.offset % l;
+	set limit(l) {
+		if (this._config.dataSearch.limit != l) {
+			this._config.dataSearch.limit = l;
+			this._config.dataSearch.offset -= this._config.dataSearch.offset % l;
 			if (this.observeurs.length > 0)
 				this.fetch();
 		}
 	}
 
-	set setOffset(o) {
-		if (this.config.dataSearch.offset != o) {
-			this.config.dataSearch.offset = o;
+	set offset(o) {
+		if (this._config.dataSearch.offset != o) {
+			this._config.dataSearch.offset = o;
 			if (this.observeurs.length > 0)
 				this.fetch();
 		}
@@ -928,12 +928,12 @@ class ModelAjax extends Model {
 		$.ajax({
 			type: "GET",
 			context: this,
-			url: this.config.url + 'search/',
-			data: this.config.dataSearch,
+			url: this._config.url + 'search/',
+			data: this._config.dataSearch,
 			success: function(response) {
 				this.total_rows = response.total_rows;
 
-				this.tabIds = response[this.config.keySearch];
+				this.tabIds = response[this._config.keySearch];
 				var got = 0;
 				for (var i = 0, n = this.tabIds.length; i < n; i++) {
 					if (this.tabIds[i] in this.tabResults) {
@@ -946,12 +946,12 @@ class ModelAjax extends Model {
 					$.ajax({
 						type: "GET",
 						context: this,
-						url: this.config.url,
+						url: this._config.url,
 						data: {
 							id: this.tabIds[i]
 						},
 						success: function(response) {
-							var obj = response[this.config.keyData];
+							var obj = response[this._config.keyData];
 							this.tabResults[obj.id] = obj;
 							got++;
 
@@ -995,7 +995,7 @@ class ModelVolume extends Model {
  * VUE
  */
 function dataModelView(model, elt) {
-	var config = model.getConfig;
+	var config = model.config;
 
 	elt.data('model', model);
 	elt.data('view', this);
@@ -1062,7 +1062,7 @@ function dataModelView(model, elt) {
 
 	function display() {
 		table_body.empty();
-		var results = model.getResults;
+		var results = model.results;
 		for (var i = 0, n = results.length; i < n; i++) {
 			var row = $('<tr />');
 			row.data('data', results[i]);
@@ -1085,8 +1085,8 @@ function dataModelView(model, elt) {
 	function bTransitions() {
 		lButtons.empty();
 
-		var limit = model.getLimit;
-		var offset = model.getOffset;
+		var limit = model.limit;
+		var offset = model.offset;
 		var bFirst = $('<a class="ui-btn ui-corner-all ui-icon-arrow-u-l ui-btn-icon-bottom"></a>');
 		var bPrevious = $('<a class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-bottom"></a>');
 		var bNext = $('<a class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-bottom"></a>');
@@ -1097,7 +1097,7 @@ function dataModelView(model, elt) {
 		lButtons.append(bNext);
 		lButtons.append(bLast);
 
-		var total_rows = model.getTotalRows;
+		var total_rows = model.totalRows;
 
 		var current_page = offset / limit;
 		var page_count = total_rows / limit;
@@ -1145,18 +1145,18 @@ function dataModelView(model, elt) {
 
 	function go(new_index) {
 		return function() {
-			model.setOffset = new_index;
+			model.offset = new_index;
 		};
 	}
 
 	var limit = elt.find('#menuLimit');
 	if (limit.length > 0) {
 		limit.on('click', function() {
-			model.setLimit = parseInt(limit.val());
-			model.setOffset = 0;
+			model.limit = parseInt(limit.val());
+			model.offset = 0;
 		});
 		model.addObserver(function() {
-			limit.val(model.getLimit);
+			limit.val(model.limit);
 		});
 	}
 }
@@ -1166,7 +1166,7 @@ function listView(model, elt) {
 	var paginationButton = elt.next().find('.paginationButton');
 
 	// Configuration
-	var config = model.getConfig;
+	var config = model.config;
 
 	// More informations for developers
 	elt.data('model', model);
@@ -1226,7 +1226,7 @@ function listView(model, elt) {
 		collapsibleSet.empty();
 
 		// Get results from model
-		var results = model.getResults;
+		var results = model.results;
 
 		// Create an item and its name after each iteration
 		for (var i = 0, n = results.length; i < n; i++) {
@@ -1269,9 +1269,9 @@ function listView(model, elt) {
 		// Update everytime
 		paginationButton.empty();
 
-		var limit = model.getLimit;
-		var offset = model.getOffset;
-		var totalRows = model.getTotalRows;
+		var limit = model.limit;
+		var offset = model.offset;
+		var totalRows = model.totalRows;
 
 		// Buttons for the pagination
 		var firstButton = $('<a class="ui-btn ui-corner-all ui-icon-arrow-u-l ui-btn-icon-bottom"></a>');
@@ -1339,7 +1339,7 @@ function listView(model, elt) {
 	// Allows paging
 	function go(newIndex) {
 		return function() {
-			model.setOffset = newIndex;
+			model.offset = newIndex;
 		}
 	} // End function go
 
@@ -1348,11 +1348,11 @@ function listView(model, elt) {
 
 	if (limit.length > 0) {
 		limit.on('click', function() {
-			model.setLimit = parseInt(limit.val());
-			model.setOffset = 0;
+			model.limit = parseInt(limit.val());
+			model.offset -= model.offset % model.limit;
 		});
 		model.addObserver(function() {
-			limit.val(model.getLimit);
+			limit.val(model.limit);
 			limit.selectmenu().selectmenu("refresh");
 		});
 	}
