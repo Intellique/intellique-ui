@@ -35,6 +35,16 @@ div #password {
 
 
 
+.pagination {
+	display: flex;
+	flex-direction: row;
+	justiry-content: space-between;
+}
+
+.pagination > div.empty {
+	flex-grow: 1;
+}
+
 .paginationButton {
 	display: table;
 }
@@ -58,6 +68,7 @@ div #password {
 .infoLines {
 	padding-top : 20px;
 	color : blue;
+	margin-left: 8px;
 }
 
 /*#archive table tr td p {
