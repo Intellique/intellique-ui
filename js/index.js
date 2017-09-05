@@ -411,6 +411,8 @@ function main() {
 		}, // end success
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
+
+			$('#password').val("");
 		} // end error
 	}); // end ajax
 
@@ -444,6 +446,8 @@ function main() {
 				//change to archive page
 				$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
 				validateSession = setInterval(session_checking, 20000);
+
+				$('#password').val("");
 			}, // end success
 			// popup invalid password or login 
 			error: function(XMLHttpRequest, textStatus, errorThrown) {

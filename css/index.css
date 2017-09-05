@@ -3,30 +3,30 @@
  */ 
 
 div#authentification_page div.header {
-	background-color : #FFFFFF;
 	text-align : center;
 }
 
-div #identifiant {
-	min-height : 3em;
+
+div#authentification_page {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
-div #password {
-	min-height : 3em;
-}
 
-#authentification {
-	background-color : #53A7D8;
+#authentification form {
 	border-radius : 30px;
 	color : white;
-	line-height : 25px;
-	max-width : 480px;
+	max-width : 400px;
 	margin-left : auto;
 	margin-right : auto;
-	margin-bottom:10px;
-	margin-top : 10px;
 }
 
+
+#authentification form li {
+	background-color : #ea6746;
+
+}
 /*
  * MAIN
  */
@@ -38,7 +38,7 @@ div #password {
 .pagination {
 	display: flex;
 	flex-direction: row;
-	justiry-content: space-between;
+	justify-content: space-between;
 }
 
 .pagination > div.empty {
@@ -79,9 +79,7 @@ div #password {
  * FOOTER
  */
 
-#copyright
-{
-	background-color : white;
+#copyright {
 	text-align : center;
 }
 
