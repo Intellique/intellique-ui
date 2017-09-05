@@ -1163,8 +1163,8 @@ function dataModelView(model, elt) {
 
 
 function listView(model, elt) {
-	var paginationButton = elt.parent().find('.paginationButton');
-	
+	var paginationButton = elt.next().find('.paginationButton');
+
 	// Configuration
 	var config = model.getConfig;
 
