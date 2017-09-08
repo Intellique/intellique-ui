@@ -316,23 +316,7 @@ function main() {
 									elt.find('#previewButton').hide(); //Directories cannot use the preview function
 
 								elt.find('#previewButton').on('click',function() {
-									if (data.size < 500000000) // File size cannot exceed 50MB to be previewed 
 										window.open(config['api url'] + "/api/v1/archivefile/preview/?id=" + data.id);
-									else
-										$.mobile.changePage(config["simple-ui url"] + "/dialog/fileSizeError.html", { role: "dialog" });
-
-									/*$.ajax({
-										type : "GET",
-										url : config["api url"]+"/api/v1/archivefile/preview/?id="+data.id,
-										dataType : 'json',
-										success : function(response) {
-
-										},
-										error : function(XMLHttpRequest, textStatus, errorThrown) {
-											debugger;
-											alert("xhr : "+XMLHttpRequest+ "; text : "+textStatus+"; error : "+errorThrown);
-										}
-									});*/
 								});
 							}
 						}, // End function transform
@@ -538,10 +522,7 @@ function main() {
 						elt.find('#previewButton').hide(); //Directories cannot use the preview function
 
 					elt.find('#previewButton').on('click', function() {
-						if (data.size < 500000000)
 							window.open(config['api url'] + "/api/v1/archivefile/preview/?id=" + data.id);
-						else
-							$.mobile.changePage(config["simple-ui url"]+"/dialog/fileSizeError.html", { role: "dialog" });
 					});
 				}
 			}, // End function transform
@@ -1140,11 +1121,17 @@ function dataModelView(model, elt) {
 
 		var informations = elt.find('.infoLines');
 		var text = "";
-		if (total_rows == 0)
-			text = "Ligne " + (offset) + " à " + Math.min(offset + limit, total_rows) + " sur " + total_rows + " lignes";
+
+		if(total_rows == 0)
+			text = offset + " to " + Math.min(offset + limit, total_rows);
 		else
-			text = "Ligne " + (offset + 1) + " à " + Math.min(offset + limit, total_rows) + " sur " + total_rows + " lignes";
-		informations.text(text);
+			text = (offset+1) + " to " + Math.min(offset + limit, total_rows);
+
+		if (location.hash == "#archivePage") text = "<span id='totalRows'>" + total_rows + " archive(s)<br><br></span>" + "List of archive(s) "+ text +"<span id='arrow'> ↓</span>";
+		if (location.hash == "#archiveFilesPage") text = "<span id='totalRows'>" + total_rows + " file(s)<br><br></span>" + "List of file(s) "+ text +"<span id='arrow'> ↓</span>";
+		if (location.hash == "#mediaPage") text = "<span id='totalRows'>" + total_rows + " media(s)<br><br></span>" + "List of media(s) "+ text +"<span id='arrow'> ↓</span>";
+		if (location.hash == "#administrationPage") text = "<span id='totalRows'>" + total_rows + " user(s)<br><br></span>" + "List of user(s) "+ text +"<span id='arrow'> ↓</span>";
+		informations.html(text);
 	}
 
 	function go(new_index) {
@@ -1332,11 +1319,17 @@ function listView(model, elt) {
 		// Informations about rows
 		var informations = elt.parent().find('.infoLines');
 		var text = "";
+
 		if(totalRows == 0)
-			text = "Ligne " + offset + " à " + Math.min(offset + limit, totalRows) + " sur " + totalRows + " lignes";
+			text = offset + " to " + Math.min(offset + limit, totalRows);
 		else
-			text = "Ligne " + (offset + 1) + " à " + Math.min(offset + limit, totalRows) + " sur " + totalRows + " lignes";
-		informations.text(text);
+			text = (offset+1) + " to " + Math.min(offset + limit, totalRows);
+
+		if (location.hash == "#archivePage") text = "<span id='totalRows'>" + totalRows + " archive(s)<br><br></span>" + "List of archive(s) "+ text +"<span id='arrow'> ↓</span>";
+		if (location.hash == "#archiveFilesPage") text = "<span id='totalRows'>" + totalRows + " file(s)<br><br></span>" + "List of file(s) "+ text +"<span id='arrow'> ↓</span>";
+		if (location.hash == "#mediaPage") text = "<span id='totalRows'>" + totalRows + " media(s)<br><br></span>" + "List of media(s) "+ text +"<span id='arrow'> ↓</span>";
+		if (location.hash == "#administrationPage") text = "<span id='totalRows'>" + totalRows + " user(s)<br><br></span>" + "List of user(s) "+ text +"<span id='arrow'> ↓</span>";
+		informations.html(text);
 
 	} // End function paginationButton
 

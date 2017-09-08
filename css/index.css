@@ -6,35 +6,21 @@ div#authentification_page div.header {
 	text-align : center;
 }
 
-
-div#authentification_page {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
-
-
 #authentification form {
 	border-radius : 30px;
-	color : white;
 	max-width : 400px;
 	margin-left : auto;
 	margin-right : auto;
 }
 
-
 #authentification form li {
 	background-color : #ea6746;
 
 }
+
 /*
  * MAIN
  */
-
-
-
-
-
 .pagination {
 	display: flex;
 	flex-direction: row;
@@ -45,18 +31,34 @@ div#authentification_page {
 	flex-grow: 1;
 }
 
-.paginationButton {
+.pagination .paginationButton {
 	display: table;
 }
 
-.paginationButton a {
+.pagination .paginationButton a {
 	display: table-cell;
 	vertical-align: middle;
 	min-width: 11px;
+	border-radius: 0;
+	font-weight: bolder;
 }
 
-.paginationButton a::after {
+.pagination .paginationButton a:first-child {
+ 	border-top-left-radius: 1em;
+	border-bottom-left-radius: 1em;
+}
+.pagination .paginationButton a:last-child {
+	border-top-right-radius: 1em;
+	border-bottom-right-radius: 1em;
+}
+
+.pagination .paginationButton a::after {
 	margin-bottom: 2px;
+}
+
+.pagination label{
+	color :grey;
+	text-shadow: none;
 }
 
 .disabled {
@@ -67,14 +69,22 @@ div#authentification_page {
 
 .infoLines {
 	padding-top : 20px;
-	color : blue;
 	margin-left: 8px;
+	color :grey;
+	font-weight: bolder;
+	text-shadow: none;
+	padding-bottom: 5px;
+	border-bottom: solid 2px #ea6746;
 }
 
-/*#archive table tr td p {
-	display : inline-block;
+
+.infoLines #totalRows {
+	font-size: 1.4em;
 }
-*/
+
+.infoLines #arrow {
+	font-size: 1.3em;
+}
 /*
  * FOOTER
  */
@@ -82,8 +92,6 @@ div#authentification_page {
 #copyright {
 	text-align : center;
 }
-
-
 
 
 /*
@@ -99,6 +107,7 @@ div#authentification_page {
 /*
  * TEMPLATE
  */
+
 .ui-field-contain {
 	margin:4px
 }
@@ -107,3 +116,34 @@ div#authentification_page {
 	margin:0px
 }
 
+#template .ui-field-contain {
+	color :black;
+	text-shadow: none;
+}
+
+/*
+ * MENU
+ */
+
+ div#menu .ui-btn{
+ 	border-radius: 0;
+ }
+
+
+ /*
+ * ADMIN FORM
+ */
+
+ #modUserPage .ui-field-contain {
+	color :black;
+	text-shadow: none;
+}
+
+ /*
+ * DIALOG
+ */
+
+ #page1 .ui-content {
+	color :black;
+	text-shadow: none;
+}

@@ -20,17 +20,17 @@
 
 		<div data-display="overlay" data-position="left" data-role="panel" id="menu" data-theme="a">
 			<ul data-role="listview">
-				<li><a class="ui-btn ui-corner-all menuButton archiveButtonPage" href="#archivePage">Archives</a></li>
-				<li><a class="ui-btn ui-corner-all menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
-				<li><a class="ui-btn ui-corner-all menuButton mediaButtonPage" href="#mediaPage">Medias</a></li>
-				<li><a class="ui-btn ui-corner-all menuButton administrationButtonPage" href="#administrationPage" id="adminPage">Administration</a></li>
+				<li><a class="ui-btn ui-corner-all ui-icon-bullets ui-btn-icon-left menuButton archiveButtonPage" href="#archivePage">Archives</a></li>
+				<li><a class="ui-btn ui-corner-all ui-icon-grid ui-btn-icon-left menuButton filesButtonPage" href="#archiveFilesPage">Files</a></li>
+				<li><a class="ui-btn ui-corner-all ui-icon-cloud ui-btn-icon-left menuButton mediaButtonPage" href="#mediaPage">Medias</a></li>
+				<li><a class="ui-btn ui-corner-all ui-icon-user ui-btn-icon-left menuButton administrationButtonPage" href="#administrationPage" id="adminPage">Administration</a></li>
 			</ul> <!-- end list view -->
 		</div> <!--End Menu-->
 
 	<!-- authentification page -->
 
 		<div data-role="page" id="authentification_page">
-			<div class="header ui-grid-solo" data-role="header">
+			<div class="header ui-grid-solo" data-role="header" data-position="fixed">
 				<img alt="Storiq one image" id="header_stone_image" src="storiq-one-bandeau.png"/>
 			</div> <!-- end header -->
 
@@ -51,7 +51,7 @@
 				</form> <!-- end form -->
 			</div> <!-- end main -->
 
-			<div data-role="footer" id="copyright">
+			<div data-role="footer" data-position="fixed" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div> <!-- end footer -->
 
@@ -60,33 +60,35 @@
 		<!--ARCHIVE PAGE-->
 
 		<div data-role="page" id="archivePage">
-			<div class="ui-grid-solo" data-role="header" id="header">
+			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right disconnection_button" href="#authentification_page">Disconnect</a>
-				<h1>
+				<h1 class ="ui-title">
 					Archives page
 				</h1> <!-- End h1 -->
 
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="archive">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive">
+				<div class="infoLines"></div>
 				<div data-role="collapsibleset" id="archiveList">
 				</div> <!-- End archive list -->
 				<div class="pagination">
 					<div>
+						<label for="listLabel">Max displayable:</label>
 						<select id="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
 							<option value="50">50</option>
 						</select>
 					</div>
-					<div class="infoLines"></div>
 					<div class="empty">&nbsp;</div>
 					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
+					<label for="listLabel">Max displayable:</label>
 					</div>
 				</div>
 			</div>
-			<div data-role="footer" id="copyright">
+			<div data-role="footer" data-position="fixed" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
 		</div>
@@ -94,32 +96,33 @@
 		<!--ARCHIVE's FILES PAGE-->
 
 		<div data-role="page" id="archiveFilesPage">
-			<div class="ui-grid-solo" data-role="header" id="header">
+			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right disconnection_button" href="#authentification_page">Disconnect</a>
 				<h1>
-					Archive's files page
+					Files archived page
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="archiveFiles">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search an archive's file">
+				<div class="infoLines"></div>
 				<div data-role="collapsibleset" id="archiveFilesList">
 				</div> <!-- End archive's files list -->
 				<div class="pagination">
 					<div>
+					<label for="listLabel">Max displayable:</label>
 						<select id="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
 							<option value="50">50</option>
 						</select>
 					</div>
-					<div class="infoLines"></div>
 					<div class="empty">&nbsp;</div>
 					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
 					</div>
 				</div>
 			</div>
-			<div data-role="footer" id="copyright">
+			<div data-role="footer" data-position="fixed" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
 		</div>  <!-- End ARCHIVE's FILES PAGE-->
@@ -127,7 +130,7 @@
 		<!--MEDIA PAGE-->
 		
 		<div data-role="page" id="mediaPage">
-			<div class="ui-grid-solo" data-role="header" id="header">
+			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right disconnection_button" href="#authentification_page">Disconnect</a>
 				<h1>
@@ -136,23 +139,24 @@
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="media">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a media">
+				<div class="infoLines"></div>
 				<div data-role="collapsibleset" id="mediaList">
 				</div> <!-- End archive's files list -->
 				<div class="pagination">
 					<div>
+					<label for="listLabel">Max displayable:</label>
 						<select id="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
 							<option value="50">50</option>
 						</select>
 					</div>
-					<div class="infoLines"></div>
 					<div class="empty">&nbsp;</div>
 					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
 					</div>
 				</div>
 			</div>
-			<div data-role="footer" id="copyright">
+			<div data-role="footer" data-position="fixed" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
 		</div>  <!-- End MEDIA PAGE-->
@@ -160,7 +164,7 @@
 		<!--ADMINISTRATION PAGE-->
 		
 		<div data-role="page" id="administrationPage">
-			<div class="ui-grid-solo" data-role="header" id="header">
+			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
 				<h1>
@@ -170,25 +174,26 @@
 			<div class="ui-content" role="main" id="administration">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a user">
 				<div id="AddButton" style="height: 50px;">
-					<a href="#modUserPage" class="ui-btn ui-corner-all ui-icon-plus ui-btn-icon-right ui-btn-left" style="margin-top : 8.5em; margin-left:10px;"> Add a new user</a>
+					<a href="#modUserPage" class="ui-btn ui-corner-all ui-icon-plus ui-btn-icon-right ui-btn-left" style="margin-top : 8.5em; margin-left:10px;"> Create a new user</a>
 				</div>
+				<div class="infoLines"></div>
 				<div data-role="collapsibleset" id="administrationList">
 				</div> <!-- End archive's files list -->
 				<div class="pagination">
 					<div>
+						<label for="listLabel">Max displayable:</label>
 						<select id="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
 							<option value="50">50</option>
 						</select>
 					</div>
-					<div class="infoLines"></div>
 					<div class="empty">&nbsp;</div>
 					<div data-role="controlgroup" data-type="horizontal" data-mini="true" class="paginationButton">
 					</div>
 				</div>
 			</div>
-			<div data-role="footer" id="copyright">
+			<div data-role="footer" data-position="fixed" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div>
 		</div>  <!-- End ADMINISTRATION PAGE-->
@@ -198,13 +203,13 @@
 		<div data-role="page" data-title ="User form" id="modUserPage">
 			<div class="header ui-grid-solo" data-role="header" id="headerAdd">
 				<h1>
-					Add user page
+					Add user form
 				</h1>
 			</div>
 
 			<div class="header ui-grid-solo" data-role="header" id="headerEdit">
 				<h1>
-					Edit user page
+					Edit user form
 				</h1>
 			</div>
 
@@ -265,7 +270,7 @@
 				<h2><a id="backUserPage" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left " href="#administrationPage"> &nbsp; Back to administration page</a></h2>
 			</div>
 
-			<div data-role="footer" id="copyright">
+			<div data-role="footer" data-position="fixed" id="copyright">
 				<p>Copyright &copy; 2017 Intellique</p>
 			</div> <!-- end footer -->
 

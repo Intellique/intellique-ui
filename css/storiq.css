@@ -146,7 +146,6 @@ label.ui-btn {
 .ui-btn-icon-bottom:after,
 .ui-btn-icon-notext:after {
 	background-color: #ea6746 /*{global-icon-color}*/;
-	background-color: rgba(234,103,70,0.21) /*{global-icon-disc}*/;
 	background-position: center center;
 	background-repeat: no-repeat;
 	-webkit-border-radius: 1em;
