@@ -63,8 +63,8 @@
 			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right disconnection_button" href="#authentification_page">Disconnect</a>
-				<h1 class ="ui-title">
-					Archives page
+				<h1 id="archiveTitle">
+					ARCHIVES
 				</h1> <!-- End h1 -->
 
 			</div> <!-- End header -->
@@ -99,8 +99,8 @@
 			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right disconnection_button" href="#authentification_page">Disconnect</a>
-				<h1>
-					Files archived page
+				<h1 id="fileTitle">
+					FILES ARCHIVED
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="archiveFiles">
@@ -133,8 +133,8 @@
 			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right disconnection_button" href="#authentification_page">Disconnect</a>
-				<h1>
-					Medias page
+				<h1 id="mediaTitle">
+					MEDIAS
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="media">
@@ -167,14 +167,14 @@
 			<div class="ui-grid-solo" data-role="header" data-position="fixed" id="header">
 				<a class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext menuButton" href="#menu"></a>
 				<a class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext menuButton ui-btn-icon-right ui-btn-right " href="#authentification_page">Disconnect</a>
-				<h1>
-					Administration page
+				<h1 id="adminTitle">
+					ADMNISTRATION
 				</h1> <!-- End h1 -->
 			</div> <!-- End header -->
 			<div class="ui-content" role="main" id="administration">
 				<input class="search" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" type="text" placeholder="Search a user">
 				<div id="AddButton" style="height: 50px;">
-					<a href="#modUserPage" class="ui-btn ui-corner-all ui-icon-plus ui-btn-icon-right ui-btn-left" style="margin-top : 8.5em; margin-left:10px;"> Create a new user</a>
+					<a href="#modUserPage" class="ui-btn ui-corner-all ui-icon-plus ui-btn-icon-right ui-btn-left"> Create a new user</a>
 				</div>
 				<div class="infoLines"></div>
 				<div data-role="collapsibleset" id="administrationList">
@@ -200,7 +200,7 @@
 
 		<!-- add user page -->
 
-		<div data-role="page" data-title ="User form" id="modUserPage">
+		<div data-role="page" data-title ="User form" data-transition="pop" id="modUserPage">
 			<div class="header ui-grid-solo" data-role="header" id="headerAdd">
 				<h1>
 					Add user form
@@ -215,59 +215,60 @@
 
 			<div  class="ui-content" role="main">
 				<form>
-					<div class="ui-field-contain">
-						<label for="login">Login</label>
-						<input id="login" name="login" type="text"  value="">
-					</div>
-					<div class="ui-field-contain">
-						<label for="fullname">Fullname</label>
-						<input id="fullname" name="fullname" type="text">
-					</div>
-					<div class="ui-field-contain">
-						<label for="pwd">Password</label>
-						<input id="pwd" name="pwd" type="password" placeholder="6 characters min.">
-					</div>
-					<div class="ui-field-contain">
-						<label for="email">E-mail</label>
-						<input id="email" name="email" type="text">
-					</div>
-					<div class="ui-field-contain">
-						<label for="homedir">Home Directory</label>
-						<input id="homedir" name="homedir" type="text" placeholder="/mnt/raid">
-					</div>
-					<div class="ui-field-contain">
-						<fieldset data-role="controlgroup" data-type="horizontal">
-							<legend>Select a poolgroup:</legend>
-							<label for="poolgroup">Poolgroup</label>
-							<select name="poolgroup" id="poolgroup">
-								<option value=""></option>
-							</select>
-						</fieldset>
-					</div>
-					<div class="ui-field-contain">
-						<fieldset data-role="controlgroup" data-type="vertical">
-							<legend>Access rights for this user:</legend>
-							<label for="canadmin">Can admin</label>
-							<input id="canadmin" name="canadmin" type="checkbox">
-							<label for="canarchive">Can archive</label>
-							<input id="canarchive" name="canarchive" type="checkbox">
-							<label for="canrestore">Can restore</label>
-							<input id="canrestore" name="canrestore" type="checkbox">
-							<label for="disabled">Disabled</label>
-							<input id="disabled" name="disabled" type="checkbox">
-						</fieldset>
-					</div>
-					<div class="ui-content" id="addUserButton">
-						<input id="addUserButton" type="submit" value="Add"></input>
-					</div>
-
-					<div class="ui-content" id="editButton">
-						<input id="editButton" type="submit" value="Edit"></input>
-					</div>
+					<ul data-role="listview" data-inset="true">
+						<li class="ui-field-contain">
+							<label for="login">Login</label>
+							<input id="login" name="login" type="text"  value="">
+						</li>
+						<li class="ui-field-contain">
+							<label for="fullname">Fullname</label>
+							<input id="fullname" name="fullname" type="text">
+						</li>
+						<li class="ui-field-contain">
+							<label for="pwd">Password</label>
+							<input id="pwd" name="pwd" type="password" placeholder="6 characters min.">
+						</li>
+						<li class="ui-field-contain">
+							<label for="email">E-mail</label>
+							<input id="email" name="email" type="text">
+						</li>
+						<li class="ui-field-contain">
+							<label for="homedir">Home Directory</label>
+							<input id="homedir" name="homedir" type="text" placeholder="/mnt/raid">
+						</li>
+						<li class="ui-field-contain">
+							<fieldset data-role="controlgroup" data-type="horizontal">
+								<legend>Select a poolgroup</legend>
+								<label for="poolgroup">Poolgroup</label>
+								<select name="poolgroup" id="poolgroup">
+									<option value=""></option>
+								</select>
+							</fieldset>
+						</li>
+						<li class="ui-field-contain">
+							<fieldset data-role="controlgroup" data-type="vertical">
+								<legend>Access rights for this user:</legend>
+								<label for="canadmin">Can admin</label>
+								<input id="canadmin" name="canadmin" type="checkbox">
+								<label for="canarchive">Can archive</label>
+								<input id="canarchive" name="canarchive" type="checkbox">
+								<label for="canrestore">Can restore</label>
+								<input id="canrestore" name="canrestore" type="checkbox">
+								<label for="disabled">Disabled</label>
+								<input id="disabled" name="disabled" type="checkbox">
+							</fieldset>
+						</li>
+						<li class="ui-content" id="addUserButton">
+							<input id="addUserButton" type="submit" value="Create a new user"></input>
+						</li>
+						<li class="ui-content" id="editButton">
+							<input id="editButton" type="submit" value="Edit this user"></input>
+						</li>
+					</ul>
 				</form>
 			</div> <!-- end main -->
 			<div>
-				<h2><a id="backUserPage" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left " href="#administrationPage"> &nbsp; Back to administration page</a></h2>
+				<h2><a id="backUserPage" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left " href="#administrationPage"> &nbsp; Back</a></h2>
 			</div>
 
 			<div data-role="footer" data-position="fixed" id="copyright">

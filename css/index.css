@@ -1,6 +1,6 @@
 /*
  * authentification
- */ 
+ */
 
 div#authentification_page div.header {
 	text-align : center;
@@ -21,6 +21,13 @@ div#authentification_page div.header {
 /*
  * MAIN
  */
+
+#header h1{
+	font-size: 1.3em;
+	margin-top: 1.1em;
+	margin-left: auto;
+	margin-right: auto;
+}
 .pagination {
 	display: flex;
 	flex-direction: row;
@@ -44,7 +51,7 @@ div#authentification_page div.header {
 }
 
 .pagination .paginationButton a:first-child {
- 	border-top-left-radius: 1em;
+	border-top-left-radius: 1em;
 	border-bottom-left-radius: 1em;
 }
 .pagination .paginationButton a:last-child {
@@ -66,7 +73,6 @@ div#authentification_page div.header {
 	opacity : 0.5;
 }
 
-
 .infoLines {
 	padding-top : 20px;
 	margin-left: 8px;
@@ -85,6 +91,7 @@ div#authentification_page div.header {
 .infoLines #arrow {
 	font-size: 1.3em;
 }
+
 /*
  * FOOTER
  */
@@ -97,11 +104,12 @@ div#authentification_page div.header {
 /*
  * POPUP
  */
+
 .ui-btn.my-tooltip-btn,
 .ui-btn.my-tooltip-btn:hover,
 .ui-btn.my-tooltip-btn:active {
-    background: none;
-    border: 0;
+	background: none;
+	border: 0;
 }
 
 /*
@@ -125,25 +133,67 @@ div#authentification_page div.header {
  * MENU
  */
 
- div#menu .ui-btn{
- 	border-radius: 0;
- }
+div#menu .ui-btn{
+	border-radius: 0;
+}
 
 
- /*
+/*
  * ADMIN FORM
  */
 
- #modUserPage .ui-field-contain {
-	color :black;
+#modUserPage div form{
+	max-width: 930px;
+	margin: auto;
+}
+
+#modUserPage .ui-field-contain legend{
+	color :grey;
+	font-weight: bolder;
 	text-shadow: none;
 }
 
- /*
+#modUserPage .ui-field-contain label{
+	color :grey;
+	font-weight: bolder;
+	text-shadow: none;
+}
+
+#modUserPage #backUserPage {
+	max-width: 400px;
+	margin: auto;
+	font-size :0.9em;
+}
+
+/*
+ * ADMIN PAGE
+ */
+
+#administration #AddButton a {
+	margin-top : 10.7em;
+	margin-left: 10px;
+}
+
+/*
+ * MEDIA PAGE
+ */
+
+meter::-moz-meter-bar, meter::-webkit-meter-bar {
+	box-shadow: 0 5px 5px -5px #999 inset;
+	background-image: linear-gradient(
+	90deg,
+	#ea6746 55%,
+	#761A03 95%,
+	#641602 95%
+	);
+	background-size: 100% 100%;
+}
+
+/*
  * DIALOG
  */
 
- #page1 .ui-content {
+#page1 .ui-content {
 	color :black;
 	text-shadow: none;
 }
