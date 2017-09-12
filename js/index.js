@@ -792,10 +792,42 @@ function main() {
 		'search': function(input) {
 			var text = input.val();
 
-			if (text.length > 0)
-				this.dataSearch.login = text;
-			else
-				delete this.dataSearch.login;
+			var keys = ['name', 'poolgroup', 'isadmin', 'canarchive', 'canrestore', 'disabled'];
+			for (var i = 0, n = keys.length; i < n; i++)
+				this.dataSearch[keys[i]] = null;
+
+			var match, regex = /(can(?:not)?):\s*(archive|restore)|(is(?:not)?):\s*(admin|enabled|disabled)|(?:(poolgroup):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+
+			var lems = [];
+			while ((match = regex.exec(text)) != null) {
+				var matched = match[6] || match[7] || match[8];
+				if (match[1]) {
+					var can = match[1] == 'can';
+					if (match[2] == 'archive')
+						this.dataSearch.canarchive = can;
+					else
+						this.dataSearch.canrestore = can;
+				} else if (match[3]) {
+					var is = match[3] == 'is';
+
+					if (match[4] == 'admin')
+						this.dataSearch.isadmin = is;
+					else
+						this.dataSearch.disabled = is ^ (match[4] == 'enabled') ? true : false;
+				} else if (match[5]) {
+					this.dataSearch[match[5]] = matched;
+				} else
+					lems.push(matched);
+			}
+
+			if (lems.length > 1)
+				this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
+			else if (lems.length == 1)
+				this.dataSearch.name = lems[0];
+
+			for (var i = 0, n = keys.length; i < n; i++)
+				if (this.dataSearch[keys[i]] === null)
+					delete this.dataSearch[keys[i]];
 		}
 	}; // End adminConfig
 
