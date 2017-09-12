@@ -178,7 +178,7 @@ div#menu .ui-btn{
  * MEDIA PAGE
  */
 
-meter::-moz-meter-bar, meter::-webkit-meter-bar {
+meter::-moz-meter-bar {
 	box-shadow: 0 5px 5px -5px #999 inset;
 	background-image: linear-gradient(
 	90deg,
@@ -187,6 +187,24 @@ meter::-moz-meter-bar, meter::-webkit-meter-bar {
 	#641602 95%
 	);
 	background-size: 100% 100%;
+}
+
+meter::-webkit-meter-bar {
+	box-shadow: 0 5px 5px -5px #999 inset;
+	background-image: linear-gradient(
+	90deg,
+	#ea6746 55%,
+	#761A03 95%,
+	#641602 95%
+	);
+	background-size: 100% 100%;
+}
+
+/*
+* FILES ARCHIVED PAGE
+*/
+.ui-field-contain #media a, .ui-field-contain #archivePage a {
+	max-width: 200px;
 }
 
 /*
