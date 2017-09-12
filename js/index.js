@@ -359,10 +359,13 @@ function main() {
 		'search': function(input) {
 			var text = input.val();
 
+			var keys = ['name', 'owner', 'creator', 'pool'];
+			for (var i = 0, n = keys.length; i < n; i++)
+				this.dataSearch[keys[i]] = null;
+
 			var match, regex = /(?:(owner|creator|pool):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
 
 			var lems = [];
-			this.dataSearch.name = this.dataSearch.owner = this.dataSearch.creator = this.dataSearch.pool = null;
 			while ((match = regex.exec(text)) != null) {
 				var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
 				if (match[1])
@@ -376,7 +379,6 @@ function main() {
 			else if (lems.length == 1)
 				this.dataSearch.name = lems[0];
 
-			var keys = ['name', 'owner', 'creator', 'pool'];
 			for (var i = 0, n = keys.length; i < n; i++)
 				if (!this.dataSearch[keys[i]])
 					delete this.dataSearch[keys[i]];
@@ -535,10 +537,30 @@ function main() {
 			// Search filter bar
 			'search': function(input) {
 				var text = input.val();
-				if (text.length > 0)
-					this.dataSearch.name = text;
-				else
-					delete this.dataSearch.name;
+
+				var keys = ['name', 'archive', 'mimetype'];
+				for (var i = 0, n = keys.length; i < n; i++)
+					this.dataSearch[keys[i]] = null;
+
+				var match, regex = /(?:(archive|mimetype):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+
+				var lems = [];
+				while ((match = regex.exec(text)) != null) {
+					var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
+					if (match[1])
+						this.dataSearch[match[1]] = matched;
+					else
+						lems.push(matched);
+				}
+
+				if (lems.length > 1)
+					this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
+				else if (lems.length == 1)
+					this.dataSearch.name = lems[0];
+
+				for (var i = 0, n = keys.length; i < n; i++)
+					if (!this.dataSearch[keys[i]])
+						delete this.dataSearch[keys[i]];
 			} // End search
 		}; // End archive's files configuration
 
