@@ -359,11 +359,11 @@ function main() {
 		'search': function(input) {
 			var text = input.val();
 
-			var keys = ['name', 'owner', 'creator', 'pool'];
+			var keys = ['archivefile', 'creator', 'media', 'name', 'owner', 'pool', 'poolgroup'];
 			for (var i = 0, n = keys.length; i < n; i++)
 				this.dataSearch[keys[i]] = null;
 
-			var match, regex = /(?:(owner|creator|pool):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+			var match, regex = /(?:(archivefile|creator|media|owner|pool|poolgroup):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
 
 			var lems = [];
 			while ((match = regex.exec(text)) != null) {
