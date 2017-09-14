@@ -20,6 +20,11 @@ function main() {
 			}
 		});
 
+	//Menu icon redirect to Intellique website
+	$('#iconMenu').on('click', function() {
+		window.open("http://www.intellique.com/");
+	});
+
 	// wipe values entered in the inputs of the edit form when left
 	$(":mobile-pagecontainer").on("pagecontainerchange", function(event, ui) {
 		if (location.hash == "#administrationPage") {

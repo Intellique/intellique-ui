@@ -136,9 +136,17 @@ div#authentification_page div.header {
 /*
  * MENU
  */
-
+div#menu {
+	max-width: 225px;
+}
 div#menu .ui-btn{
 	border-radius: 0;
+}
+
+#iconMenu {
+	cursor: pointer;
+	max-width: 75px;
+	max-height: 75px;
 }
 
 
