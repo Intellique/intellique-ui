@@ -13,6 +13,13 @@ function main() {
 	// Initialize panel function
 	$("[data-role=panel]").enhanceWithin().panel();
 
+	//Close the panel if already in the page selected
+		$("[data-role=panel] a").on("click", function () {
+			if($(this).attr("href") == location.hash) {
+				$("[data-role=panel]").panel("close");
+			}
+		});
+
 	// wipe values entered in the inputs of the edit form when left
 	$(":mobile-pagecontainer").on("pagecontainerchange", function(event, ui) {
 		if (location.hash == "#administrationPage") {
@@ -52,9 +59,7 @@ function main() {
 							url: config["api url"] + "/api/v1/user/?id=" + response.user_id,
 							success: function(response) {
 								if (response.user.canrestore)
-									elt.find('#RestoreButton').show('fast'); //remove the attribute CSS display:none if the user can restore
-								if (!response.user.isadmin)
-									$('#adminPage').hide(); //hide the administration page tab if the user is not an admin
+									elt.find('#RestoreButton').show('fast'); //show restore button if the user can restore
 							},
 							error: function(XMLHttpRequest, textStatus, errorThrown) {},
 						});
@@ -400,6 +405,16 @@ function main() {
 			// Change to archive page
 			$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
 			validateSession = setInterval(session_checking, 20000);
+			$.ajax({
+				type: "GET",
+				dataType: "json",
+				url: config["api url"] + "/api/v1/user/?id=" + response.user_id,
+				success: function(response) {
+					if (response.user.isadmin)
+						$('#adminPage').show().trigger( "updatelayout" ); //show administration menu if the user is an admin
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {},
+			});
 		}, // end success
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
@@ -430,7 +445,7 @@ function main() {
 			data: authjson,
 			dataType: "json",
 			contentType: "application/json",
-			success: function(reponse) {
+			success: function(response) {
 				// create model and view for "archive page" after login
 				var model = new ModelAjax(archiveConfig);
 				var view = new listView(model, $('#archiveList'));
@@ -438,6 +453,17 @@ function main() {
 				//change to archive page
 				$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
 				validateSession = setInterval(session_checking, 20000);
+
+				$.ajax({
+					type: "GET",
+					dataType: "json",
+					url: config["api url"] + "/api/v1/user/?id=" + response.user_id,
+					success: function(response) {
+						if (response.user.isadmin)
+							$('#adminPage').show().trigger("updatelayout"); //show administration menu if the user is an admin
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {},
+				});
 
 				$('#password').val("");
 			}, // end success
@@ -491,7 +517,6 @@ function main() {
 					elt.find('#ctime').text(data.ctime);
 					elt.find('#mtime').text(data.mtime);
 					elt.find('#size').text(convertSize(data.size));
-					elt.find('#media').text(data.medias);
 
 					var metadata = elt.find('#metadata');
 					$.ajax({
@@ -509,22 +534,23 @@ function main() {
 						}
 					});
 
-					$.ajax({
-						type: "GET",
-						context: this,
-						url: config["api url"] + "/api/v1/archive/",
-						data: {
-							id: data.archive
-						},
-						success: function(response) {
-							elt.find('#archivePage a').text(response.archive.name);
-							$('#archivePage a').on('click', function() {
-								$('#archive .search').val(response.archive.name);
-								$('#archive .search').trigger('change');
-							});
-						},
-						error: function(XMLHttpRequest, textStatus, errorThrown) {}
-					});
+					var archiveSelect = elt.find("#listLabelSelect");
+					archiveSelect.empty();
+					for (var i in data.archives){
+						$.ajax({
+							url: config['api url'] + '/api/v1/archive/?id=' + i,
+							type: "GET",
+							dataType: 'json',
+							success: function(response) {
+								archiveSelect.append('<option value="' + response.archive["id"] + '">' + response.archive["name"] + " (" + data.archives[i].join(", ") + ')</option>');
+								$('#archiveFButton a').on('click', function() {
+									$('#archive .search').val("uuid:" + response.archive["uuid"]);
+									$('#archive .search').trigger('change');
+								});
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {}
+						});
+					}
 
 					if (data.mimetype == "inode/directory")
 						elt.find('#previewButton').hide(); //Directories cannot use the preview function
@@ -577,9 +603,7 @@ function main() {
 			'keyData': 'media',
 			'keySearch': 'medias',
 			'dataSearch': {
-				// Provide a Media's ID to get its information
-				//	id : data.media
-			}, // End dataSearch
+			},
 			'informations': {
 				'title': 'name',
 				'template': 'template/media.html',
@@ -665,7 +689,6 @@ function main() {
 							this.find('#Tpoolgroup').text(response.poolgroup["name"]);
 						},
 						error: function(XMLHttpRequest, textStatus, errorThrown) {
-							//alert("error");
 						}
 					});
 				}
@@ -1479,7 +1502,6 @@ function disconnection() {
 	clearInterval(validateSession);
 	validateSession = null;
 	$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
-	location.reload();
 }
 
 // warn the user of a timeout session
@@ -1488,7 +1510,7 @@ function session_checking() {
 		type: "GET",
 		url: config["api url"] + "/api/v1/auth/",
 		contentType: "application/json",
-		success: function(reponse) {
+		success: function(response) {
 		}, // end success
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			$.mobile.changePage(config["simple-ui url"] + "/dialog/timeout.html", { role: "dialog" });

@@ -1,8 +1,7 @@
  <ul data-role="listview" id="template">
-
  <li class="ui-body">
         <div id="previewButton" style="height: 50px;">
-			<a href="#preview" class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-right ui-btn-left" data-rel="popup" data-position-to="window"> Preview this file</a>
+			<a href="#preview" class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left ui-btn-left" data-rel="popup" data-position-to="window"> Preview this file</a>
 		</div>
 	</li>
 	<li class="ui-field-contain">
@@ -37,12 +36,13 @@
 		<label for="metadata">metadata:</label>
 		<span name="metadata" id="metadata"></span>
 	</li>
-	<li class="ui-field-contain">
-		<label for="media">media:</label>
-		<span name="media" id="media"><a href="#mediaPage" class="ui-btn ui-shadow ui-corner-all ui-icon-cloud ui-btn-icon-right"></a></span>
-	</li>
-	<li class="ui-field-contain">
-		<label for="archivePage">archive:</label>
-		<span name="archivePage" id="archivePage"><a href="#archivePage" class="ui-btn ui-shadow ui-corner-all ui-icon-bullets ui-btn-icon-right"></a></span>
+	<li class="ui-field-contain" style="margin-top: 0.8em;">
+			<label for="listLabelSelect" class="select">List of archives (w/ medias):</label>
+		<span name="archivePage" id="archiveFButton">
+			<select name="archive" id="listLabelSelect">
+				<option value=""></option>
+			</select>
+			<a href="#archivePage" class="ui-btn ui-shadow ui-corner-all ui-icon-bullets ui-btn-icon-left">Go to this archive</a>
+		</span>
 	</li>
 </ul> <!--End Listview -->
