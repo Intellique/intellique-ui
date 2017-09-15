@@ -76,10 +76,8 @@ function main() {
 				elt.find('#uuid').text(data.uuid);
 				elt.find('#starttime').text(data.volumes[0].starttime.date);
 				elt.find('#endtime').text(data.volumes[data.volumes.length - 1].endtime.date);
-				elt.find('#size').text(convertSize(data.size));
-				elt.find('#metadata').text(data.metadata);
+				elt.find('#size').text(convertSize(data.size) + " (" + data.size + " B)" );
 				elt.find('#canappend').text(data.canappend);
-				elt.find('#deleted').text(data.deleted);
 
 
 				var creator = elt.find('#creator');
@@ -113,7 +111,32 @@ function main() {
 					error: function(XMLHttpRequest, textStatus, errorThrown) {}
 				});
 
-				// Archive Volume's configuration
+				//Metadata config
+				var configArchiveMetadata = {
+					'dataSearch': {
+					},
+					'headers': [{
+						'name': 'key',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+						}
+					},	{
+						'name': 'value',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+						}
+					}],
+				}
+				var metadataTab = elt.find('#metadata').parent();
+				debugger;
+				var modelMetadata = new ModelMetadata(configArchiveMetadata, data);
+				var metadataView = new dataModelView(modelMetadata, metadataTab);
+
+				//Volume config
 				var configArchiveVolumes = {
 					'dataSearch': {
 						// Provide an archive file's ID to get its information
@@ -142,41 +165,6 @@ function main() {
 						'translatable': true,
 						'transform': function(elt, field, data) {
 							elt.text(convertSize(data[field]));
-						}
-					}, {
-						// Volume's start time
-						'name': 'starttime',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(data[field].date);
-						}
-					}, {
-						// Volume's end time
-						'name': 'endtime',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(data[field].date);
-						}
-					}, {
-						// Volume's checktime
-						'name': 'checktime',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							if (data[field] != null)
-								elt.text(data[field].date);
-							else
-								elt.text("");
-						}
-					}, {
-						// Volume's checksum
-						'name': 'checksumok',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(data[field]);
 						}
 					}, {
 						// Volume's media
@@ -248,14 +236,6 @@ function main() {
 							// Create Media's model and view
 							var mediaModel = new ModelAjax(mediaConfig);
 							var mediaView = new listView(mediaModel, $('#mediaList'));
-						}
-					}, {
-						'name': 'mediaposition',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							// Volume's media position
-							elt.text(data[field]);
 						}
 					}
 				]};
@@ -1083,6 +1063,22 @@ class ModelVolume extends Model {
 	}
 }
 
+class ModelMetadata extends Model {
+	constructor(config, archive) {
+		super(config);
+		this.archive = archive;
+
+		var keys = Object.keys(archive.metadata);
+		this.total_rows = keys.length;
+		keys.sort();
+
+		for (var i = 0, n = this.total_rows; i < n; i++) {
+			this.tabIds[i] = i;
+			this.tabResults[i] = {key: keys[i], value: archive.metadata[keys[i]]};
+		}
+	}
+}
+
 /*
  * VUE
  */
@@ -1150,7 +1146,6 @@ function dataModelView(model, elt) {
 			th.on('click', sort(config.headers[i].name));
 		table_head.append(th);
 	}
-	//table.table('rebuild');
 
 	function display() {
 		table_body.empty();
