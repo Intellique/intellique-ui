@@ -42,339 +42,6 @@ function main() {
 		}
 	});
 
-	// Archive's configuration
-	var archiveConfig = {
-		'url': config["api url"] + "/api/v1/archive/",
-		'keyData': 'archive',
-		'keySearch': 'archives',
-		'dataSearch': {},
-		'informations': {
-			'title' : 'name',
-			'template': 'template/archive.html',
-			'transform': function(elt, data) {
-				// Access rights for users
-				$.ajax({
-					type: "GET",
-					dataType: "json",
-					url: config["api url"] + "/api/v1/auth/",
-					success: function(response) {
-						$.ajax({
-							type: "GET",
-							dataType: "json",
-							url: config["api url"] + "/api/v1/user/?id=" + response.user_id,
-							success: function(response) {
-								if (response.user.canrestore)
-									elt.find('#RestoreButton').show('fast'); //show restore button if the user can restore
-							},
-							error: function(XMLHttpRequest, textStatus, errorThrown) {},
-						});
-					},
-					error: function(XMLHttpRequest, textStatus, errorThrown) {},
-				});
-
-				elt.data('data', data);
-				elt.find('#uuid').text(data.uuid);
-				elt.find('#starttime').text(data.volumes[0].starttime.date);
-				elt.find('#endtime').text(data.volumes[data.volumes.length - 1].endtime.date);
-				elt.find('#size').text(convertSize(data.size) + " (" + data.size + " B)" );
-				elt.find('#canappend').text(data.canappend);
-
-
-				var creator = elt.find('#creator');
-				var owner = elt.find('#owner');
-
-				// Get informations from creator
-				$.ajax({
-					type: "GET",
-					context: this,
-					url: config["api url"] + "/api/v1/user/",
-					data: {
-						id: data.creator
-					},
-					success: function(response) {
-						creator.text(response.user.login);
-					},
-					error: function(XMLHttpRequest, textStatus, errorThrown) {}
-				});
-
-				// Get informations from owner
-				$.ajax({
-					type: "GET",
-					context: this,
-					url: config["api url"] + "/api/v1/user/",
-					data: {
-						id: data.owner
-					},
-					success: function(response) {
-						owner.text(response.user.login);
-					},
-					error: function(XMLHttpRequest, textStatus, errorThrown) {}
-				});
-
-				//Metadata config
-				var configArchiveMetadata = {
-					'dataSearch': {
-					},
-					'headers': [{
-						'name': 'key',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(data[field]);
-						}
-					},	{
-						'name': 'value',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(data[field]);
-						}
-					}],
-				}
-				var metadataTab = elt.find('#metadata').parent();
-				debugger;
-				var modelMetadata = new ModelMetadata(configArchiveMetadata, data);
-				var metadataView = new dataModelView(modelMetadata, metadataTab);
-
-				//Volume config
-				var configArchiveVolumes = {
-					'dataSearch': {
-						// Provide an archive file's ID to get its information
-						id: data.id
-					},
-					'headers': [{
-						// Volume's ID
-						'name': 'id',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(data[field]);
-						}
-					}, {
-						// Volume's sequence
-						'name': 'sequence',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(data[field]);
-						}
-					}, {
-						// Volume's size by byte
-						'name': 'size',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							elt.text(convertSize(data[field]));
-						}
-					}, {
-						// Volume's media
-						'name': 'media',
-						'sortable': 'false',
-						'translatable': true,
-						'transform': function(elt, field, data) {
-							// elt.text(data[field]);
-							// Create Media's name, pop-up, close button and pop-up's information
-							var mediaName = $('<a href="#mediaPage" class="ui-btn ui-shadow ui-corner-all"></a>');
-							$.ajax({
-								type: "GET",
-								context: this,
-								url: config["api url"] + "/api/v1/media/",
-								data: {
-									id: data.media
-								},
-								success: function(response) {
-									mediaName.text(response.media.name);
-									mediaName.on('click', function() {
-										$('#media .search').val(response.media.name);
-										$('#media .search').trigger('change');
-									});
-								},
-								error: function(XMLHttpRequest, textStatus, errorThrown) {}
-							});
-
-							// Add Media name in Volume's table
-							elt.append(mediaName);
-							// Media's configuration
-							var mediaConfig = {
-								'url': config["api url"] + "/api/v1/media/",
-								'keyData': 'media',
-								'keySearch': 'medias',
-								'dataSearch': {
-									// Provide a Media's ID to get its information
-									id: data.media
-								}, // End dataSearch
-								'informations': {
-									'title': 'name',
-									'template': 'template/media.html',
-									'transform': function(elt, data) {
-										elt.find('#name').text(data.name);
-										elt.find('#label').text(data.label);
-										elt.find('#pool').text(data.pool.name);
-										elt.find('#format').text(data.mediaformat.name);
-										elt.find('#uuid').text(data.uuid);
-										elt.find('#firstused').text(data.firstused.date);
-										elt.find('#usebefore').text(data.usebefore.date);
-
-										var espace_used = elt.find('#spaceused');
-										espace_used.find('meter').attr('min', 0);
-										espace_used.find('meter').attr('max', data.totalblock * data.blocksize);
-										espace_used.find('meter').attr('value', (data.totalblock * data.blocksize) - (data.blocksize * data.freeblock));
-										espace_used.find('label').text(convertSize((data.totalblock * data.blocksize) - (data.blocksize * data.freeblock)) + "/" + convertSize(data.totalblock * data.blocksize));
-										espace_used.find('label').css('text-align', 'center');
-									}, // End transform
-								}, // End informations
-								'search': function(input) {
-									var text = input.val();
-
-									if (text.length > 0)
-										this.dataSearch.name = text;
-									else
-										delete this.dataSearch.name;
-								}
-							}; // End mediaConfig
-
-							// Create Media's model and view
-							var mediaModel = new ModelAjax(mediaConfig);
-							var mediaView = new listView(mediaModel, $('#mediaList'));
-						}
-					}
-				]};
-
-				var volumeTab = elt.find('#volume').parent();
-
-				// Create Volume's model and view
-				var volumeModel = new ModelVolume(configArchiveVolumes, data);
-				var volumeView = new dataModelView(volumeModel, volumeTab);
-
-				// Event listener when clicked, change to archive's files page
-				elt.find('#archiveFilesButton a').on('click', function() {
-					// Research Archive Files's configuration
-					var configSearchArchiveFiles = {
-						'url': config["api url"] + "/api/v1/archivefile/",
-						'keyData': 'archivefile',
-						'keySearch': 'archivefiles',
-						'dataSearch': {
-							archive: data.id
-						},
-						'informations': {
-							'title': 'name',
-							'template': 'template/archiveFiles.html',
-							'transform': function(elt, data) {
-								elt.find('#name').text(data.name);
-								elt.find('#mimetype').text(data.mimetype);
-								elt.find('#owner').text(data.owner);
-								elt.find('#groups').text(data.groups);
-								elt.find('#ctime').text(data.ctime);
-								elt.find('#mtime').text(data.mtime);
-								elt.find('#size').text(convertSize(data.size));
-								elt.find('#media').text(data.medias);
-
-								var metadata = elt.find('#metadata');
-								$.ajax({
-									type: "GET",
-									context: this,
-									url: config["api url"] + "/api/v1/archivefile/metadata/",
-									data: {
-										id: data.id
-									},
-									success: function(response) {
-										metadata.text(JSON.stringify(response));
-									},
-									error: function(XMLHttpRequest, textStatus, errorThrown) {
-										metadata.text("No metadata found for this object");
-									}
-								});
-
-								$.ajax({
-									type: "GET",
-									context: this,
-									url: config["api url"] + "/api/v1/archive/",
-									data: {
-										id: data.archive
-									},
-									success: function(response) {
-										elt.find('#archivePage a').text(response.archive.name);
-										$('#archivePage a').on('click', function() {
-											$('#archive .search').val(response.archive.name);
-											$('#archive .search').trigger('change');
-										});
-									},
-									error : function(XMLHttpRequest, textStatus, errorThrown) {}
-								});
-
-								if (data.mimetype == "inode/directory")
-									elt.find('#previewButton').hide(); //Directories cannot use the preview function
-
-								elt.find('#previewButton').on('click',function() {
-										window.open(config['api url'] + "/api/v1/archivefile/preview/?id=" + data.id);
-								});
-							}
-						}, // End function transform
-						// Search filter bar
-						'search': function(input) {
-							var text = input.val();
-							if (text.length > 0)
-								this.dataSearch.name = text;
-							else
-								delete this.dataSearch.name;
-						} // End search
-					}; // End archive's files configuration
-					// Create a model and a view for Archive Files's list
-					var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
-					var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
-				}); // End event listener
-
-				elt.find('#RestoreButton a').on('click', function() {
-					$.ajax({
-						type: "POST", //Restoration task is triggered with a POST request
-						url: config["api url"] + "/api/v1/archive/restore/",
-						contentType: "application/json",
-						dataType: 'json',
-						data: JSON.stringify({
-							archive: data.id,
-							nextstart: "now",
-							destination: config["restore path"]
-						}),
-						success: function(response) {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/rSuccess.html", { role: "dialog" });
-						},
-						error: function(XMLHttpRequest, textStatus, errorThrown) {
-							$.mobile.changePage(config["simple-ui url"]+"/dialog/rFailed.html", { role: "dialog" });
-						}
-					});
-				});
-			} // End function transform
-
-		}, // End informations
-		'search': function(input) {
-			var text = input.val();
-
-			var keys = ['archivefile', 'creator', 'media', 'name', 'owner', 'pool', 'poolgroup', 'uuid'];
-			for (var i = 0, n = keys.length; i < n; i++)
-				this.dataSearch[keys[i]] = null;
-
-			var match, regex = /(?:(archivefile|creator|media|owner|pool|poolgroup|uuid):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
-
-			var lems = [];
-			while ((match = regex.exec(text)) != null) {
-				var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
-				if (match[1])
-					this.dataSearch[match[1]] = matched;
-				else
-					lems.push(matched);
-			}
-
-			if (lems.length > 1)
-				this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
-			else if (lems.length == 1)
-				this.dataSearch.name = lems[0];
-
-			for (var i = 0, n = keys.length; i < n; i++)
-				if (!this.dataSearch[keys[i]])
-					delete this.dataSearch[keys[i]];
-		}
-	};
-
 	/*
 	 * authentification
 	 * login and password to log in
@@ -383,10 +50,7 @@ function main() {
 		type: "GET",
 		url: config["api url"] + "/api/v1/auth/",
 		success: function(response) {
-			// create model and view for "archive page" after login
-			var model = new ModelAjax(archiveConfig);
-			var view = new listView(model, $('#archiveList'));
-
+				startModel();
 			// Change to archive page
 			$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
 			validateSession = setInterval(session_checking, 20000);
@@ -431,10 +95,7 @@ function main() {
 			dataType: "json",
 			contentType: "application/json",
 			success: function(response) {
-				// create model and view for "archive page" after login
-				var model = new ModelAjax(archiveConfig);
-				var view = new listView(model, $('#archiveList'));
-
+				startModel();
 				//change to archive page
 				$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
 				validateSession = setInterval(session_checking, 20000);
@@ -473,378 +134,6 @@ function main() {
 			error: function(XMLHttpRequest, textStatus, errorThrown) {}
 		}); // end ajax
 	}); // end disconnection button listener
-
-	/*
-	 *
-	 */
-	$('.archiveButtonPage').on('click', function() {
-		$('#archive .search').val(null);
-		var model = new ModelAjax(archiveConfig);
-		var view = new listView(model, $('#archiveList'));
-	});
-
-	$('.filesButtonPage').on('click', function() {
-		$('#archiveFiles .search').val(null);
-		// Research Archive Files's configuration
-		var configSearchArchiveFiles = {
-			'url': config["api url"] + "/api/v1/archivefile/",
-			'keyData': 'archivefile',
-			'keySearch': 'archivefiles',
-			'dataSearch': {},
-			'informations': {
-				'title': 'name',
-				'template': 'template/archiveFiles.html',
-				'transform': function(elt, data) {
-					elt.find('#name').text(data.name);
-					elt.find('#mimetype').text(data.mimetype);
-					elt.find('#owner').text(data.owner);
-					elt.find('#groups').text(data.groups);
-					elt.find('#ctime').text(data.ctime);
-					elt.find('#mtime').text(data.mtime);
-					elt.find('#size').text(convertSize(data.size));
-
-					var metadata = elt.find('#metadata');
-					$.ajax({
-						type: "GET",
-						context: this,
-						url: config["api url"] + "/api/v1/archivefile/metadata/",
-						data: {
-							id: data.id
-						},
-						success: function(response) {
-							metadata.text(JSON.stringlify(response));
-						},
-						error: function(XMLHttpRequest, textStatus, errorThrown) {
-							metadata.text("No metadata found for this object");
-						}
-					});
-
-					var archiveSelect = elt.find("#listLabelSelect");
-					archiveSelect.empty();
-					for (var i in data.archives){
-						$.ajax({
-							url: config['api url'] + '/api/v1/archive/?id=' + i,
-							type: "GET",
-							dataType: 'json',
-							success: function(response) {
-								archiveSelect.append('<option value="' + response.archive["id"] + '">' + response.archive["name"] + " (" + data.archives[i].join(", ") + ')</option>');
-								$('#archiveFButton a').on('click', function() {
-									$('#archive .search').val("uuid:" + response.archive["uuid"]);
-									$('#archive .search').trigger('change');
-								});
-							},
-							error: function(XMLHttpRequest, textStatus, errorThrown) {}
-						});
-					}
-
-					if (data.mimetype == "inode/directory")
-						elt.find('#previewButton').hide(); //Directories cannot use the preview function
-
-					elt.find('#previewButton').on('click', function() {
-							window.open(config['api url'] + "/api/v1/archivefile/preview/?id=" + data.id);
-					});
-				}
-			}, // End function transform
-			// Search filter bar
-			'search': function(input) {
-				var text = input.val();
-
-				var keys = ['name', 'archive', 'mimetype'];
-				for (var i = 0, n = keys.length; i < n; i++)
-					this.dataSearch[keys[i]] = null;
-
-				var match, regex = /(?:(archive|mimetype):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
-
-				var lems = [];
-				while ((match = regex.exec(text)) != null) {
-					var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
-					if (match[1])
-						this.dataSearch[match[1]] = matched;
-					else
-						lems.push(matched);
-				}
-
-				if (lems.length > 1)
-					this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
-				else if (lems.length == 1)
-					this.dataSearch.name = lems[0];
-
-				for (var i = 0, n = keys.length; i < n; i++)
-					if (!this.dataSearch[keys[i]])
-						delete this.dataSearch[keys[i]];
-			} // End search
-		}; // End archive's files configuration
-
-		// Create a model and a view for Archive Files's list
-		var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
-		var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
-	});
-
-	$('.mediaButtonPage').on('click', function() {
-		$('#media .search').val(null);
-		// Media's configuration
-		var mediaConfig = {
-			'url': config["api url"] + "/api/v1/media/",
-			'keyData': 'media',
-			'keySearch': 'medias',
-			'dataSearch': {
-			},
-			'informations': {
-				'title': 'name',
-				'template': 'template/media.html',
-				'transform': function(elt, data) {
-					elt.find('#name').text(data.name);
-					elt.find('#label').text(data.label);
-					elt.find('#pool').text(data.pool.name);
-					elt.find('#format').text(data.mediaformat.name);
-					elt.find('#uuid').text(data.uuid);
-					elt.find('#firstused').text(data.firstused.date);
-					elt.find('#usebefore').text(data.usebefore.date);
-
-					var espace_used = elt.find('#spaceused');
-					espace_used.find('meter').attr('min', 0);
-					espace_used.find('meter').attr('max', data.totalblock * data.blocksize);
-					espace_used.find('meter').attr('value', (data.totalblock * data.blocksize) - (data.blocksize * data.freeblock));
-					espace_used.find('label').text(convertSize((data.totalblock * data.blocksize) - (data.blocksize * data.freeblock)) + "/" + convertSize(data.totalblock * data.blocksize));
-					espace_used.find('label').css('text-align', 'center');
-				}, // End transform
-			}, // End informations
-			'search': function(input) {
-				var text = input.val();
-
-				var keys = ['name', 'pool', 'nbfiles', 'archiveformat', 'mediaformat', 'type'];
-				for (var i = 0, n = keys.length; i < n; i++)
-					this.dataSearch[keys[i]] = null;
-
-				var match, regex = /(?:(pool|nbfiles|archiveformat|mediaformat|type):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
-
-				var lems = [];
-				while ((match = regex.exec(text)) != null) {
-					var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
-					if (match[1])
-						this.dataSearch[match[1]] = matched;
-					else
-						lems.push(matched);
-				}
-
-				if (lems.length > 1)
-					this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
-				else if (lems.length == 1)
-					this.dataSearch.name = lems[0];
-
-				for (var i = 0, n = keys.length; i < n; i++)
-					if (!this.dataSearch[keys[i]])
-						delete this.dataSearch[keys[i]];
-			}
-		}; // End mediaConfig
-
-		// Create Media's model and view
-		var mediaModel = new ModelAjax(mediaConfig);
-		var mediaView = new listView(mediaModel, $('#mediaList'));
-	});
-
-	var adminConfig = {
-		'url': config["api url"] + "/api/v1/user/",
-		'keyData': 'user',
-		'keySearch': 'users',
-		'dataSearch': {}, // End dataSearch
-		'informations': {
-			'title': 'login',
-			'template': 'template/administration.html',
-			'transform': function(elt, data) {
-				elt.find('#Tid').text(data.id);
-				elt.find('#Tlogin').text(data.login);
-				elt.find('#Tfullname').text(data.fullname);
-				elt.find('#Temail').text(data.email);
-				elt.find('#Thomedirectory').text(data.homedirectory);
-				elt.find('#Tisadmin').text(data.isadmin);
-				elt.find('#Tcanarchive').text(data.canarchive);
-				elt.find('#Tcanrestore').text(data.canrestore);
-				elt.find('#Tdisabled').text(data.disabled);
-
-				if(data.poolgroup === null)
-					elt.find('#Tpoolgroup').text("no poolgroup affected");
-				else {
-					$.ajax({
-						url: config['api url'] + '/api/v1/poolgroup/?id=' + data.poolgroup,
-						type: "GET",
-						dataType: 'json',
-						context: elt,
-						success: function(response) {
-							this.find('#Tpoolgroup').text(response.poolgroup["name"]);
-						},
-						error: function(XMLHttpRequest, textStatus, errorThrown) {
-						}
-					});
-				}
-
-				elt.find('#EditUserButton').on('click', data, function(evt) {
-					$(":mobile-pagecontainer").pagecontainer("change", "#modUserPage");
-					$('#addUserButton').hide();
-					$('#headerAdd').hide();
-					$('#editButton').show();
-					$('#headerEdit').show();
-					$.ajax({ //Pre-filling user's informations in the edit form
-						type: "GET",
-						url: config["api url"] + "/api/v1/user/?id=" + evt.data.id,
-						ContentType : "application/json",
-						success: function(response) {
-							$('#login').val(response.user['login']);
-							$('#fullname').val(response.user['fullname']);
-							$('#email').val(response.user['email']);
-							$('#homedir').val(response.user['homedirectory']);
-
-							if (response.user['isadmin'])
-								$("#canadmin").prop("checked", true).checkboxradio("refresh");
-							if (response.user['canarchive'])
-								$("#canarchive").prop("checked", true).checkboxradio("refresh");
-							if (response.user['canrestore'])
-								$("#canrestore").prop("checked", true).checkboxradio("refresh");
-							if (response.user['disabled'])
-								$("#disabled").prop("checked", true).checkboxradio("refresh");
-
-							var bttnEdit = $('#editButton');
-							bttnEdit.on('click', evt.data, function(evt) {
-								var dataEdit = null;
-								if ($('#pwd').val().length > 0) {
-									dataEdit = JSON.stringify({
-										id: evt.data.id,
-										login: $('#login').val(),
-										fullname: $('#fullname').val(),
-										password: $('#pwd').val(),
-										email: $('#email').val(),
-										homedirectory: $('#homedir').val(),
-										isadmin: $('[name="canadmin"]:checked').length > 0,
-										canarchive: $('[name="canarchive"]:checked').length > 0,
-										canrestore: $('[name="canrestore"]:checked').length > 0,
-										meta: {},
-										poolgroup: parseInt($('[#poolgroup"]').val()),
-										disabled: $('[name="disabled"]:checked').length > 0
-									});
-								} else {
-									dataEdit = JSON.stringify({
-										id: evt.data.id,
-										login: $('#login').val(),
-										fullname: $('#fullname').val(),
-										email: $('#email').val(),
-										homedirectory: $('#homedir').val(),
-										isadmin: $('[name="canadmin"]:checked').length > 0,
-										canarchive: $('[name="canarchive"]:checked').length > 0,
-										canrestore: $('[name="canrestore"]:checked').length > 0,
-										meta: {},
-										poolgroup: parseInt($('#poolgroup').val()),
-										disabled: $('[name="disabled"]:checked').length > 0
-									});
-								}
-
-								$.ajax({
-									type: "PUT",
-									url: config["api url"] + "/api/v1/user/",
-									dataType: 'json',
-									contentType: 'application/json',
-									data: dataEdit,
-									success: function(response) {
-										$('#login').val('');
-										$('#fullname').val('');
-										$('#pwd').val('');
-										$('#email').val('');
-										$('#homedir').val('');
-										$("#canadmin").prop("checked", false).checkboxradio().checkboxradio("refresh");
-										$("#canarchive").prop("checked", false).checkboxradio().checkboxradio("refresh");
-										$("#canrestore").prop("checked", false).checkboxradio().checkboxradio("refresh");
-										$("#disabled").prop("checked", false).checkboxradio().checkboxradio("refresh");
-										$('[name="poolgroup"]').val('').selectmenu().selectmenu('refresh', true);
-										bttnEdit.off('click');
-
-										$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserSuccess.html", {role: "dialog"});
-
-										var adminModel = new ModelAjax(adminConfig);
-										var adminView = new listView(adminModel, $('#administrationList'));
-										$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
-									},
-									error: function(XMLHttpRequest, textStatus, errorThrown) {
-										$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserFail.html", {role: "dialog"});
-										bttnEdit.off('click');
-									}
-								});
-							});
-						},
-						error: function(XMLHttpRequest, textStatus, errorThrown) {}
-					});
-				});
-
-				$('#RemoveUserButton').on('click', function() {
-					$.ajax({
-						type: "DELETE",
-						url: config["api url"] + "/api/v1/user/?id=" + data.id,
-						dataType: 'json',
-						success: function(response) {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserSuccess.html", {role: "dialog"});
-							var adminModel = new ModelAjax(adminConfig);
-							var adminView = new listView(adminModel, $('#administrationList'));
-							$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
-						},
-						error: function(XMLHttpRequest, textStatus, errorThrown) {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserFail.html", {role: "dialog"});
-							var adminModel = new ModelAjax(adminConfig);
-							var adminView = new listView(adminModel, $('#administrationList'));
-							$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
-						}
-					});
-				});
-
-				if (data.disabled)
-					$('#RemoveUserButton').hide();
-			}, // End transform
-		}, // End informations
-		'search': function(input) {
-			var text = input.val();
-
-			var keys = ['name', 'poolgroup', 'isadmin', 'canarchive', 'canrestore', 'disabled'];
-			for (var i = 0, n = keys.length; i < n; i++)
-				this.dataSearch[keys[i]] = null;
-
-			var match, regex = /(can(?:not)?):\s*(archive|restore)|(is(?:not)?):\s*(admin|enabled|disabled)|(?:(poolgroup):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
-
-			var lems = [];
-			while ((match = regex.exec(text)) != null) {
-				var matched = match[6] || match[7] || match[8];
-				if (match[1]) {
-					var can = match[1] == 'can';
-					if (match[2] == 'archive')
-						this.dataSearch.canarchive = can;
-					else
-						this.dataSearch.canrestore = can;
-				} else if (match[3]) {
-					var is = match[3] == 'is';
-
-					if (match[4] == 'admin')
-						this.dataSearch.isadmin = is;
-					else
-						this.dataSearch.disabled = is ^ (match[4] == 'enabled') ? true : false;
-				} else if (match[5]) {
-					this.dataSearch[match[5]] = matched;
-				} else
-					lems.push(matched);
-			}
-
-			if (lems.length > 1)
-				this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
-			else if (lems.length == 1)
-				this.dataSearch.name = lems[0];
-
-			for (var i = 0, n = keys.length; i < n; i++)
-				if (this.dataSearch[keys[i]] === null)
-					delete this.dataSearch[keys[i]];
-		}
-	}; // End adminConfig
-
-	$('.administrationButtonPage').on('click', function() {
-		$('#administration .search').val(null);
-		// Create Aministration's model and view
-		var adminModel = new ModelAjax(adminConfig);
-		var adminView = new listView(adminModel, $('#administrationList'));
-	});
 
 	function poolGroupMenu() {
 		$('#poolgroup > ~').remove();
@@ -1124,6 +413,11 @@ function dataModelView(model, elt) {
 		search.off();
 	});
 
+	this.search = function(searchText) {
+		search.val(searchText);
+		searchNow();
+	}
+
 	var table = elt.find('table');
 	var table_head = table.find('thead tr');
 	var table_body = table.find('tbody');
@@ -1299,6 +593,11 @@ function listView(model, elt) {
 		search.off();
 	});
 
+	this.search = function(searchText) {
+		search.val(searchText);
+		searchNow();
+	}
+
 	function sort(name) {
 		return function() {
 			if (config.dataSearch.order_by == name)
@@ -1454,6 +753,594 @@ function listView(model, elt) {
 			limit.selectmenu().selectmenu("refresh");
 		});
 	}
+}
+
+function startModel () {
+	// Archive's configuration
+	var archiveConfig = {
+		'url': config["api url"] + "/api/v1/archive/",
+		'keyData': 'archive',
+		'keySearch': 'archives',
+		'dataSearch': {},
+		'informations': {
+			'title' : 'name',
+			'template': 'template/archive.html',
+			'transform': function(elt, data) {
+				// Access rights for users
+				$.ajax({
+					type: "GET",
+					dataType: "json",
+					url: config["api url"] + "/api/v1/auth/",
+					success: function(response) {
+						$.ajax({
+							type: "GET",
+							dataType: "json",
+							url: config["api url"] + "/api/v1/user/?id=" + response.user_id,
+							success: function(response) {
+								if (response.user.canrestore)
+									elt.find('#RestoreButton').show('fast'); //show restore button if the user can restore
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {},
+						});
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {},
+				});
+
+				elt.data('data', data);
+				elt.find('#uuid').text(data.uuid);
+				elt.find('#starttime').text(data.volumes[0].starttime.date);
+				elt.find('#endtime').text(data.volumes[data.volumes.length - 1].endtime.date);
+				elt.find('#size').text(convertSize(data.size) + " (" + data.size + " B)" );
+				elt.find('#canappend').text(data.canappend);
+
+
+				var creator = elt.find('#creator');
+				var owner = elt.find('#owner');
+
+				// Get informations from creator
+				$.ajax({
+					type: "GET",
+					context: this,
+					url: config["api url"] + "/api/v1/user/",
+					data: {
+						id: data.creator
+					},
+					success: function(response) {
+						creator.text(response.user.login);
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				});
+
+				// Get informations from owner
+				$.ajax({
+					type: "GET",
+					context: this,
+					url: config["api url"] + "/api/v1/user/",
+					data: {
+						id: data.owner
+					},
+					success: function(response) {
+						owner.text(response.user.login);
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				});
+
+				//Metadata config
+				var configArchiveMetadata = {
+					'dataSearch': {
+					},
+					'headers': [{
+						'name': 'key',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+						}
+					},	{
+						'name': 'value',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+						}
+					}],
+				}
+				var metadataTab = elt.find('#metadata').parent();
+
+				var modelMetadata = new ModelMetadata(configArchiveMetadata, data);
+				var metadataView = new dataModelView(modelMetadata, metadataTab);
+
+				//Volume config
+				var configArchiveVolumes = {
+					'dataSearch': {
+						// Provide an archive file's ID to get its information
+						id: data.id
+					},
+					'headers': [{
+						// Volume's ID
+						'name': 'id',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+						}
+					}, {
+						// Volume's sequence
+						'name': 'sequence',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(data[field]);
+						}
+					}, {
+						// Volume's size by byte
+						'name': 'size',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							elt.text(convertSize(data[field]));
+						}
+					}, {
+						// Volume's media
+						'name': 'media',
+						'sortable': 'false',
+						'translatable': true,
+						'transform': function(elt, field, data) {
+							// Create Media's name, pop-up, close button and pop-up's information
+							var mediaName = $('<a href="#mediaPage" id="mediaVolume" class="ui-btn ui-shadow ui-corner-all ui-btn ui-icon-cloud ui-btn-icon-left"></a>');
+							$.ajax({
+								type: "GET",
+								context: this,
+								url: config["api url"] + "/api/v1/media/",
+								data: {
+									id: data.media
+								},
+								success: function(response) {
+									mediaName.text(response.media.name);
+									mediaName.on('click', function() {
+										mediaView.search(response.media.name);
+									});
+								},
+								error: function(XMLHttpRequest, textStatus, errorThrown) {}
+							});
+
+							elt.append(mediaName);
+						}
+					}
+				]};
+
+				var volumeTab = elt.find('#volume').parent();
+
+				// Create Volume's model and view
+				var volumeModel = new ModelVolume(configArchiveVolumes, data);
+				var volumeView = new dataModelView(volumeModel, volumeTab);
+
+				// Event listener when clicked, change to archive's files page
+				elt.find('#archiveFilesButton a').on('click', function() {
+					archiveFilesView.search("archive:" + data.id);
+				});
+					
+				elt.find('#RestoreButton a').on('click', function() {
+					$.ajax({
+						type: "POST", //Restoration task is triggered with a POST request
+						url: config["api url"] + "/api/v1/archive/restore/",
+						contentType: "application/json",
+						dataType: 'json',
+						data: JSON.stringify({
+							archive: data.id,
+							nextstart: "now",
+							destination: config["restore path"]
+						}),
+						success: function(response) {
+							$.mobile.changePage(config["simple-ui url"] + "/dialog/rSuccess.html", { role: "dialog" });
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
+							$.mobile.changePage(config["simple-ui url"]+"/dialog/rFailed.html", { role: "dialog" });
+						}
+					});
+				});
+			} // End function transform
+
+		}, // End informations
+		'search': function(input) {
+			var text = input.val();
+
+			var keys = ['archivefile', 'creator', 'media', 'name', 'owner', 'pool', 'poolgroup', 'uuid'];
+			for (var i = 0, n = keys.length; i < n; i++)
+				this.dataSearch[keys[i]] = null;
+
+			var match, regex = /(?:(archivefile|creator|media|owner|pool|poolgroup|uuid):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+
+			var lems = [];
+			while ((match = regex.exec(text)) != null) {
+				var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
+				if (match[1])
+					this.dataSearch[match[1]] = matched;
+				else
+					lems.push(matched);
+			}
+
+			if (lems.length > 1)
+				this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
+			else if (lems.length == 1)
+				this.dataSearch.name = lems[0];
+
+			for (var i = 0, n = keys.length; i < n; i++)
+				if (!this.dataSearch[keys[i]])
+					delete this.dataSearch[keys[i]];
+		}
+	}; //end of archive configuration
+
+	var configSearchArchiveFiles = {
+		'url': config["api url"] + "/api/v1/archivefile/",
+		'keyData': 'archivefile',
+		'keySearch': 'archivefiles',
+		'dataSearch': {},
+		'informations': {
+			'title': 'name',
+			'template': 'template/archiveFiles.html',
+			'transform': function(elt, data) {
+				elt.find('#name').text(data.name);
+				elt.find('#mimetype').text(data.mimetype);
+				elt.find('#owner').text(data.owner);
+				elt.find('#groups').text(data.groups);
+				elt.find('#ctime').text(data.ctime);
+				elt.find('#mtime').text(data.mtime);
+				elt.find('#size').text(convertSize(data.size));
+
+				var metadata = elt.find('#metadata');
+				$.ajax({
+					type: "GET",
+					context: this,
+					url: config["api url"] + "/api/v1/archivefile/metadata/",
+					data: {
+						id: data.id
+					},
+					success: function(response) {
+						metadata.text(JSON.stringlify(response));
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+						metadata.text("No metadata found for this object");
+					}
+				});
+
+				var archiveSelect = elt.find("#listLabelSelect");
+				archiveSelect.empty();
+				for (var i in data.archives){
+					$.ajax({
+						url: config['api url'] + '/api/v1/archive/?id=' + i,
+						type: "GET",
+						dataType: 'json',
+						success: function(response) {
+							archiveSelect.append('<option value="' + response.archive["id"] + '">' + response.archive["name"] + " (" + data.archives[i].join(", ") + ')</option>');
+							$('#archiveFButton a').on('click', function() {
+								archiveView.search("uuid:" + response.archive["uuid"]);
+							});
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					});
+				}
+
+				if (data.mimetype == "inode/directory")
+					elt.find('#previewButton').hide(); //Directories cannot use the preview function
+
+				elt.find('#previewButton').on('click', function() {
+						window.open(config['api url'] + "/api/v1/archivefile/preview/?id=" + data.id);
+				});
+			}
+		}, // End function transform
+		// Search filter bar
+		'search': function(input) {
+			var text = input.val();
+
+			var keys = ['name', 'archive', 'mimetype'];
+			for (var i = 0, n = keys.length; i < n; i++)
+				this.dataSearch[keys[i]] = null;
+
+			var match, regex = /(?:(archive|mimetype):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+
+			var lems = [];
+			while ((match = regex.exec(text)) != null) {
+				var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
+				if (match[1])
+					this.dataSearch[match[1]] = matched;
+				else
+					lems.push(matched);
+			}
+
+			if (lems.length > 1)
+				this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
+			else if (lems.length == 1)
+				this.dataSearch.name = lems[0];
+
+			for (var i = 0, n = keys.length; i < n; i++)
+				if (!this.dataSearch[keys[i]])
+					delete this.dataSearch[keys[i]];
+		} // End search
+	}; // End archive's files configuration
+
+	var mediaConfig = {
+		'url': config["api url"] + "/api/v1/media/",
+		'keyData': 'media',
+		'keySearch': 'medias',
+		'dataSearch': {
+		},
+		'informations': {
+			'title': 'name',
+			'template': 'template/media.html',
+			'transform': function(elt, data) {
+				elt.find('#name').text(data.name);
+				elt.find('#label').text(data.label);
+				elt.find('#pool').text(data.pool.name);
+				elt.find('#format').text(data.mediaformat.name);
+				elt.find('#uuid').text(data.uuid);
+				elt.find('#firstused').text(data.firstused.date);
+				elt.find('#usebefore').text(data.usebefore.date);
+
+				var espace_used = elt.find('#spaceused');
+				espace_used.find('meter').attr('min', 0);
+				espace_used.find('meter').attr('max', data.totalblock * data.blocksize);
+				espace_used.find('meter').attr('value', (data.totalblock * data.blocksize) - (data.blocksize * data.freeblock));
+				espace_used.find('label').text(convertSize((data.totalblock * data.blocksize) - (data.blocksize * data.freeblock)) + "/" + convertSize(data.totalblock * data.blocksize));
+				espace_used.find('label').css('text-align', 'center');
+			}, // End transform
+		}, // End informations
+		'search': function(input) {
+			var text = input.val();
+
+			var keys = ['name', 'pool', 'nbfiles', 'archiveformat', 'mediaformat', 'type'];
+			for (var i = 0, n = keys.length; i < n; i++)
+				this.dataSearch[keys[i]] = null;
+
+			var match, regex = /(?:(pool|nbfiles|archiveformat|mediaformat|type):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+
+			var lems = [];
+			while ((match = regex.exec(text)) != null) {
+				var matched = match[2] || match[3] || match[4] || match[5] || match[6] || match[7];
+				if (match[1])
+					this.dataSearch[match[1]] = matched;
+				else
+					lems.push(matched);
+			}
+
+			if (lems.length > 1)
+				this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
+			else if (lems.length == 1)
+				this.dataSearch.name = lems[0];
+
+			for (var i = 0, n = keys.length; i < n; i++)
+				if (!this.dataSearch[keys[i]])
+					delete this.dataSearch[keys[i]];
+		}
+	}; // End mediaConfig
+
+	var adminConfig = {
+		'url': config["api url"] + "/api/v1/user/",
+		'keyData': 'user',
+		'keySearch': 'users',
+		'dataSearch': {}, // End dataSearch
+		'informations': {
+			'title': 'login',
+			'template': 'template/administration.html',
+			'transform': function(elt, data) {
+				elt.find('#Tid').text(data.id);
+				elt.find('#Tlogin').text(data.login);
+				elt.find('#Tfullname').text(data.fullname);
+				elt.find('#Temail').text(data.email);
+				elt.find('#Thomedirectory').text(data.homedirectory);
+				elt.find('#Tisadmin').text(data.isadmin);
+				elt.find('#Tcanarchive').text(data.canarchive);
+				elt.find('#Tcanrestore').text(data.canrestore);
+				elt.find('#Tdisabled').text(data.disabled);
+
+				if(data.poolgroup === null)
+					elt.find('#Tpoolgroup').text("no poolgroup affected");
+				else {
+					$.ajax({
+						url: config['api url'] + '/api/v1/poolgroup/?id=' + data.poolgroup,
+						type: "GET",
+						dataType: 'json',
+						context: elt,
+						success: function(response) {
+							this.find('#Tpoolgroup').text(response.poolgroup["name"]);
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
+						}
+					});
+				}
+
+				elt.find('#EditUserButton').on('click', data, function(evt) {
+					$(":mobile-pagecontainer").pagecontainer("change", "#modUserPage");
+					$('#addUserButton').hide();
+					$('#headerAdd').hide();
+					$('#editButton').show();
+					$('#headerEdit').show();
+					$.ajax({ //Pre-filling user's informations in the edit form
+						type: "GET",
+						url: config["api url"] + "/api/v1/user/?id=" + evt.data.id,
+						ContentType : "application/json",
+						success: function(response) {
+							$('#login').val(response.user['login']);
+							$('#fullname').val(response.user['fullname']);
+							$('#email').val(response.user['email']);
+							$('#homedir').val(response.user['homedirectory']);
+
+							if (response.user['isadmin'])
+								$("#canadmin").prop("checked", true).checkboxradio("refresh");
+							if (response.user['canarchive'])
+								$("#canarchive").prop("checked", true).checkboxradio("refresh");
+							if (response.user['canrestore'])
+								$("#canrestore").prop("checked", true).checkboxradio("refresh");
+							if (response.user['disabled'])
+								$("#disabled").prop("checked", true).checkboxradio("refresh");
+
+							var bttnEdit = $('#editButton');
+							bttnEdit.on('click', evt.data, function(evt) {
+								var dataEdit = null;
+								if ($('#pwd').val().length > 0) {
+									dataEdit = JSON.stringify({
+										id: evt.data.id,
+										login: $('#login').val(),
+										fullname: $('#fullname').val(),
+										password: $('#pwd').val(),
+										email: $('#email').val(),
+										homedirectory: $('#homedir').val(),
+										isadmin: $('[name="canadmin"]:checked').length > 0,
+										canarchive: $('[name="canarchive"]:checked').length > 0,
+										canrestore: $('[name="canrestore"]:checked').length > 0,
+										meta: {},
+										poolgroup: parseInt($('[#poolgroup"]').val()),
+										disabled: $('[name="disabled"]:checked').length > 0
+									});
+								} else {
+									dataEdit = JSON.stringify({
+										id: evt.data.id,
+										login: $('#login').val(),
+										fullname: $('#fullname').val(),
+										email: $('#email').val(),
+										homedirectory: $('#homedir').val(),
+										isadmin: $('[name="canadmin"]:checked').length > 0,
+										canarchive: $('[name="canarchive"]:checked').length > 0,
+										canrestore: $('[name="canrestore"]:checked').length > 0,
+										meta: {},
+										poolgroup: parseInt($('#poolgroup').val()),
+										disabled: $('[name="disabled"]:checked').length > 0
+									});
+								}
+
+								$.ajax({
+									type: "PUT",
+									url: config["api url"] + "/api/v1/user/",
+									dataType: 'json',
+									contentType: 'application/json',
+									data: dataEdit,
+									success: function(response) {
+										$('#login').val('');
+										$('#fullname').val('');
+										$('#pwd').val('');
+										$('#email').val('');
+										$('#homedir').val('');
+										$("#canadmin").prop("checked", false).checkboxradio().checkboxradio("refresh");
+										$("#canarchive").prop("checked", false).checkboxradio().checkboxradio("refresh");
+										$("#canrestore").prop("checked", false).checkboxradio().checkboxradio("refresh");
+										$("#disabled").prop("checked", false).checkboxradio().checkboxradio("refresh");
+										$('[name="poolgroup"]').val('').selectmenu().selectmenu('refresh', true);
+										bttnEdit.off('click');
+
+										$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserSuccess.html", {role: "dialog"});
+
+										var adminModel = new ModelAjax(adminConfig);
+										var adminView = new listView(adminModel, $('#administrationList'));
+										$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+									},
+									error: function(XMLHttpRequest, textStatus, errorThrown) {
+										$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserFail.html", {role: "dialog"});
+										bttnEdit.off('click');
+									}
+								});
+							});
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					});
+				});
+
+				$('#RemoveUserButton').on('click', function() {
+					$.ajax({
+						type: "DELETE",
+						url: config["api url"] + "/api/v1/user/?id=" + data.id,
+						dataType: 'json',
+						success: function(response) {
+							$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserSuccess.html", {role: "dialog"});
+							var adminModel = new ModelAjax(adminConfig);
+							var adminView = new listView(adminModel, $('#administrationList'));
+							$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
+							$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserFail.html", {role: "dialog"});
+							var adminModel = new ModelAjax(adminConfig);
+							var adminView = new listView(adminModel, $('#administrationList'));
+							$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+						}
+					});
+				});
+
+				if (data.disabled)
+					$('#RemoveUserButton').hide();
+			}, // End transform
+		}, // End informations
+		'search': function(input) {
+			var text = input.val();
+
+			var keys = ['name', 'poolgroup', 'isadmin', 'canarchive', 'canrestore', 'disabled'];
+			for (var i = 0, n = keys.length; i < n; i++)
+				this.dataSearch[keys[i]] = null;
+
+			var match, regex = /(can(?:not)?):\s*(archive|restore)|(is(?:not)?):\s*(admin|enabled|disabled)|(?:(poolgroup):\s*)?(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
+
+			var lems = [];
+			while ((match = regex.exec(text)) != null) {
+				var matched = match[6] || match[7] || match[8];
+				if (match[1]) {
+					var can = match[1] == 'can';
+					if (match[2] == 'archive')
+						this.dataSearch.canarchive = can;
+					else
+						this.dataSearch.canrestore = can;
+				} else if (match[3]) {
+					var is = match[3] == 'is';
+
+					if (match[4] == 'admin')
+						this.dataSearch.isadmin = is;
+					else
+						this.dataSearch.disabled = is ^ (match[4] == 'enabled') ? true : false;
+				} else if (match[5]) {
+					this.dataSearch[match[5]] = matched;
+				} else
+					lems.push(matched);
+			}
+
+			if (lems.length > 1)
+				this.dataSearch.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
+			else if (lems.length == 1)
+				this.dataSearch.name = lems[0];
+
+			for (var i = 0, n = keys.length; i < n; i++)
+				if (this.dataSearch[keys[i]] === null)
+					delete this.dataSearch[keys[i]];
+		}
+	}; // End adminConfig
+
+	var archiveModel = new ModelAjax(archiveConfig);
+	var archiveView = new listView(archiveModel, $('#archiveList'));
+
+	var archiveFilesModel = new ModelAjax(configSearchArchiveFiles);
+	var archiveFilesView = new listView(archiveFilesModel, $('#archiveFilesList'));
+
+	var mediaModel = new ModelAjax(mediaConfig);
+	var mediaView = new listView(mediaModel, $('#mediaList'));
+
+	var adminModel = new ModelAjax(adminConfig);
+	var adminView = new listView(adminModel, $('#administrationList'));
+
+	$('.archiveButtonPage').on('click', function() {
+		$('#archive .search').val(null);
+		archiveModel.update();
+	});
+
+	$('.filesButtonPage').on('click', function() {
+		$('#archiveFiles .search').val(null);
+		archiveFilesModel.update();
+	});
+
+	$('.mediaButtonPage').on('click', function() {
+		$('#media .search').val(null);
+		mediaModel.update();
+	});
+
+	$('.administrationButtonPage').on('click', function() {
+		$('#administration .search').val(null);
+		adminModel.update();
+	});
 }
 
 function convertSize(size) {

@@ -30,16 +30,17 @@
 		<span name="creator" id="creator"></span>
 	</li>
 	<li class="ui-field-contain">
-		<label for="metadata">metadata:</label>
-		<span name="metadata" id="metadata"></span>
-	</li>
-	<li class="ui-field-contain">
 		<label for="canappend">canappend:</label>
 		<span name="canappend" id="canappend"></span>
 	</li>
 	<li class="ui-field-contain">
-		<label for="deleted">deleted:</label>
-		<span name="deleted" id="deleted"></span>
+		<label for="metadata">metadata:</label>
+		<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table" id="metadata">
+				<thead>
+					<tr class="ui-bar-d" />
+				</thead>
+				<tbody/>
+		</table>
 	</li>
 	<li class="ui-field-contain">
 		<label for="volume">volume:</label>
@@ -50,10 +51,11 @@
 				<tbody/>
 		</table>
 	</li>
-	<li class="ui-body">
-		<div id="archiveFilesButton"><div id="archiveFilesButton">
-			<a href="#archiveFilesPage" class="ui-btn ui-shadow ui-corner-all ui-icon-grid ui-btn-icon-left">Files attached to this archive</a>
-		</div>
+	<li class="ui-field-contain">
+		<label for="archiveFilesButton">Files attached to this archive:</label>
+		<span name= "archiveFilesButton" id="archiveFilesButton">
+			<a href="#archiveFilesPage" class="ui-btn ui-shadow ui-corner-all ui-icon-grid ui-btn-icon-left">See these files</a>
+		</span>
 	</li>
 	
 </ul>
