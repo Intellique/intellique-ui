@@ -1,48 +1,55 @@
- <ul data-role="listview" id="template">
- <li class="ui-body">
-        <div id="previewButton" style="height: 50px;">
-			<a href="#preview" class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left ui-btn-left" data-rel="popup" data-position-to="window"> Preview this file</a>
+<ul class="template" data-role="listview">
+	<li class="ui-body">
+		<div class="previewButton">
+			<a class="ui-btn ui-btn-left ui-corner-all ui-icon-eye ui-btn-icon-left" href="#preview" data-position-to="window" data-rel="popup">Preview this file</a>
 		</div>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="name">name:</label>
-		<span name="name" id="name"></span>
+		<span name="name"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="mimetype">mimetype:</label>
-		<span name="mimetype" id="mimetype"></span>
+		<span name="mimetype"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="owner">owner:</label>
-		<span name="owner" id="owner"></span>
+		<span name="owner"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="groups">groups:</label>
-		<span name="groups" id="groups"></span>
+		<span name="groups"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="ctime">Creation date:</label>
-		<span name="ctime" id="ctime"></span>
+		<span name="ctime"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="mtime">Modification date:</label>
-		<span name="mtime" id="mtime"></span>
+		<span name="mtime"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="size">size:</label>
-		<span name="size" id="size"></span>
+		<span name="size"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="metadata">metadata:</label>
-		<span name="metadata" id="metadata"></span>
+		<span name="metadata"></span>
 	</li>
+
 	<li class="ui-field-contain" style="margin-top: 0.8em;">
-			<label for="listLabelSelect" class="select">List of archives (w/ medias):</label>
-		<span name="archivePage" id="archiveFButton">
-			<select name="archive" id="listLabelSelect">
-				<option value=""></option>
-			</select>
-			<a href="#archivePage" class="ui-btn ui-shadow ui-corner-all ui-icon-bullets ui-btn-icon-left">Go to this archive</a>
+		<label class="select" for="listLabelSelect">List of archives (w/ medias):</label>
+		<span class="archiveFButton">
+			<select name="listLabelSelect"></select>
+			<a class="ui-btn ui-shadow ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage">Go to this archive</a>
 		</span>
 	</li>
-</ul> <!--End Listview -->
+</ul>

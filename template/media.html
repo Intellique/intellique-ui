@@ -1,37 +1,44 @@
-<ul data-role="listview" id="template">
+<ul class="template" data-role="listview">
 	<li class="ui-field-contain">
 		<label for="name">name:</label>
-		<span name="name" id="name"></span>
+		<span data-name="name"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="label">label:</label>
-		<span name="label" id="label"></span>
+		<span data-name="label"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="pool">pool:</label>
-		<span name="pool" id="pool"></span>
+		<span data-name="pool"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="format">format:</label>
-		<span name="format" id="format"></span>
+		<span data-name="format"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="uuid">uuid:</label>
-		<span name="uuid" id="uuid"></span>
+		<span data-name="uuid"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="firstused">first used:</label>
-		<span name="firstused" id="firstused"></span>
+		<span data-name="firstused"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="usebefore">use before:</label>
-		<span name="usebefore" id="usebefore"></span>
+		<span data-name="usebefore"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="spaceused">space used:</label>
-		<div id="spaceused" name="spaceused">
+		<div data-name="spaceused">
 			<meter style="width : 100%" min="0" low="10" optimum="50" high="80" max="100"></meter>
-			<label></label>
+			<label class="spaceused"></label>
 		</div>
 	</li>
-</ul> <!--End Listview -->
+</ul>

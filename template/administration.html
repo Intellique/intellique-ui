@@ -1,52 +1,63 @@
-<ul data-role="listview" id="template">
+<ul class="template" data-role="listview">
 	<li class="ui-body">
-		<div id="EditUserButton" style="height: 50px;">
-			<a href="#modUserPage" class="ui-btn ui-corner-all ui-icon-edit ui-btn-icon-left ui-btn-left"> Edit this user</a>
+		<div class="EditUserButton" style="height: 50px;">
+			<a class="ui-btn ui-corner-all ui-icon-edit ui-btn-icon-left ui-btn-left" href="#modUserPage">Edit this user</a>
 		</div>
 	</li>
+
 	<li class="ui-body">
-		<div id="RemoveUserButton" style="height: 50px;">
-			<a href="#Remove" class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left ui-btn-left"> Remove this user</a>
+		<div class="RemoveUserButton" style="height: 50px;">
+			<a class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left ui-btn-left" href="#Remove">Remove this user</a>
 		</div>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="id">id:</label>
-		<span name="id" id="Tid"></span>
+		<span data-name="id"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="login">login:</label>
-		<span name="login" id="Tlogin"></span>
+		<span data-name="login"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="fullname">fullname:</label>
-		<span name="fullname" id="Tfullname"></span>
+		<span data-name="fullname"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="email">email:</label>
-		<span name="email" id="Temail"></span>
+		<span data-name="email"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="homedirectory">homedirectory:</label>
-		<span name="homedirectory" id="Thomedirectory"></span>
+		<span data-name="homedirectory"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="isadmin">isadmin:</label>
-		<span name="isadmin" id="Tisadmin"></span>
+		<span data-name="isadmin"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="canarchive">canarchive:</label>
-		<span name="canarchive" id="Tcanarchive"></span>
+		<span data-name="canarchive"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="canrestore">canrestore:</label>
-		<span name="canrestore" id="Tcanrestore"></span>
+		<span data-name="canrestore"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="poolgroup">poolgroup:</label>
-		<span name="poolgroup" id="Tpoolgroup"></span>
+		<span data-name="poolgroup"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="disabled">disabled:</label>
-		<span name="disabled" id="Tdisabled"></span>
+		<span data-name="disabled"></span>
 	</li>
-</ul> <!--End Listview -->
+</ul>

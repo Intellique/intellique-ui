@@ -1,61 +1,67 @@
-<ul data-role="listview" id="template">
+<ul class="template" data-role="listview">
 	<li class="ui-body">
-        <div id="RestoreButton" style="height: 50px; display: none;">
-			<a href="#Restore" class="ui-btn ui-corner-all ui-icon-action ui-btn-icon-left ui-btn-left"> Restore this archive</a>
-		</div>
+		<div class="RestoreButton"></div>
 	</li>
 
 	<li class="ui-field-contain">
 		<label for="uuid">uuid:</label>
-		<span name="uuid" id="uuid"></span>
+		<span data-name="uuid"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="starttime">starttime:</label>
-		<span name="starttime" id="starttime"></span>
+		<span data-name="starttime"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="endtime">endtime:</label>
-		<span name="endtime" id="endtime"></span>
+		<span data-name="endtime"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="size">size:</label>
-		<span name="size" id="size"></span>
+		<span data-name="size"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="owner">owner:</label>
-		<span name="owner" id="owner"></span>
+		<span data-name="owner"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="creator">creator:</label>
-		<span name="creator" id="creator"></span>
+		<span data-name="creator"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="canappend">canappend:</label>
-		<span name="canappend" id="canappend"></span>
+		<span data-name="canappend"></span>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="metadata">metadata:</label>
-		<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table" id="metadata">
-				<thead>
-					<tr class="ui-bar-d" />
-				</thead>
-				<tbody/>
+		<table class="metadata table-stripe table-stroke ui-content ui-responsive ui-table" data-mode="reflow" data-role="table">
+			<thead>
+				<tr class="ui-bar-d" />
+			</thead>
+			<tbody/>
 		</table>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="volume">volume:</label>
-		<table class="ui-responsive table-stripe table-stroke ui-table ui-content" data-mode="reflow" data-role="table" id="volume">
-				<thead>
-					<tr class="ui-bar-d" />
-				</thead>
-				<tbody/>
+		<table class="table-stripe table-stroke ui-content ui-responsive ui-table volume" data-mode="reflow" data-role="table">
+			<thead>
+				<tr class="ui-bar-d" />
+			</thead>
+		<tbody/>
 		</table>
 	</li>
+
 	<li class="ui-field-contain">
 		<label for="archiveFilesButton">Files attached to this archive:</label>
-		<span name= "archiveFilesButton" id="archiveFilesButton">
-			<a href="#archiveFilesPage" class="ui-btn ui-shadow ui-corner-all ui-icon-grid ui-btn-icon-left">See these files</a>
+		<span data-name="archiveFilesButton">
+			<a class="ui-btn ui-btn-icon-left ui-corner-all ui-icon-grid ui-shadow" href="#archiveFilesPage">See these files</a>
 		</span>
 	</li>
-	
 </ul>
