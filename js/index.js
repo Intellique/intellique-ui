@@ -829,6 +829,14 @@ function main() {
 				template.find('span[name="mtime"]').text(archivefile.mtime);
 				template.find('span[name="size"]').text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
 
+				var previewBttn = template.find('.previewButton');
+				if (archivefile.mimetype == 'inode/directory')
+					previewBttn.hide();
+				else
+					previewBttn.on('click', function() {
+						window.open(config["api url"] + '/api/v1/archivefile/preview/?id=' + archivefile.id);
+					});
+
 				var metadata = template.find('span[name="metadata"]');
 				$.ajax({
 					type: 'GET',
