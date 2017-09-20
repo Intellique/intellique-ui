@@ -974,9 +974,9 @@ function main() {
 			}
 
 			if (lems.length > 1)
-				search.name = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
+				search.login = '(?:.*(' + lems.join('|') + ')){' + lems.length + '}';
 			else if (lems.length == 1)
-				search.name = lems[0];
+				search.login = lems[0];
 
 			return search;
 		}
