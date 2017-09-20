@@ -622,7 +622,6 @@ function main() {
 		password.on('keypress', function(evt) {
 			if (evt.which == 13)
 				doAuth();
-			return false;
 		});
 		submit.on('click', doAuth);
 
@@ -685,12 +684,12 @@ function main() {
 					var table = new TableView(tableMetadata, modelMetadata, [{
 						name: 'key',
 						fillCell: function(cell, key, metadata) {
-							debugger;
+							cell.text(metadata.key);
 						}
 					}, {
 						name: 'value',
 						fillCell: function(cell, key, metadata) {
-							debugger;
+							cell.text(metadata.value);
 						}
 					}]);
 				} else
@@ -1258,8 +1257,10 @@ function main() {
 	$('.disconnection_button').on('click', authService.doLogOut);
 
 	// Menu icon redirect to Intellique website
+	var closeMenuItem = $('#menu li:last-child a');
 	$('#iconMenu').on('click', function() {
 		window.open("http://www.intellique.com/");
+		closeMenuItem.trigger('click');
 	});
 }
 
