@@ -1155,7 +1155,7 @@ function main() {
 		this.newUser = newUser;
 
 		function updatePoolGroupList(selectedPoolGroup) {
-			poolgroup.find('~').remove();
+			poolgroup.find('> ~').remove();
 			$.ajax({
 				url: config['api url'] + '/api/v1/poolgroup/search/',
 				type: "GET",
