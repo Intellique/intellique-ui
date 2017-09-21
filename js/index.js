@@ -189,21 +189,23 @@ function ListViewCtl(list, model, factory) {
 				var a = $('<a class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-left ui-btn-a ui-icon-plus">' + factory.title(results[i]) + '</a>');
 
 				title.on('click', {'item': item, 'object': results[i], 'template': null}, function(evt) {
-					$(evt.target).toggleClass('ui-icon-plus ui-icon-minus');
+					var ctx = evt.data;
 
-					if (evt.data.template) {
-						evt.data.template.stop(true, false).slideToggle(500);
+					a.toggleClass('ui-icon-plus ui-icon-minus');
+
+					if (ctx.template) {
+						ctx.template.stop(true, false).slideToggle(500);
 						return;
 					}
 
 					$.ajax({
 						'url': factory.template,
 						success: function(template) {
-							evt.data.template = $(template);
-							factory.fillTemplate(evt.data.template, evt.data.object);
-							evt.data.template.hide();
-							evt.data.item.append(evt.data.template);
-							evt.data.template.slideToggle(500);
+							ctx.template = $(template);
+							factory.fillTemplate(ctx.template, ctx.object);
+							ctx.template.hide();
+							ctx.item.append(ctx.template);
+							ctx.template.slideToggle(500);
 						},
 						error: function() {
 							$(evt.target).toggleClass('ui-icon-plus ui-icon-minus');
@@ -215,6 +217,9 @@ function ListViewCtl(list, model, factory) {
 				item.append(title);
 
 				list.append(item);
+
+				if (n == 1)
+					title.trigger('click');
 			}
 		}
 	});
