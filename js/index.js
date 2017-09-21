@@ -741,9 +741,8 @@ function main() {
 				});
 
 				var userInfo = authService.getUserInfo();
+				var restoreBttn = template.find('.RestoreButton a');
 				if (userInfo && userInfo.canrestore) {
-					var restoreDiv = template.find('.RestoreButton');
-					var restoreBttn = $('<a class="ui-btn ui-btn-icon-left ui-btn-left ui-corner-all ui-icon-action" href="#Restore">Restore this archive</a>');
 					restoreBttn.on('click', function() {
 						function restoreSucceed() {
 							$.mobile.changePage(config["simple-ui url"] + "/dialog/rSuccess.html", { role: "dialog" });
@@ -755,8 +754,8 @@ function main() {
 
 						restoreArchive(archive.id, restoreSucceed, restoreFailed);
 					});
-					restoreDiv.append(restoreBttn);
-				}
+				} else
+					restoreBttn.addClass('ui-state-disabled');
 			}
 		});
 		var paginationCtl = new PaginationCtl(page, model);
