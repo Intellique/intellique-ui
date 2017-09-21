@@ -204,7 +204,7 @@ function ListViewCtl(list, model, factory) {
 							ctx.template = $(template);
 							factory.fillTemplate(ctx.template, ctx.object);
 							ctx.template.hide();
-							ctx.item.append(ctx.template);
+							ctx.item.append(ctx.template.enhanceWithin());
 							ctx.template.slideToggle(500);
 						},
 						error: function() {
@@ -356,7 +356,12 @@ function ModelAjax(url, keyIndex, keySearch) {
 		});
 	}
 
-	this.getItemById = function(id, onSuccess, onError) {
+	this.getItemById = function(id, forceSync, onSuccess, onError) {
+		if (typeof forceSync == "function") {
+			onError = onSuccess;
+			onSuccess = forceSync;
+			forceSync = false;
+		}
 		onError = onError || $.noop;
 
 		if (!(id in cacheKey))
@@ -369,6 +374,7 @@ function ModelAjax(url, keyIndex, keySearch) {
 		}
 
 		$.ajax({
+			async: !forceSync,
 			type: 'GET',
 			context: this,
 			url: config["api url"] + url + '?id=' + id,
@@ -761,8 +767,8 @@ function main() {
 				model.update();
 		});
 
-		this.getArchiveById = function(id, onSuccess, onError) {
-			model.getItemById(id, onSuccess, onError);
+		this.getArchiveById = function(id, forceSync, onSuccess, onError) {
+			model.getItemById(id, forceSync, onSuccess, onError);
 		}
 
 		function restoreArchive(id, onSuccess, onError) {
@@ -834,14 +840,6 @@ function main() {
 				template.find('span[name="mtime"]').text(archivefile.mtime);
 				template.find('span[name="size"]').text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
 
-				var previewBttn = template.find('.previewButton');
-				if (archivefile.mimetype == 'inode/directory')
-					previewBttn.hide();
-				else
-					previewBttn.on('click', function() {
-						window.open(config["api url"] + '/api/v1/archivefile/preview/?id=' + archivefile.id);
-					});
-
 				var metadata = template.find('span[name="metadata"]');
 				$.ajax({
 					type: 'GET',
@@ -857,13 +855,40 @@ function main() {
 
 				var archiveSelect = template.find('select[name="listLabelSelect"]');
 				for (var id in archivefile.archives)
-					pageArchive.getArchiveById(id, function(archive) {
+					pageArchive.getArchiveById(id, true, function(archive) {
 						archiveSelect.append('<option value="' + archive.uuid + '">' + archive.name + ' (' + archivefile.archives[archive.id].join(", ") + ')</option>');
 					});
 
-				template.find('span.archiveFButton a').on('click', function() {
+				template.find('.archiveFButton a').on('click', function() {
 					pageArchive.search('uuid: ' + archiveSelect.val());
 				});
+
+				var previewBttn = template.find('a.preview');
+				if (archivefile.mimetype == 'inode/directory')
+					previewBttn.addClass('ui-state-disabled');
+				else
+					previewBttn.on('click', function() {
+						window.open(config["api url"] + '/api/v1/archivefile/preview/?id=' + archivefile.id);
+					});
+
+				var userInfo = authService.getUserInfo();
+				var restoreBttn = template.find('a.restore');
+				if (userInfo && userInfo.canrestore) {
+					restoreBttn.on('click', function() {
+						function restoreSucceed() {
+							$.mobile.changePage(config["simple-ui url"] + "/dialog/rSuccess.html", { role: "dialog" });
+						}
+
+						function restoreFailed() {
+							$.mobile.changePage(config["simple-ui url"] + "/dialog/rFailed.html", { role: "dialog" });
+						}
+
+						var archives = Object.keys(archivefile.archives);
+						archives.sort();
+						restoreArchiveFile(parseInt(archives[0]), [archivefile.name], restoreSucceed, restoreFailed);
+					});
+				} else
+					restoreBttn.addClass('ui-state-disabled');
 			}
 		});
 		var paginationCtl = new PaginationCtl(page, model);
@@ -873,6 +898,26 @@ function main() {
 			if (page.is(ui.toPage))
 				model.update();
 		});
+
+		function restoreArchiveFile(archive, files, onSuccess, onError) {
+			onSuccess = onSuccess || $.noop;
+			onError = onError || $.noop;
+
+			$.ajax({
+				type: 'POST',
+				url: config['api url'] + '/api/v1/archive/restore/',
+				contentType: "application/json",
+				dataType: 'json',
+				data: JSON.stringify({
+					archive: archive,
+					files: files,
+					nextstart: "now",
+					destination: config["restore path"]
+				}),
+				success: onSuccess,
+				error: onError
+			});
+		}
 
 		this.search = function(lookingFor) {
 			searchCtl.search(lookingFor);

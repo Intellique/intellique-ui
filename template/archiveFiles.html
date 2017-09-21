@@ -1,10 +1,4 @@
 <ul class="template" data-role="listview">
-	<li class="ui-body">
-		<div class="previewButton">
-			<a class="ui-btn ui-btn-left ui-corner-all ui-icon-eye ui-btn-icon-left" href="#preview" data-position-to="window" data-rel="popup">Preview this file</a>
-		</div>
-	</li>
-
 	<li class="ui-field-contain">
 		<label for="name">name:</label>
 		<span name="name"></span>
@@ -45,11 +39,18 @@
 		<span name="metadata"></span>
 	</li>
 
-	<li class="ui-field-contain" style="margin-top: 0.8em;">
+	<li class="ui-field-contain">
 		<label class="select" for="listLabelSelect">List of archives (w/ medias):</label>
-		<span class="archiveFButton">
+		<div class="archiveFButton" data-role="controlgroup" data-type="horizontal">
 			<select name="listLabelSelect"></select>
 			<a class="ui-btn ui-shadow ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage">Go to this archive</a>
-		</span>
+		</div>
+	</li>
+
+	<li data-role="controlgroup" data-type="horizontal">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left preview">Preview this file</a>
+			<a class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left restore">Restore this file</a>
+		</div>
 	</li>
 </ul>
