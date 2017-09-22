@@ -188,10 +188,10 @@ function ListViewCtl(list, model, factory) {
 				var title = $('<h2 class="ui-collapsible-heading"></h2>');
 				var a = $('<a class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-left ui-btn-a ui-icon-plus">' + factory.title(results[i]) + '</a>');
 
-				title.on('click', {'item': item, 'object': results[i], 'template': null}, function(evt) {
+				title.on('click', {'item': item, 'link': a, 'object': results[i], 'template': null}, function(evt) {
 					var ctx = evt.data;
 
-					a.toggleClass('ui-icon-plus ui-icon-minus');
+					ctx.link.toggleClass('ui-icon-plus ui-icon-minus');
 
 					if (ctx.template) {
 						ctx.template.stop(true, false).slideToggle(500);
@@ -208,7 +208,7 @@ function ListViewCtl(list, model, factory) {
 							ctx.template.slideToggle(500);
 						},
 						error: function() {
-							$(evt.target).toggleClass('ui-icon-plus ui-icon-minus');
+							ctx.link.toggleClass('ui-icon-plus ui-icon-minus');
 						}
 					});
 				});
