@@ -172,11 +172,14 @@ function getPoolGroupById(id, onSuccess) {
 function ListViewCtl(list, model, factory) {
 	model.addObserver({
 		prefetch: function() {
-			list.delay(1000).animate({opacity: '0.5'});
+			list.delay(200).animate({opacity: '0.5'});
+			$.mobile.loading( "show");
 		},
 		fetch: function() {
 			list.stop(true, false).animate({opacity: '1'}, 500);
 			list.empty();
+
+			$.mobile.loading("hide");
 
 			if (list.is(':hidden'))
 				return;
@@ -198,6 +201,7 @@ function ListViewCtl(list, model, factory) {
 						return;
 					}
 
+					$.mobile.loading( "show");
 					$.ajax({
 						'url': factory.template,
 						success: function(template) {
@@ -206,8 +210,10 @@ function ListViewCtl(list, model, factory) {
 							ctx.template.hide();
 							ctx.item.append(ctx.template.enhanceWithin());
 							ctx.template.slideToggle(500);
+							$.mobile.loading("hide");
 						},
 						error: function() {
+							$.mobile.loading("hide");
 							ctx.link.toggleClass('ui-icon-plus ui-icon-minus');
 						}
 					});
@@ -296,7 +302,7 @@ function ModelAjax(url, keyIndex, keySearch) {
 
 	var searchParameters = {};
 
-	this.discardItemById = function(id) {
+	function discardItemById(id) {
 		if (!(id in cacheKey))
 			return;
 
@@ -304,6 +310,7 @@ function ModelAjax(url, keyIndex, keySearch) {
 		if (cacheWeak.has(key))
 			cacheWeak.delete(key);
 	}
+	this.discardItemById = discardItemById;
 
 	this.fetch = function() {
 		for (var obs in observers)
@@ -381,6 +388,10 @@ function ModelAjax(url, keyIndex, keySearch) {
 			success: function(response) {
 				var obj = response[keyIndex];
 				cacheWeak.set(cacheKey[obj.id], obj);
+
+				window.setTimeout(function(id) {
+					discardItemById(id);
+				}, 60000, id);
 
 				onSuccess(obj);
 			},
@@ -620,13 +631,17 @@ function main() {
 		var submit = page.find('#log_in_button');
 
 		function doAuth() {
+			$.mobile.loading( "show");
+
 			authService.doAuth(login.val(), password.val(), function(reponse) {
 				// change to archive page
 				$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
+				$.mobile.loading("hide");
 				password.val('').textinput('refresh');
 			}, function() {
 				// popup invalid password or login
 				$.mobile.changePage(config["simple-ui url"] + "/dialog/authfailed.html", { role: "dialog" });
+				$.mobile.loading("hide");
 			});
 		}
 
@@ -1225,6 +1240,8 @@ function main() {
 		}
 
 		addUserBttn.on('click', function() {
+			$.mobile.loading( "show");
+
 			var strPg = poolgroup.val();
 			var pg = parseInt(strPg);
 			if (pg != strPg)
@@ -1251,14 +1268,18 @@ function main() {
 					$.mobile.changePage(config["simple-ui url"] + "/dialog/addUserSuccess.html", {role: "dialog"});
 					pageAdministration.update();
 					$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+					$.mobile.loading("hide");
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
 					$.mobile.changePage(config["simple-ui url"] + "/dialog/addUserFail.html", {role: "dialog"});
+					$.mobile.loading("hide");
 				}
 			});
 		});
 
 		editUserBttn.on('click', function() {
+			$.mobile.loading( "show");
+
 			var strPg = poolgroup.val();
 			var pg = parseInt(strPg);
 			if (pg != strPg)
@@ -1293,9 +1314,11 @@ function main() {
 					pageAdministration.discardUserById(currentUser.id);
 					pageAdministration.update();
 					$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+					$.mobile.loading("hide");
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
 					$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserFail.html", {role: "dialog"});
+					$.mobile.loading("hide");
 				}
 			});
 		});
