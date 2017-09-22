@@ -1,16 +1,4 @@
 <ul class="template" data-role="listview">
-	<li class="ui-body">
-		<div class="EditUserButton" style="height: 50px;">
-			<a class="ui-btn ui-corner-all ui-icon-edit ui-btn-icon-left ui-btn-left" href="#modUserPage">Edit this user</a>
-		</div>
-	</li>
-
-	<li class="ui-body">
-		<div class="RemoveUserButton" style="height: 50px;">
-			<a class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left ui-btn-left" href="#Remove">Remove this user</a>
-		</div>
-	</li>
-
 	<li class="ui-field-contain">
 		<label for="id">id:</label>
 		<span data-name="id"></span>
@@ -59,5 +47,12 @@
 	<li class="ui-field-contain">
 		<label for="disabled">disabled:</label>
 		<span data-name="disabled"></span>
+	</li>
+
+	<li data-role="controlgroup" data-type="horizontal">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a class="ui-btn ui-corner-all ui-icon-edit ui-btn-icon-left edit" href="#modUserPage">Edit this user</a>
+			<a class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left remove" href="#Remove">Remove this user</a>
+		</div>
 	</li>
 </ul>

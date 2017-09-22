@@ -1064,11 +1064,11 @@ function main() {
 				} else
 					pg.text('no poolgroup affected');
 
-				template.find('.EditUserButton a').on('click', function() {
+				template.find('a.edit').on('click', function() {
 					pageUser.editUser(user);
 				});
 
-				template.find('.RemoveUserButton a').on('click', function() {
+				template.find('a.remove').on('click', function() {
 					$.ajax({
 						type: "DELETE",
 						url: config["api url"] + "/api/v1/user/?id=" + user.id,
