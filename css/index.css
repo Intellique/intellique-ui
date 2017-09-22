@@ -17,6 +17,14 @@ div#authentification_page div.header {
 	background-color : #ea6746;
 }
 
+#header {
+	padding-bottom: 0.125em;
+}
+
+div[role="main"] {
+	padding-top: 0.125em;
+}
+
 #header h1 {
 	font-size: 1.3em;
 	margin-top: 1.1em;
@@ -156,7 +164,7 @@ div#authentification_page div.header {
 
 
 #administrationPage #AddButton {
-	margin-top : 13em;
+	margin-top : 11.5em;
 	margin-left: 10px;
 }
 
@@ -165,7 +173,7 @@ div#authentification_page div.header {
  */
 
 #modUserPage div form {
-	max-width: 930px;
+	max-width: 1024px;
 	margin: auto;
 }
 
