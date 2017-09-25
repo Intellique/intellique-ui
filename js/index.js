@@ -555,10 +555,21 @@ function PaginationCtl(page, model) {
 
 function SearchCtl(page, model, searchFunc) {
 	var input = page.find('input.search');
-	var clearBttn = page.find('a.ui-input-clear');
+	var clearBttn = null;
 	searchFunc = searchFunc || function(search) { return search };
 
 	var delaySearch = null;
+
+	function defered(event, ui) {
+		if (page.is(ui.toPage) && clearBttn == null) {
+			clearBttn = page.find('a.ui-input-clear');
+			clearBttn.on('click', function() {
+				model.search(searchFunc(''));
+			});
+			$(document).off("pagechange", defered);
+		}
+	}
+	$(document).on("pagechange", defered);
 
 	this.search = function(lookingFor) {
 		input.val(lookingFor);
@@ -584,10 +595,6 @@ function SearchCtl(page, model, searchFunc) {
 			searchNow();
 		else
 			searchDelayed();
-	});
-
-	clearBttn.on('click', function() {
-		model.search(searchFunc(''));
 	});
 }
 
