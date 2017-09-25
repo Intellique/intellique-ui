@@ -555,6 +555,7 @@ function PaginationCtl(page, model) {
 
 function SearchCtl(page, model, searchFunc) {
 	var input = page.find('input.search');
+	var clearBttn = page.find('a.ui-input-clear');
 	searchFunc = searchFunc || function(search) { return search };
 
 	var delaySearch = null;
@@ -583,6 +584,10 @@ function SearchCtl(page, model, searchFunc) {
 			searchNow();
 		else
 			searchDelayed();
+	});
+
+	clearBttn.on('click', function() {
+		model.search(searchFunc(''));
 	});
 }
 
