@@ -558,24 +558,23 @@ function SearchCtl(page, model, searchFunc) {
 	var clearBttn = null;
 	searchFunc = searchFunc || function(search) { return search };
 
-	var delaySearch = null;
-
-	function defered(event, ui) {
+	function deferred(event, ui) {
 		if (page.is(ui.toPage) && clearBttn == null) {
 			clearBttn = page.find('a.ui-input-clear');
 			clearBttn.on('click', function() {
 				model.search(searchFunc(''));
 			});
-			$(document).off("pagechange", defered);
+			$(document).off("pagechange", deferred);
 		}
 	}
-	$(document).on("pagechange", defered);
+	$(document).on("pagechange", deferred);
 
 	this.search = function(lookingFor) {
 		input.val(lookingFor);
 		model.search(searchFunc(lookingFor));
 	}
 
+	var delaySearch = null;
 	function searchDelayed() {
 		if (delaySearch)
 			window.clearTimeout(delaySearch);
