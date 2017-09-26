@@ -49,8 +49,8 @@ function AuthService() {
 				window.clearInterval(authTimer);
 				authTimer = null;
 
-				$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
 				$.mobile.changePage(config["simple-ui url"] + "/dialog/timeout.html", { role: "dialog" });
+				$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
 			}
 
 			onError();
