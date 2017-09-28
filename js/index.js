@@ -640,33 +640,56 @@ function main() {
 	function PageAuth() {
 		var page = $('#authentification_page');
 
-		var login = page.find('#identifiant');
-		var password = page.find('#password');
-		var submit = page.find('#log_in_button');
+		var loginInput = page.find('#identifiant');
+		var passwordInput = page.find('#password');
+		var submitWrapper = null;
 
-		function doAuth() {
+		function deferred() {
+			submitWrapper = page.find('div > #log_in_button').parent();
+			if (submitWrapper.length == 0)
+				return;
+
+			loginInput.on('keyup', submitEnabled);
+			loginInput.next().on('click', submitEnabled);
+			passwordInput.on('keyup', submitEnabled);
+			passwordInput.next().on('click', submitEnabled);
+			submitEnabled();
+
+			$(document).off("pagechange", deferred);
+		}
+		$(document).on("pagechange", deferred);
+		deferred();
+
+		function submitEnabled() {
+			var login = loginInput.val();
+			var password = passwordInput.val();
+
+			if (login.length == 0 || password.length < 6)
+				submitWrapper.addClass('ui-state-disabled');
+			else
+				submitWrapper.removeClass('ui-state-disabled');
+		}
+
+		page.find('form').on('submit', function(evt) {
+			var login = loginInput.val();
+			var password = passwordInput.val();
+
+			if (login.length == 0 || password.length < 6)
+				return false;
+
 			$.mobile.loading( "show");
 
-			authService.doAuth(login.val(), password.val(), function(reponse) {
+			authService.doAuth(login, password, function(reponse) {
 				// change to archive page
 				$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
 				$.mobile.loading("hide");
-				password.val('').textinput('refresh');
+				passwordInput.val('').textinput('refresh');
 			}, function() {
 				// popup invalid password or login
 				$.mobile.changePage(config["simple-ui url"] + "/dialog/authfailed.html", { role: "dialog" });
 				$.mobile.loading("hide");
 			});
-		}
 
-		password.on('keypress', function(evt) {
-			if (evt.which == 13)
-				doAuth();
-		});
-		submit.on('click', doAuth);
-
-		page.find('form').on('submit', function(evt) {
-			evt.target.checkValidity();
 			return false;
 		});
 	}
