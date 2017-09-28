@@ -915,12 +915,22 @@ function main() {
 				});
 
 				var previewBttn = template.find('a.preview');
-				if (archivefile.mimetype == 'inode/directory')
+				if (!config['proxy'])
+					previewBttn.remove();
+				else {
 					previewBttn.addClass('ui-state-disabled');
-				else
-					previewBttn.on('click', function() {
-						window.open(config["api url"] + '/api/v1/archivefile/preview/?id=' + archivefile.id);
+
+					$.ajax({
+						type: "HEAD",
+						url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=video/mp4",
+						success: function() {
+							previewBttn.removeClass('ui-state-disabled');
+							previewBttn.on('click', function() {
+								pagePreview.loadPreview(archivefile);
+							});
+						}
 					});
+				}
 
 				var userInfo = authService.getUserInfo();
 				var restoreBttn = template.find('a.restore');
@@ -977,6 +987,51 @@ function main() {
 		this.update = function() {
 			model.fetch();
 		}
+	}
+
+
+	function PagePreview() {
+		var page = $('#previewPage');
+		var video = page.find('video');
+		var lblName = page.find('ul span[data-name="name"]');
+		var lblMimetype = page.find('ul span[data-name="mimetype"]');
+		var lblSize = page.find('ul span[data-name="size"]');
+		var lblMetadata = page.find('ul span[data-name="metadata"]');
+		var currentArchiveFile = null;
+
+		this.loadPreview = function(archivefile) {
+			if (currentArchiveFile && currentArchiveFile.id != archivefile.id)
+				video.children().remove();
+
+			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/mp4" type="video/mp4" />');
+				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/ogv" type="video/ogg" />');
+				video[0].load();
+
+				lblName.text(archivefile.name);
+				lblMimetype.text(archivefile.mimetype);
+				lblSize.text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
+
+				$.ajax({
+					type: 'GET',
+					url: config["api url"] + "/api/v1/archivefile/metadata/",
+					data: { id: archivefile.id },
+					success: function(response) {
+						lblMetadata.text(JSON.stringlify(response));
+					},
+					error: function() {
+						lblMetadata.text("No metadata found for this object");
+					}
+				});
+
+				currentArchiveFile = archivefile;
+			}
+		}
+
+		$(document).on("pagechange", function(event, ui) {
+			if (!page.is(ui.toPage))
+				video[0].pause();
+		});
 	}
 
 
@@ -1367,6 +1422,7 @@ function main() {
 	var pageAuth = new PageAuth();
 	var pageArchive = new PageArchive();
 	var pageArchiveFile = new PageArchiveFile();
+	var pagePreview = new PagePreview();
 	var pageMedia = new PageMedia();
 	var pageAdministration = new PageAdministration();
 	var pageUser = new PageUser();
