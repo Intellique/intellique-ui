@@ -23,14 +23,24 @@ function AuthService() {
 	var currentUserInfo = null;
 	var authTimer = null;
 
+	var adminMenuItem = null;
+
 	function connected(onSuccess) {
 		onSuccess = onSuccess || $.noop;
 
 		return function(response) {
 			if (!currentUserInfo) {
+				if (adminMenuItem == null)
+					adminMenuItem = $('#adminPage');
+
 				currentUserInfo = getUserInfo(response.user_id, function(response) {
 					currentUserInfo = response.user;
 					authTimer = window.setInterval(checkAuth, 20000);
+
+					if (currentUserInfo.isadmin)
+						adminMenuItem.show();
+					else
+						adminMenuItem.hide();
 
 					onSuccess(currentUserInfo);
 				});
