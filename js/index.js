@@ -1241,8 +1241,6 @@ function main() {
 		var canRestore = page.find('form input#canrestore');
 		var disabled = page.find('form input#disabled');
 
-		var poolgroup = page.find('form select[name="poolgroup"]');
-
 		var addUserBttn = page.find('form #addUserButton');
 		var editUserBttn = page.find('form #editButton');
 
@@ -1286,8 +1284,6 @@ function main() {
 			canRestore.prop('checked', user.canrestore).checkboxradio("refresh");
 			disabled.prop('checked', user.disabled).checkboxradio("refresh");
 
-			updatePoolGroupList(user.poolgroup);
-
 			addUserBttn.parent().hide();
 			editUserBttn.parent().show();
 		}
@@ -1313,41 +1309,15 @@ function main() {
 			canRestore.prop('checked', false).checkboxradio("refresh");
 			disabled.prop('checked', false).checkboxradio("refresh");
 
-			updatePoolGroupList();
-
 			addUserBttn.parent().show();
 			editUserBttn.parent().hide();
 		}
 		this.newUser = newUser;
 
-		function updatePoolGroupList(selectedPoolGroup) {
-			poolgroup.find('> ~').remove();
-			$.ajax({
-				url: config['api url'] + '/api/v1/poolgroup/search/',
-				type: "GET",
-				dataType: 'json',
-				success: function(response) {
-					for (var i = 0; i < response.poolgroups.length; i++)
-						getPoolGroupById(response.poolgroups[i], function(pg) {
-							poolgroup.append('<option value="' + pg.id + '">' + pg.name + '</option>');
-
-							if (pg.id == selectedPoolGroup)
-								poolgroup.val(pg.id).selectmenu('refresh', true);
-						});
-				},
-			});
-
-			if (!selectedPoolGroup)
-				poolgroup.val('').selectmenu('refresh', true);
-		}
-
 		addUserBttn.on('click', function() {
 			$.mobile.loading( "show");
 
-			var strPg = poolgroup.val();
-			var pg = parseInt(strPg);
-			if (pg != strPg)
-				pg = null;
+			var adminUser = authService.getUserInfo();
 
 			$.ajax({
 				url: config['api url'] + '/api/v1/user/',
@@ -1363,7 +1333,7 @@ function main() {
 					isadmin: isAdmin.is(':checked'),
 					canarchive: canArchive.is(':checked'),
 					canrestore: canRestore.is(':checked'),
-					poolgroup: pg,
+					poolgroup: adminUser.poolgroup,
 					disabled: disabled.is(':checked')
 				}),
 				success: function(response) {
@@ -1382,11 +1352,6 @@ function main() {
 		editUserBttn.on('click', function() {
 			$.mobile.loading( "show");
 
-			var strPg = poolgroup.val();
-			var pg = parseInt(strPg);
-			if (pg != strPg)
-				pg = null;
-
 			var userInfo = {
 				id: currentUser.id,
 				login: login.val(),
@@ -1397,7 +1362,7 @@ function main() {
 				canarchive: canArchive.is(':checked'),
 				canrestore: canRestore.is(':checked'),
 				meta: currentUser.meta,
-				poolgroup: pg,
+				poolgroup: currentUser.poolgroup,
 				disabled: disabled.is(':checked')
 			};
 
@@ -1413,7 +1378,7 @@ function main() {
 				success: function(response) {
 					newUser();
 					$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserSuccess.html", {role: "dialog"});
-					pageAdministration.discardUserById(currentUser.id);
+					pageAdministration.discardUserById(userInfo.id);
 					pageAdministration.update();
 					$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
 					$.mobile.loading("hide");
