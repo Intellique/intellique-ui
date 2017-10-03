@@ -1185,21 +1185,27 @@ function main() {
 					pageUser.editUser(user);
 				});
 
-				template.find('a.remove').on('click', function() {
-					$.ajax({
-						type: "DELETE",
-						url: config["api url"] + "/api/v1/user/?id=" + user.id,
-						dataType: 'json',
-						success: function(response) {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserSuccess.html", {role: "dialog"});
-							model.fetch();
-						},
-						error: function(XMLHttpRequest, textStatus, errorThrown) {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserFail.html", {role: "dialog"});
-							model.fetch();
-						}
+				var currentUser = authService.getUserInfo();
+
+				var deleteUserBttn = template.find('a.remove');
+				if (currentUser.id != user.id) {
+					deleteUserBttn.on('click', function() {
+						$.ajax({
+							type: "DELETE",
+							url: config["api url"] + "/api/v1/user/?id=" + user.id,
+							dataType: 'json',
+							success: function(response) {
+								$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserSuccess.html", {role: "dialog"});
+								model.fetch();
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {
+								$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserFail.html", {role: "dialog"});
+								model.fetch();
+							}
+						});
 					});
-				});
+				} else
+					deleteUserBttn.addClass('ui-state-disabled');
 			}
 		});
 		var paginationCtl = new PaginationCtl(page, model);
@@ -1210,8 +1216,14 @@ function main() {
 		});
 
 		$(document).on("pagechange", function(event, ui) {
-			if (page.is(ui.toPage))
-				model.update();
+			if (page.is(ui.toPage)) {
+				var currentUser = authService.getUserInfo();
+
+				if (currentUser.isadmin)
+					model.update();
+				else
+					$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
+			}
 		});
 
 		this.discardUserById = function(id) {
