@@ -3,5 +3,6 @@
 	"api url": "/storiqone-backend",
 	"apikey": "727fbb26-cc9a-43b8-a68a-78ca86d9cd31",
 	"simple-ui url": "/intellique",
-	"proxy": true
+	"proxy": true,
+	"host": null
 }

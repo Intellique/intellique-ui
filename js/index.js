@@ -844,6 +844,7 @@ function main() {
 				data: JSON.stringify({
 					archive: id,
 					nextstart: "now",
+					host: config["host"],
 					destination: config["restore path"]
 				}),
 				success: onSuccess,
@@ -983,6 +984,7 @@ function main() {
 					archive: archive,
 					files: files,
 					nextstart: "now",
+					host: config["host"],
 					destination: config["restore path"]
 				}),
 				success: onSuccess,
