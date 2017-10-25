@@ -836,6 +836,9 @@ function main() {
 			onSuccess = onSuccess || $.noop;
 			onError = onError || $.noop;
 
+			var currentUser = authService.getUserInfo();
+			var restorePath = config["restore path"].replace('<login>', currentUser.login);
+
 			$.ajax({
 				type: 'POST',
 				url: config['api url'] + '/api/v1/archive/restore/',
@@ -845,7 +848,7 @@ function main() {
 					archive: id,
 					nextstart: "now",
 					host: config["host"],
-					destination: config["restore path"]
+					destination: restorePath
 				}),
 				success: onSuccess,
 				error: onError
@@ -975,6 +978,9 @@ function main() {
 			onSuccess = onSuccess || $.noop;
 			onError = onError || $.noop;
 
+			var currentUser = authService.getUserInfo();
+			var restorePath = config["restore path"].replace('<login>', currentUser.login);
+
 			$.ajax({
 				type: 'POST',
 				url: config['api url'] + '/api/v1/archive/restore/',
@@ -985,7 +991,7 @@ function main() {
 					files: files,
 					nextstart: "now",
 					host: config["host"],
-					destination: config["restore path"]
+					destination: restorePath
 				}),
 				success: onSuccess,
 				error: onError
