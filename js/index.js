@@ -1168,7 +1168,10 @@ function main() {
 				template.find('span[data-name="login"]').text(user.login);
 				template.find('span[data-name="fullname"]').text(user.fullname);
 				template.find('span[data-name="email"]').text(user.email);
-				template.find('span[data-name="homedirectory"]').text(user.homedirectory);
+				if (config["home directory"])
+					template.find('span[data-name="homedirectory"]').parent().hide();
+				else
+					template.find('span[data-name="homedirectory"]').text(user.homedirectory);
 				template.find('span[data-name="isadmin"]').text(user.isadmin);
 				template.find('span[data-name="canarchive"]').text(user.canarchive);
 				template.find('span[data-name="canrestore"]').text(user.canrestore);
@@ -1258,6 +1261,11 @@ function main() {
 		var addUserBttn = page.find('form #addUserButton');
 		var editUserBttn = page.find('form #editButton');
 
+		if (config["home directory"])
+			homeDirectory.parentsUntil('ul', 'li').hide();
+		else if (config["default home directory"])
+			homeDirectory.prop("placeholder", config["default home directory"]);
+
 		var currentUser = null;
 
 		page.find('form').on('submit', function(evt) {
@@ -1331,6 +1339,11 @@ function main() {
 		addUserBttn.on('click', function() {
 			$.mobile.loading( "show");
 
+			var newLogin = login.val();
+			var newHomeDirectory = homeDirectory.val();
+			if (config["home directory"])
+				newHomeDirectory = config["home directory"].replace("<login>", newLogin);
+
 			var adminUser = authService.getUserInfo();
 
 			$.ajax({
@@ -1339,11 +1352,11 @@ function main() {
 				dataType: 'json',
 				contentType: 'application/json',
 				data: JSON.stringify({
-					login: login.val(),
+					login: newLogin,
 					fullname: fullname.val(),
 					password: password.val(),
 					email: email.val(),
-					homedirectory: homeDirectory.val(),
+					homedirectory: newHomeDirectory,
 					isadmin: isAdmin.is(':checked'),
 					canarchive: canArchive.is(':checked'),
 					canrestore: canRestore.is(':checked'),

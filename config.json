@@ -1,8 +1,10 @@
 {
-	"restore path": "/mnt/raid/restore",
 	"api url": "/storiqone-backend",
-	"apikey": "727fbb26-cc9a-43b8-a68a-78ca86d9cd31",
+	"apikey": "c4e1daf2-ca37-47b7-90af-74857d7f0ffe",
+	"home directory" : null,
+	"default home directory" : "/mnt/raid",
+	"host": null,
 	"simple-ui url": "/intellique",
 	"proxy": true,
-	"host": null
+	"restore path": "/var/www/nextcloud/data/storiq/files/restored/"
 }
