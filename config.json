@@ -1,6 +1,10 @@
 {
 	"api url": "/storiqone-backend",
-	"apikey": "c4e1daf2-ca37-47b7-90af-74857d7f0ffe",
+	"apikey": "",
+	"default permission": {
+		"archive": true,
+		"restore": false
+	},
 	"home directory" : "/var/www/nextcloud/data/<login>/files/",
 	"default home directory" : null,
 	"host": null,

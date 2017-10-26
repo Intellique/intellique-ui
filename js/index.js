@@ -1179,8 +1179,14 @@ function main() {
 				else
 					template.find('span[data-name="homedirectory"]').text(user.homedirectory);
 				template.find('span[data-name="isadmin"]').text(user.isadmin);
-				template.find('span[data-name="canarchive"]').text(user.canarchive);
-				template.find('span[data-name="canrestore"]').text(user.canrestore);
+				if (config["default permission"]["archive"] !== null)
+					template.find('span[data-name="canarchive"]').parent().hide();
+				else
+					template.find('span[data-name="canarchive"]').text(user.canarchive);
+				if (config["default permission"]["restore"] !== null)
+					template.find('span[data-name="canrestore"]').parent().hide();
+				else
+					template.find('span[data-name="canrestore"]').text(user.canrestore);
 				template.find('span[data-name="disabled"]').text(user.disabled);
 
 				var pg = template.find('span[data-name="poolgroup"]');
@@ -1272,6 +1278,16 @@ function main() {
 		else if (config["default home directory"])
 			homeDirectory.prop("placeholder", config["default home directory"]);
 
+		if (config["default permission"]["archive"] !== null) {
+			page.find('form label[for="canarchive"]').hide();
+			canArchive.hide();
+		}
+
+		if (config["default permission"]["restore"] !== null) {
+			page.find('form label[for="canrestore"]').hide();
+			canRestore.hide();
+		}
+
 		var currentUser = null;
 
 		page.find('form').on('submit', function(evt) {
@@ -1350,6 +1366,14 @@ function main() {
 			if (config["home directory"])
 				newHomeDirectory = config["home directory"].replace("<login>", newLogin);
 
+			var newCanArchive = canArchive.is(':checked');
+			if (config["default permission"]["archive"] !== null)
+				newCanArchive = config["default permission"]["archive"];
+
+			var newCanRestore = canRestore.is(':checked');
+			if (config["default permission"]["restore"] !== null)
+				newCanRestore = config["default permission"]["restore"];
+
 			var adminUser = authService.getUserInfo();
 
 			$.ajax({
@@ -1364,8 +1388,8 @@ function main() {
 					email: email.val(),
 					homedirectory: newHomeDirectory,
 					isadmin: isAdmin.is(':checked'),
-					canarchive: canArchive.is(':checked'),
-					canrestore: canRestore.is(':checked'),
+					canarchive: newCanArchive,
+					canrestore: newCanRestore,
 					poolgroup: adminUser.poolgroup,
 					disabled: disabled.is(':checked')
 				}),
@@ -1383,7 +1407,7 @@ function main() {
 		});
 
 		editUserBttn.on('click', function() {
-			$.mobile.loading( "show");
+			$.mobile.loading("show");
 
 			var userInfo = {
 				id: currentUser.id,
