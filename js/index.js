@@ -1278,16 +1278,6 @@ function main() {
 		else if (config["default home directory"])
 			homeDirectory.prop("placeholder", config["default home directory"]);
 
-		if (config["default permission"]["archive"] !== null) {
-			page.find('form label[for="canarchive"]').hide();
-			canArchive.hide();
-		}
-
-		if (config["default permission"]["restore"] !== null) {
-			page.find('form label[for="canrestore"]').hide();
-			canRestore.hide();
-		}
-
 		var currentUser = null;
 
 		page.find('form').on('submit', function(evt) {
@@ -1300,6 +1290,11 @@ function main() {
 		$(document).on("pagechange", function(event, ui) {
 			if (page.is(ui.toPage) && !isPageInitialized) {
 				isPageInitialized = true;
+
+				if (config["default permission"]["archive"] !== null)
+					page.find('form div.ui-checkbox').has('#canarchive').hide();
+				if (config["default permission"]["restore"] !== null)
+					page.find('form div.ui-checkbox').has('#canrestore').hide();
 
 				if (currentUser)
 					editUser(currentUser);
