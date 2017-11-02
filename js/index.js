@@ -1354,6 +1354,11 @@ function main() {
 		this.newUser = newUser;
 
 		addUserBttn.on('click', function() {
+			if (currentUser !== null) {
+				editUserBttn.trigger('click');
+				return;
+			}
+
 			$.mobile.loading( "show");
 
 			var newLogin = login.val();
