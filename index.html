@@ -20,19 +20,19 @@
 	<body>
 		<div id="menu" data-display="overlay" data-position="left" data-role="panel" data-theme="a">
 			<ul data-role="listview">
-				<li><center><img src="icone.png" id="iconMenu" alt="icon"></a></center></li>
+				<li><center><img id="iconMenu" alt="icon" src="icone.png"></a></center></li>
 				<li><a class="archiveButtonPage menuButton ui-btn ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage">Archives</a></li>
 				<li><a class="filesButtonPage menuButton ui-btn ui-corner-all ui-icon-grid ui-btn-icon-left" href="#archiveFilesPage">Files</a></li>
 				<li><a class="mediaButtonPage menuButton ui-btn ui-corner-all ui-icon-cloud ui-btn-icon-left" href="#mediaPage">Medias</a></li>
-				<li><a class="administrationButtonPage menuButton ui-btn ui-corner-all ui-icon-user ui-btn-icon-left" href="#administrationPage" id="adminPage">Administration</a></li>
-				<li><a class="ui-btn ui-btn-a ui-btn-inline ui-corner-all ui-icon-delete ui-btn-icon-left ui-link ui-shadow" data-role="button" data-rel="close">Close menu</a></li>
+				<li><a id="adminPage" class="administrationButtonPage menuButton ui-btn ui-corner-all ui-icon-user ui-btn-icon-left" href="#administrationPage">Administration</a></li>
+				<li><a class="ui-btn ui-btn-a ui-btn-inline ui-corner-all ui-icon-delete ui-btn-icon-left ui-link ui-shadow" data-rel="close" data-role="button">Close menu</a></li>
 			</ul>
 		</div>
 
 		<!-- authentification page -->
 		<div id="authentification_page" data-role="page">
 			<div class="header ui-grid-solo" data-role="header" data-position="fixed">
-				<img alt="Storiq one image" id="header_stone_image" src="bandeau.png"/>
+				<img id="header_stone_image" alt="Storiq one image" src="bandeau.png" />
 			</div>
 
 			<div id="authentification" class="ui-content" role="main">
@@ -57,9 +57,9 @@
 		</div>
 
 		<!-- archive page -->
-		<div data-role="page" id="archivePage">
+		<div id="archivePage" data-role="page">
 			<div class="ui-content" role="main">
-				<div id="header" class="ui-grid-solo" data-position="fixed" data-role="header">
+				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
 					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
 					<h1>INTELLIQUE / ARCHIVES</h1>
@@ -101,9 +101,9 @@
 		</div>
 
 		<!-- archivefile page -->
-		<div data-role="page" id="archiveFilesPage">
+		<div id="archiveFilesPage" data-role="page">
 			<div class="ui-content" role="main">
-				<div id="header" class="ui-grid-solo" data-position="fixed" data-role="header">
+				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
 					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
 					<h1>INTELLIQUE / FILES ARCHIVED</h1>
@@ -145,9 +145,9 @@
 		</div>
 
 		<!-- preview page -->
-		<div data-role="page" id="previewPage">
+		<div id="previewPage" data-role="page">
 			<div class="ui-content" role="main">
-				<div id="header" class="ui-grid-solo" data-position="fixed" data-role="header">
+				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
 					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
 					<h1>INTELLIQUE / PREVIEW</h1>
@@ -187,9 +187,9 @@
 		</div>
 
 		<!-- media page -->
-		<div data-role="page" id="mediaPage">
+		<div id="mediaPage" data-role="page">
 			<div class="ui-content" role="main">
-				<div id="header" class="ui-grid-solo" data-position="fixed" data-role="header">
+				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
 					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
 					<h1>INTELLIQUE / MEDIAS</h1>
@@ -231,9 +231,9 @@
 		</div>
 
 		<!-- administration page -->
-		<div data-role="page" id="administrationPage">
+		<div id="administrationPage" data-role="page">
 			<div class="ui-content" role="main">
-				<div id="header" class="ui-grid-solo" data-position="fixed" data-role="header">
+				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
 					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
 					<h1>INTELLIQUE / ADMNISTRATION</h1>
@@ -278,17 +278,15 @@
 		</div>
 
 		<!-- user page -->
-		<div data-role="page" data-title="User form" data-transition="pop" id="modUserPage">
-			<div id="headerAdd" class="header ui-grid-solo" data-role="header">
-				<div id="header" class="ui-grid-solo" data-position="fixed" data-role="header">
+		<div id="modUserPage" data-role="page">
+			<div class="ui-content" data-role="main">
+				<div id="headerAdd" class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
 					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
 					<h1>INTELLIQUE / ADD USER</h1>
 				</div>
-			</div>
 
-			<div id="headerEdit" class="header ui-grid-solo" data-role="header">
-				<div id="header" class="ui-grid-solo" data-position="fixed" data-role="header">
+				<div id="headerEdit" class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
 					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
 					<h1>INTELLIQUE / EDIT USER</h1>
