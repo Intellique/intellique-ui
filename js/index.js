@@ -155,7 +155,7 @@ function convertSize(size) {
 			break;
 		default:
 			type = " PB";
-		break;
+			break;
 	}
 
 	return size.toFixed(width) + type;
@@ -186,7 +186,7 @@ function ListViewCtl(list, model, factory) {
 	model.addObserver({
 		prefetch: function() {
 			list.delay(200).animate({opacity: '0.5'});
-			$.mobile.loading( "show");
+			$.mobile.loading("show");
 		},
 		fetch: function() {
 			list.stop(true, false).animate({opacity: '1'}, 500);
@@ -506,9 +506,11 @@ function PaginationCtl(page, model) {
 		fetch: function() {
 			var limit = model.getLimit(), offset = model.getOffset();
 			var totalRows = model.getTotalRows();
+			var firstLine = totalRows > 0 ? offset + 1 : 0;
+			var lastLine = offset + limit > totalRows ? totalRows : offset + limit;
 
 			nbElts.text(totalRows).stop(true, false).animate({opacity: '1'}, 500);
-			pageN.text((offset + 1) + ' on ' + (offset + limit > totalRows ? totalRows : offset + limit)).stop(true, false).animate({opacity: '1'}, 500);
+			pageN.text(firstLine + ' on ' + lastLine).stop(true, false).animate({opacity: '1'}, 500);
 
 			paginationBttns.stop(true, false).animate({opacity: '1'}, 500);
 			var children = paginationBttns.find("a");
@@ -655,7 +657,7 @@ function main() {
 		var submitWrapper = null;
 
 		function deferred() {
-			submitWrapper = page.find('div > #log_in_button').parent();
+			submitWrapper = page.find('div.ui-btn').has('#log_in_button');
 			if (submitWrapper.length == 0)
 				return;
 
