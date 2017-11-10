@@ -1201,7 +1201,7 @@ function main() {
 					pg.text('no poolgroup affected');
 
 				template.find('a.edit').on('click', function() {
-					pageUser.editUser(user);
+					pageUser.editUser(user, false);
 				});
 
 				var currentUser = authService.getUserInfo();
@@ -1267,6 +1267,7 @@ function main() {
 		var email = page.find('form input[name="email"]');
 		var homeDirectory = page.find('form input[name="homedir"]');
 
+		var formPermission = page.find('form fieldset');
 		var isAdmin = page.find('form input#canadmin');
 		var canArchive = page.find('form input#canarchive');
 		var canRestore = page.find('form input#canrestore');
@@ -1275,12 +1276,15 @@ function main() {
 		var addUserBttn = page.find('form #addUserButton');
 		var editUserBttn = page.find('form #editButton');
 
+		var backBttn = page.find('#backUserPage');
+
 		if (config["home directory"])
 			homeDirectory.parentsUntil('ul', 'li').hide();
 		else if (config["default home directory"])
 			homeDirectory.prop("placeholder", config["default home directory"]);
 
 		var currentUser = null;
+		var restrictedMode = false;
 
 		page.find('form').on('submit', function(evt) {
 			evt.target.checkValidity();
@@ -1299,14 +1303,15 @@ function main() {
 					page.find('form div.ui-checkbox').has('#canrestore').hide();
 
 				if (currentUser)
-					editUser(currentUser);
+					editUser(currentUser, restrictedMode);
 				else
 					newUser();
 			}
 		});
 
-		function editUser(user) {
+		function editUser(user, restricted) {
 			currentUser = user;
+			restrictedMode = restricted;
 
 			if (!isPageInitialized)
 				return;
@@ -1327,6 +1332,8 @@ function main() {
 
 			addUserBttn.parent().hide();
 			editUserBttn.parent().show();
+
+			setRestrictedMode(restrictedMode);
 		}
 		this.editUser = editUser;
 
@@ -1352,8 +1359,28 @@ function main() {
 
 			addUserBttn.parent().show();
 			editUserBttn.parent().hide();
+
+			setRestrictedMode(false);
 		}
 		this.newUser = newUser;
+
+		function setRestrictedMode(restrict) {
+			function enableInput(input, disable) {
+				if (disable)
+					input.addClass('ui-state-disabled');
+				else
+					input.removeClass('ui-state-disabled');
+			}
+
+			enableInput(login, restrict);
+
+			var loggedUser = authService.getUserInfo();
+			enableInput(formPermission.find('.ui-controlgroup-controls'), restrict);
+			if (!restrict) {
+				enableInput(isAdmin.parent(), currentUser && currentUser.id == loggedUser.id);
+				enableInput(disabled.parent(), currentUser && currentUser.id == loggedUser.id);
+			}
+		}
 
 		addUserBttn.on('click', function() {
 			if (currentUser !== null) {
@@ -1448,6 +1475,13 @@ function main() {
 				}
 			});
 		});
+
+		backBttn.on('click', function() {
+			if (restrictedMode)
+				$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
+			else
+				$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+		});
 	}
 
 
@@ -1468,6 +1502,12 @@ function main() {
 	$('#iconMenu').on('click', function() {
 		window.open("http://www.intellique.com/");
 		closeMenuItem.trigger('click');
+	});
+
+	// Menu account in order to edit current user information
+	$('#accountPage').on('click', function() {
+		var currentUser = authService.getUserInfo();
+		pageUser.editUser(currentUser, !currentUser.isadmin);
 	});
 }
 
