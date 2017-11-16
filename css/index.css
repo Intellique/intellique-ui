@@ -1,19 +1,19 @@
 /**
- * authentification
+ * authentication
  */
 
-div#authentification_page div.header {
+div#authentication_page div.header {
 	text-align : center;
 }
 
-#authentification form {
+#authentication form {
 	border-radius : 30px;
 	max-width : 400px;
 	margin-left : auto;
 	margin-right : auto;
 }
 
-#authentification form li {
+#authentication form li {
 	background-color : #ea6746;
 }
 
@@ -235,7 +235,8 @@ div#menu .ui-btn {
 }
 
 
-#page1 .ui-content {
+[data-role="dialog"] .ui-content {
 	color: black;
 	text-shadow: none;
 }
+

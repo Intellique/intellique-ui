@@ -1,0 +1,229 @@
+{
+	"": {
+		"plurals form": ["n == 1"]
+	},
+
+	"administration": {
+		"button": {
+			"add_user": "Create a new user"
+		},
+		"header": "INTELLIQUE / ADMINISTRATION",
+		"page": ["List of user {offset} on {end}", "List of users {offset} on {end}"],
+		"search": "Search a user",
+		"template": {
+			"can_archive": "can archive",
+			"disabled": "disabled",
+			"edit_user": "Edit this user",
+			"email": "email:",
+			"fullname": "fulname:",
+			"homedirectory": "homedirectory:",
+			"id": "id:",
+			"is_admin": "is admin",
+			"login": "login:",
+			"poolgroup": "poolgroup",
+			"remove_user": "Remove this user"
+		},
+		"total_rows": ["{nb} user", "{nb} users"]
+	},
+
+	"archive": {
+		"header": "INTELLIQUE / ARCHIVES",
+		"page": ["List of archive {offset} on {end}", "List of archives {offset} on {end}"],
+		"search": "Search an archive",
+		"template": {
+			"archive_files_button": "Files attached to this archive:",
+			"can_append": "can append:",
+			"creator": "creator:",
+			"end_time": "end time:",
+			"metadata": "metadata:",
+			"no_metadata": "No metadata found for this archive",
+			"owner": "owner:",
+			"restore_archive": "Restore this archive",
+			"see_files": "See these files",
+			"start_time": "start time:",
+			"size": "size:",
+			"uuid": "uuid:",
+			"volume": "volume:"
+		},
+		"total_rows": ["{nb} archive", "{nb} archives"],
+		"volume": {
+			"media": "media",
+			"sequence": "sequence",
+			"size": "size"
+		}
+	},
+
+	"authentication": {
+		"login": "Login",
+		"password": "Password",
+		"submit": "Log in"
+	},
+
+	"common": {
+		"disconnect": "Disconnect",
+		"max_displayable": "Max displayable:"
+	},
+
+	"dialog": {
+		"add_user": {
+			"button": "&nbsp; Back to the user page",
+			"header": "Add user task"
+		},
+
+		"add_user_failed": {
+			"content": "Add user task has failed"
+		},
+
+		"add_user_succeed": {
+			"content": "Add user task has succedeed"
+		},
+
+		"auth_failure": {
+			"button": "&nbsp; Back to the authenfication page",
+			"content": "Bad login or password",
+			"header": "Authenfication error"
+		},
+
+		"edit_user": {
+			"button": "&nbsp; Back to the user page",
+			"header": "Edit user task"
+		},
+
+		"edit_user_failed": {
+			"content": "Edit user task has failed"
+		},
+
+		"edit_user_succeed": {
+			"content": "Edit user task has failed"
+		},
+
+		"remove_user": {
+			"button": "&nbsp; Back to the user page",
+			"header": "Remove user task"
+		},
+
+		"remove_user_failed": {
+			"content": "Remove user task has failed"
+		},
+
+		"remove_user_succeed": {
+			"content": "Remove user task has failed"
+		},
+
+		"restore_archive": {
+			"button": "&nbsp; Back to the archive page",
+			"header": "Restore archive task"
+		},
+
+		"restore_archive_failed": {
+			"content": "Restoration task has failed"
+		},
+
+		"restore_archive_succeed": {
+			"content": "Restoration task has failed"
+		},
+
+		"session_timeout": {
+			"button": " &nbsp; Back to the authenfication page",
+			"content": "You will be redirected to the authenfication page",
+			"header": "Session expired"
+		}
+	},
+
+	"file": {
+		"header": "INTELLIQUE / FILES ARCHIVED",
+		"page": ["List of file {offset} on {end}", "List of files {offset} on {end}"],
+		"search": "Search an archive's file",
+		"template": {
+			"end_time": "Modification date:",
+			"go_archive": "Go to this archive",
+			"group": "groups:",
+			"list_of_archives": "List of archives (w/ medias):",
+			"metadata": "metadata:",
+			"mimetype": "mimetype:",
+			"name": "name:",
+			"no_metadata": "No metadata found for this file",
+			"owner": "owner:",
+			"preview": "Preview this file",
+			"restore_file": "Restore this file",
+			"size": "size:",
+			"start_date": "Creation date:"
+		},
+		"total_rows": ["{nb} file", "{nb} files"]
+	},
+
+	"media": {
+		"header": "INTELLIQUE / MEDIAS",
+		"page": ["List of media {offset} on {end}", "List of medias {offset} on {end}"],
+		"search": "Search a media",
+		"template": {
+			"first_used": "first used:",
+			"format": "format:",
+			"label": "label:",
+			"name": "name:",
+			"space_used": "space used:",
+			"pool": "pool:",
+			"use_before": "use before:",
+			"uuid": "uuid:"
+		},
+		"total_rows": ["{nb} media", "{nb} medias"]
+	},
+
+	"menu": {
+		"account": "Account",
+		"administration": "Administration",
+		"archive": "Archives",
+		"close": "Close menu",
+		"file": "Files",
+		"media": "Medias"
+	},
+
+	"preview": {
+		"form": {
+			"metadata": "metadata:",
+			"mimetype": "mimetype:",
+			"name": "name:",
+			"size": "size:"
+		},
+		"header": "INTELLIQUE / PREVIEW"
+	},
+
+	"size": {
+		"long": ["{size} byte", "{size} bytes"],
+		"short": {
+			"B": "{size} B",
+			"GB": "{size} GB",
+			"KB": "{size} KB",
+			"MB": "{size} MB",
+			"PB": "{size} PB",
+			"TB": "{size} TB"
+		}
+	},
+
+	"user": {
+		"back": "&nbsp;Back",
+		"form": {
+			"button": {
+				"add": "Create a new user",
+				"edit": "Edit this user"
+			},
+			"email": "E-mail:",
+			"fullname": "Fullname:",
+			"homedirectory": "Home Directory",
+			"login": "Login:",
+			"password": "Password:",
+			"password_hint": "6 characters min.",
+			"rights": {
+				"canadmin": "Administrator",
+				"canarchive": "Can archive",
+				"canrestore": "Can restore",
+				"disabled": "Disabled",
+				"legend": "Access rights for this user:"
+			}
+		},
+		"header": {
+			"add": "INTELLIQUE / ADD USER",
+			"edit": "INTELLIQUE / EDIT USER"
+		}
+	}
+}

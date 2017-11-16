@@ -1,56 +1,56 @@
 <ul class="template" data-role="listview">
 	<li class="ui-field-contain">
-		<label for="name">name:</label>
-		<span name="name"></span>
+		<label for="name" x-lang-key="file.template.name"></label>
+		<span data-name="name"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label for="mimetype">mimetype:</label>
-		<span name="mimetype"></span>
+		<label for="mimetype" x-lang-key="file.template.mimetype"></label>
+		<span data-name="mimetype"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label for="owner">owner:</label>
-		<span name="owner"></span>
+		<label for="owner" x-lang-key="file.template.owner"></label>
+		<span data-name="owner"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label for="groups">groups:</label>
-		<span name="groups"></span>
+		<label for="groups" x-lang-key="file.template.group"></label>
+		<span data-name="groups"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label for="ctime">Creation date:</label>
-		<span name="ctime"></span>
+		<label for="ctime" x-lang-key="file.template.start_date"></label>
+		<span data-name="ctime"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label for="mtime">Modification date:</label>
-		<span name="mtime"></span>
+		<label for="mtime" x-lang-key="file.template.end_time"></label>
+		<span data-name="mtime"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label for="size">size:</label>
-		<span name="size"></span>
+		<label for="size" x-lang-key="file.template.size"></label>
+		<span data-name="size"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label for="metadata">metadata:</label>
-		<span name="metadata"></span>
+		<label for="metadata" x-lang-key="file.template.metadata"></label>
+		<span data-name="metadata"></span>
 	</li>
 
 	<li class="ui-field-contain">
-		<label class="select" for="listLabelSelect">List of archives (w/ medias):</label>
+		<label class="select" for="listLabelSelect" x-lang-key="file.template.list_of_archives"></label>
 		<div class="archiveFButton" data-role="controlgroup" data-type="horizontal">
-			<select name="listLabelSelect"></select>
-			<a class="ui-btn ui-shadow ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage">Go to this archive</a>
+			<select data-name="listLabelSelect"></select>
+			<a class="ui-btn ui-shadow ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage" x-lang-key="file.template.go_archive"></a>
 		</div>
 	</li>
 
 	<li data-role="controlgroup" data-type="horizontal">
 		<div data-role="controlgroup" data-type="horizontal">
-			<a class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left preview" href="#previewPage">Preview this file</a>
-			<a class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left restore">Restore this file</a>
+			<a class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left preview" href="#previewPage" x-lang-key="file.template.preview"></a>
+			<a class="ui-btn ui-corner-all ui-icon-eye ui-btn-icon-left restore" x-lang-key="file.template.restore_file"></a>
 		</div>
 	</li>
 </ul>

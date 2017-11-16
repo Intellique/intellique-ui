@@ -23,32 +23,182 @@
 				<li>
 					<center><img id="iconMenu" alt="icon" src="icone.png"></img></center>
 				</li>
-				<li><a class="archiveButtonPage menuButton ui-btn ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage">Archives</a></li>
-				<li><a class="filesButtonPage menuButton ui-btn ui-corner-all ui-icon-grid ui-btn-icon-left" href="#archiveFilesPage">Files</a></li>
-				<li><a class="mediaButtonPage menuButton ui-btn ui-corner-all ui-icon-cloud ui-btn-icon-left" href="#mediaPage">Medias</a></li>
-				<li><a id="accountPage" class="menuButton ui-btn ui-corner-all ui-icon-user ui-btn-icon-left" href="#modUserPage">Account</a></li>
-				<li><a id="adminPage" class="administrationButtonPage menuButton ui-btn ui-corner-all ui-icon-user ui-btn-icon-left" href="#administrationPage">Administration</a></li>
-				<li><a class="ui-btn ui-btn-a ui-btn-inline ui-corner-all ui-icon-delete ui-btn-icon-left ui-link ui-shadow" data-rel="close" data-role="button">Close menu</a></li>
+				<li><a class="archiveButtonPage menuButton ui-btn ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage" x-lang-key="menu.archive">Archives</a></li>
+				<li><a class="filesButtonPage menuButton ui-btn ui-corner-all ui-icon-grid ui-btn-icon-left" href="#archiveFilesPage" x-lang-key="menu.file">Files</a></li>
+				<li><a class="mediaButtonPage menuButton ui-btn ui-corner-all ui-icon-cloud ui-btn-icon-left" href="#mediaPage" x-lang-key="menu.media">Medias</a></li>
+				<li><a id="accountPage" class="menuButton ui-btn ui-corner-all ui-icon-user ui-btn-icon-left" href="#modUserPage" x-lang-key="menu.account">Account</a></li>
+				<li><a id="adminPage" class="administrationButtonPage menuButton ui-btn ui-corner-all ui-icon-user ui-btn-icon-left" href="#administrationPage" x-lang-key="menu.administration">Administration</a></li>
+				<li><a class="ui-btn ui-btn-a ui-btn-inline ui-corner-all ui-icon-delete ui-btn-icon-left ui-link ui-shadow" data-rel="close" data-role="button" x-lang-key="menu.close">Close menu</a></li>
 			</ul>
 		</div>
 
-		<!-- authentification page -->
-		<div id="authentification_page" data-role="page">
+		<!-- dialog - authentication failure -->
+		<div id="authFailure" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.auth_failure.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.auth_failure.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#authentication_page" x-lang-key="dialog.auth_failure.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - create user failed -->
+		<div id="addUserFailed" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.add_user.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.add_user_failed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#administrationPage" x-lang-key="dialog.add_user.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - create user succeed -->
+		<div id="addUserSuccess" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.add_user.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.add_user_succeed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#administrationPage" x-lang-key="dialog.add_user.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - edit user failed -->
+		<div id="editUserFailed" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.edit_user.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.edit_user_failed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#administrationPage" x-lang-key="dialog.edit_user.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - edit user succeed -->
+		<div id="editUserSuccess" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.edit_user.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.edit_user_succeed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#administrationPage" x-lang-key="dialog.edit_user.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - remove user failed -->
+		<div id="removeUserFailed" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.remove_user.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.remove_user_failed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#administrationPage" x-lang-key="dialog.remove_user.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - remove user succeed -->
+		<div id="removeUserSuccess" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.remove_user.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.remove_user_succeed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#administrationPage" x-lang-key="dialog.remove_user.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - restore archive failed -->
+		<div id="restoreArchiveFailed" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.restore_archive.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.restore_archive_failed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#archivePage" x-lang-key="dialog.restore_archive.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - restore archive success -->
+		<div id="restoreArchiveSuccess" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.restore_archive.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.restore_archive_succeed.content"></p>
+			</div>
+			<div data-role="footer" class="ui-grid-solo" >
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#archivePage" x-lang-key="dialog.restore_archive.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- dialog - session timeout -->
+		<div id="sessionTimeout" data-role="dialog">
+			<div data-role="header">
+				<h1 x-lang-key="dialog.session_timeout.header"></h1>
+			</div>
+			<div role="main" class="ui-content" style="text-align: center;">
+				<p x-lang-key="dialog.session_timeout.content"></p>
+			</div>
+			<div data-role="footer">
+				<h2>
+					<a class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" href="#authentication_page" x-lang-key="dialog.session_timeout.button"></a>
+				</h2>
+			</div>
+		</div>
+
+		<!-- authentication page -->
+		<div id="authentication_page" data-role="page">
 			<div class="header ui-grid-solo" data-role="header" data-position="fixed">
 				<img id="header_stone_image" alt="Storiq one image" src="bandeau.png" />
 			</div>
 
-			<div id="authentification" class="ui-content" role="main">
+			<div id="authentication" class="ui-content" role="main">
 				<form>
 					<ul data-inset="true" data-role="listview">
 						<li class="ui-field-contain">
-							<input id="identifiant" name="login" placeholder="Login" type="text" data-clear-btn="true" />
+							<input id="identifiant" name="login" placeholder="Login" type="text" data-clear-btn="true" x-lang-key="authentication.login" />
 						</li>
 						<li class="ui-field-contain">
-							<input id="password" name="password" placeholder="Password" type="password" data-clear-btn="true" />
+							<input id="password" name="password" placeholder="Password" type="password" data-clear-btn="true" x-lang-key="authentication.password" />
 						</li>
 						<li class="ui-content">
-							<input id="log_in_button" type="submit" value="Log in" />
+							<input id="log_in_button" type="submit" x-lang-key="authentication.submit" />
 						</li>
 					</ul>
 				</form>
@@ -64,24 +214,24 @@
 			<div class="ui-content" role="main">
 				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
-					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
-					<h1>INTELLIQUE / ARCHIVES</h1>
+					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentication_page" x-lang-key="common.disconnect"></a>
+					<h1 x-lang-key="archive.header"></h1>
 				</div>
 			</div>
 
 			<div class="ui-content" role="main">
-				<input class="search" placeholder="Search an archive" type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn"></input>
+				<input class="search" placeholder type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" x-lang-key="archive.search"></input>
 				<div class="infoLines">
 					<span class="totalRows">
-						<span class="nbElts"></span> archive(s)</span>
+						<span class="nbElts" x-lang-key="archive.total_rows"></span></span>
 						<br /><br />
-						List of archive(s) <span class="pageN"></span> ↓
+						<span class="pageN" x-lang-key="archive.page"></span> ↓
 					</span>
 				</div>
 				<div id="archiveList" data-role="collapsibleset"></div>
 				<div class="pagination">
 					<div>
-						<label for="listLabel">Max displayable:</label>
+						<label for="listLabel" x-lang-key="common.max_displayable"></label>
 						<select class="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -108,24 +258,24 @@
 			<div class="ui-content" role="main">
 				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
-					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
-					<h1>INTELLIQUE / FILES ARCHIVED</h1>
+					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentication_page" x-lang-key="common.disconnect"></a>
+					<h1 x-lang-key="file.header"></h1>
 				</div>
 			</div>
 
 			<div class="ui-content" role="main">
-				<input class="search" placeholder="Search an archive's file" type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn"></input>
+				<input class="search" placeholder type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" x-lang-key="file.search"></input>
 				<div class="infoLines">
 					<span class="totalRows">
-						<span class="nbElts"></span> file(s)</span>
+						<span class="nbElts" x-lang-key="file.total_rows"></span></span>
 						<br /><br />
-						List of file(s) <span class="pageN"></span> ↓
+						<span class="pageN" x-lang-key="file.page"></span> ↓
 					</span>
 				</div>
 				<div id="archiveFilesList" data-role="collapsibleset"></div>
 				<div class="pagination">
 					<div>
-						<label for="listLabel">Max displayable:</label>
+						<label for="listLabel" x-lang-key="common.max_displayable"></label>
 						<select class="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -152,8 +302,8 @@
 			<div class="ui-content" role="main">
 				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
-					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
-					<h1>INTELLIQUE / PREVIEW</h1>
+					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentication_page" x-lang-key="common.disconnect"></a>
+					<h1 x-lang-key="preview.header"></h1>
 				</div>
 			</div>
 
@@ -162,22 +312,22 @@
 					<video controls></video>
 					<ul class="template" data-role="listview">
 						<li class="ui-field-contain">
-							<label for="name">name:</label>
+							<label for="name" x-lang-key="preview.form.name"></label>
 							<span data-name="name"></span>
 						</li>
 
 						<li class="ui-field-contain">
-							<label for="mimetype">mimetype:</label>
+							<label for="mimetype" x-lang-key="preview.form.mimetype"></label>
 							<span data-name="mimetype"></span>
 						</li>
 
 						<li class="ui-field-contain">
-							<label for="size">size:</label>
+							<label for="size" x-lang-key="preview.form.size"></label>
 							<span data-name="size"></span>
 						</li>
 
 						<li class="ui-field-contain">
-							<label for="metadata">metadata:</label>
+							<label for="metadata" x-lang-key="preview.form.metadata"></label>
 							<span data-name="metadata"></span>
 						</li>
 					</ul>
@@ -194,24 +344,24 @@
 			<div class="ui-content" role="main">
 				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
-					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
-					<h1>INTELLIQUE / MEDIAS</h1>
+					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentication_page" x-lang-key="common.disconnect"></a>
+					<h1 x-lang-key="media.header"></h1>
 				</div>
 			</div>
 
 			<div class="ui-content" role="main">
-				<input class="search" placeholder="Search a media" type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn"></input>
+				<input class="search" placeholder type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" x-lang-key="media.search"></input>
 				<div class="infoLines">
 					<span class="totalRows">
-						<span class="nbElts"></span> media(s)</span>
+						<span class="nbElts" x-lang-key="media.total_rows"></span></span>
 						<br /><br />
-						List of media(s) <span class="pageN"></span> ↓
+						<span class="pageN" x-lang-key="media.page"></span> ↓
 					</span>
 				</div>
 				<div id="mediaList" data-role="collapsibleset"></div>
 				<div class="pagination">
 					<div>
-						<label for="listLabel">Max displayable:</label>
+						<label for="listLabel" x-lang-key="common.max_displayable"></label>
 						<select class="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -238,27 +388,27 @@
 			<div class="ui-content" role="main">
 				<div class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
-					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
-					<h1>INTELLIQUE / ADMNISTRATION</h1>
+					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentication_page" x-lang-key="common.disconnect"></a>
+					<h1 x-lang-key="administration.header"></h1>
 				</div>
 			</div>
 
 			<div class="ui-content" role="main">
-				<input class="search" placeholder="Search a user" type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn"></input>
+				<input class="search" placeholder type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" x-lang-key="administration.search"></input>
 				<div style="height: 50px;">
-					<a id="AddButton" class="ui-btn ui-btn-icon-right ui-btn-left ui-corner-all ui-icon-plus" href="#modUserPage">Create a new user</a>
+					<a id="AddButton" class="ui-btn ui-btn-icon-right ui-btn-left ui-corner-all ui-icon-plus" href="#modUserPage" x-lang-key="administration.button.add_user"></a>
 				</div>
 				<div class="infoLines">
 					<span class="totalRows">
-						<span class="nbElts"></span> user(s)</span>
+						<span class="nbElts" x-lang-key="administration.total_rows"></span></span>
 						<br /><br />
-						List of user(s) <span class="pageN"></span> ↓
+						<span class="pageN" x-lang-key="administration.page"></span> ↓
 					</span>
 				</div>
 				<div id="administrationList" data-role="collapsibleset"></div>
 				<div class="pagination">
 					<div>
-						<label for="listLabel">Max displayable:</label>
+						<label for="listLabel" x-lang-key="common.max_displayable"></label>
 						<select class="menuLimit">
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -285,14 +435,14 @@
 			<div class="ui-content" data-role="main">
 				<div id="headerAdd" class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
-					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
-					<h1>INTELLIQUE / ADD USER</h1>
+					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentication_page" x-lang-key="common.disconnect"></a>
+					<h1 x-lang-key="user.header.add"></h1>
 				</div>
 
 				<div id="headerEdit" class="header ui-grid-solo" data-position="fixed" data-role="header">
 					<a class="menuButton ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars" href="#menu"></a>
-					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentification_page">Disconnect</a>
-					<h1>INTELLIQUE / EDIT USER</h1>
+					<a class="disconnection_button menuButton ui-btn ui-btn-icon-notext ui-btn-right ui-corner-all ui-icon-power ui-btn-icon-left" href="#authentication_page" x-lang-key="common.disconnect"></a>
+					<h1 x-lang-key="user.header.edit"></h1>
 				</div>
 			</div>
 
@@ -300,47 +450,47 @@
 				<form>
 					<ul data-inset="true" data-role="listview">
 						<li class="ui-field-contain">
-							<label for="login">Login</label>
+							<label for="login" x-lang-key="user.form.login"></label>
 							<input name="login" type="text"></input>
 						</li>
 
 						<li class="ui-field-contain">
-							<label for="fullname">Fullname</label>
+							<label for="fullname" x-lang-key="user.form.fullname"></label>
 							<input name="fullname" type="text"></input>
 						</li>
 
 						<li class="ui-field-contain">
-							<label for="pwd">Password</label>
-							<input name="pwd" type="password" placeholder="6 characters min."></input>
+							<label for="pwd" x-lang-key="user.form.password"></label>
+							<input name="pwd" type="password" placeholder x-lang-key="user.form.password_hint"></input>
 						</li>
 
 						<li class="ui-field-contain">
-							<label for="email">E-mail</label>
+							<label for="email" x-lang-key="user.form.email"></label>
 							<input name="email" type="text"></input>
 						</li>
 
 						<li class="ui-field-contain">
-							<label for="homedir">Home Directory</label>
+							<label for="homedir" x-lang-key="user.form.homedirectory"></label>
 							<input name="homedir" type="text" placeholder="/mnt/raid"></input>
 						</li>
 
 						<li class="ui-field-contain">
 							<fieldset data-role="controlgroup" data-type="vertical">
-								<legend>Access rights for this user:</legend>
-								<label for="canadmin">Administrator</label>
+								<legend x-lang-key="user.form.rights.legend"></legend>
+								<label for="canadmin" x-lang-key="user.form.rights.canadmin"></label>
 								<input id="canadmin" type="checkbox"></input>
-								<label for="canarchive">Can archive</label>
+								<label for="canarchive" x-lang-key="user.form.rights.canarchive"></label>
 								<input id="canarchive" type="checkbox"></input>
-								<label for="canrestore">Can restore</label>
+								<label for="canrestore" x-lang-key="user.form.rights.canrestore"></label>
 								<input id="canrestore" type="checkbox"></input>
-								<label for="disabled">Disabled</label>
+								<label for="disabled" x-lang-key="user.form.rights.disabled"></label>
 								<input id="disabled" type="checkbox"></input>
 							</fieldset>
 						</li>
 
 						<li class="ui-content">
-							<input id="addUserButton" type="submit" value="Create a new user"></input>
-							<input id="editButton" type="submit" value="Edit this user"></input>
+							<input id="addUserButton" type="submit" x-lang-key="user.form.button.add"></input>
+							<input id="editButton" type="submit" x-lang-key="user.form.button.edit"></input>
 						</li>
 					</ul>
 				</form>
@@ -348,7 +498,7 @@
 
 			<div>
 				<h2>
-					<a id="backUserPage" class="ui-btn ui-btn-icon-left ui-corner-all ui-icon-back">&nbsp;Back</a>
+					<a id="backUserPage" class="ui-btn ui-btn-icon-left ui-corner-all ui-icon-back" x-lang-key="user.back"></a>
 				</h2>
 			</div>
 

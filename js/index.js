@@ -2,18 +2,43 @@
 "use strict";
 
 var config = null;
+
+var $document = $(window.document);
+
+var currentLanguage = null;
+var currentLanguageDict = null;
+
 $.ajax({
 	type: 'GET',
 	url: 'config.json',
 	success: function(newConfig) {
 		config = newConfig;
 
-		authService.checkAuth(function() {
-			$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
-			main();
-		}, function() {
-			$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
-			main();
+		var languagesAvailables = ['en', 'fr'];
+		var browserLanguages = window.navigator.languages;
+		for (var i = 0, n = browserLanguages.length; i < n; i++)
+			if (languagesAvailables.indexOf(browserLanguages[i]) != -1) {
+				currentLanguage = browserLanguages[i];
+				break;
+			}
+
+		if (currentLanguage === null)
+			currentLanguage = 'en';
+
+		$.ajax({
+			type: 'GET',
+			url: config["simple-ui url"] + '/lang/' + currentLanguage + '.json',
+			success: function(newLang) {
+				currentLanguageDict = newLang;
+
+				authService.checkAuth(function() {
+					$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
+					main();
+				}, function() {
+					$(":mobile-pagecontainer").pagecontainer("change", "#authentication_page");
+					main();
+				});
+			}
 		});
 	}
 });
@@ -49,6 +74,9 @@ function AuthService() {
 		}
 	}
 
+	var dialog = null;
+	$document.one('pagechange', function() { dialog = $('#sessionTimeout'); });
+
 	function notConnected(onError) {
 		onError = onError || $.noop;
 
@@ -59,8 +87,14 @@ function AuthService() {
 				window.clearInterval(authTimer);
 				authTimer = null;
 
-				$.mobile.changePage(config["simple-ui url"] + "/dialog/timeout.html", { role: "dialog" });
-				$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
+				translate(dialog);
+				$.mobile.changePage("#sessionTimeout", {changeHash: false, reverse: false});
+
+				// jquery mobile hack
+				$document.one('pagechange', function() {
+					var close = dialog.find('a[role="button"]');
+					close.attr('href', '#authentication_page');
+				});
 			}
 
 			onError();
@@ -106,7 +140,7 @@ function AuthService() {
 				window.clearInterval(authTimer);
 				authTimer = null;
 
-				$(":mobile-pagecontainer").pagecontainer("change", "#authentification_page");
+				$(":mobile-pagecontainer").pagecontainer("change", "#authentication_page");
 			}
 		});
 	}
@@ -139,26 +173,28 @@ function convertSize(size) {
 
 	switch (mult) {
 		case 0:
-			type = " B";
+			type = translateGetKey("size.short.B");
 			break;
 		case 1:
-			type = " KB";
+			type = translateGetKey("size.short.KB");
 			break;
 		case 2:
-			type = " MB";
+			type = translateGetKey("size.short.MB");
 			break;
 		case 3:
-			type = " GB";
+			type = translateGetKey("size.short.GB");
 			break;
 		case 4:
-			type = " TB";
+			type = translateGetKey("size.short.TB");
 			break;
 		default:
-			type = " PB";
+			type = translateGetKey("size.short.PB");
 			break;
 	}
 
-	return size.toFixed(width) + type;
+	return type.replace(/\{(\w+)\}/g, function(match, expr) {
+		return size.toLocaleString(currentLanguage, {maximumFractionDigits: width})
+	});
 }
 
 
@@ -509,8 +545,10 @@ function PaginationCtl(page, model) {
 			var firstLine = totalRows > 0 ? offset + 1 : 0;
 			var lastLine = offset + limit > totalRows ? totalRows : offset + limit;
 
-			nbElts.text(totalRows).stop(true, false).animate({opacity: '1'}, 500);
-			pageN.text(firstLine + ' on ' + lastLine).stop(true, false).animate({opacity: '1'}, 500);
+			translatePluralByElt(nbElts, totalRows, {'nb': totalRows});
+			translatePluralByElt(pageN, lastLine, {'offset': firstLine, 'end': lastLine});
+			nbElts.stop(true, false).animate({opacity: '1'}, 500);
+			pageN.stop(true, false).animate({opacity: '1'}, 500);
 
 			paginationBttns.stop(true, false).animate({opacity: '1'}, 500);
 			var children = paginationBttns.find("a");
@@ -579,10 +617,10 @@ function SearchCtl(page, model, searchFunc) {
 			clearBttn.on('click', function() {
 				model.search(searchFunc(''));
 			});
-			$(document).off("pagechange", deferred);
-		}
+		} else
+			$document.one("pagechange", deferred);
 	}
-	$(document).on("pagechange", deferred);
+	$document.one("pagechange", deferred);
 
 	this.search = function(lookingFor) {
 		input.val(lookingFor);
@@ -618,8 +656,14 @@ function TableView(table, model, factory) {
 	var body = table.find('tbody');
 
 	for (var i = 0, n = factory.length; i < n; i++) {
-		var th = $('<th />');
-		th.text(factory[i].name);
+		var th = $('<th />').attr('x-lang-key', factory[i].translate);
+
+		var translation = translateGetKeyByElt(th);
+		if (translation)
+			translateElement(th, translation);
+		else
+			th.text(factory[i].name);
+
 		// TODO: add function to sort header
 		head.append(th);
 	}
@@ -648,9 +692,138 @@ function TableView(table, model, factory) {
 }
 
 
+function translate(elt) {
+	if (currentLanguageDict === null)
+		return;
+
+	elt.find('[x-lang-key]').addBack('[x-lang-key]').each(function(index, element) {
+		var $element = $(element);
+		var translation = translateGetKeyByElt($element);
+		if (translation)
+			translateElement($element, translation);
+	});
+}
+
+
+function translateDateTime(dt) {
+	var date = new Date(Date.parse(dt.date + dt.timezone));
+	return date.toLocaleString(currentLanguage);
+}
+
+
+function translateElement(elt, translation) {
+	elt.attr('lang', currentLanguage);
+	if (elt.attr('type') == 'button')
+		elt.attr('value', translation);
+	else if (elt.attr('placeholder') !== undefined)
+		elt.attr('placeholder', translation);
+	else if (elt.attr('label') !== undefined)
+		elt.attr('label', translation);
+	else if (elt.attr('title') !== undefined)
+		elt.attr('title', translation);
+	else if (elt.attr('type') == 'submit') {
+		// hack in order to translate button
+		elt.before(translation);
+	} else
+		elt.html(translation);
+}
+
+
+function translateGetKey(key) {
+	var parts = key.split('.');
+	var dict = currentLanguageDict;
+	for (var i = 0, n = parts.length; i < n; i++) {
+		dict = dict[parts[i]];
+		if (!dict)
+			return null;
+	}
+	return dict;
+}
+
+
+function translateGetKeyByElt(elt) {
+	var key = elt.attr('x-lang-key');
+	if (key)
+		return translateGetKey(key);
+	else
+		return null;
+}
+
+
+function translatePage(page) {
+	function deferred() {
+		if (page.is('.ui-page'))
+			translate(page);
+		else
+			$document.one('pagechange', deferred);
+	}
+	deferred();
+}
+
+
+function translatePlural(key, nb, values) {
+	if (!translatePluralInit())
+		return;
+
+	var translations = translateGetKey(key);
+	if (!translations)
+		return;
+
+	return translatePluralInner(translations, nb, values);
+}
+
+
+var pluralsEvals = [];
+function translatePluralInit() {
+	if (currentLanguageDict === null)
+		return false;
+
+	if (pluralsEvals.length == 0) {
+		var exps = currentLanguageDict[""]["plurals form"];
+		for (var i = 0, n = exps.length; i < n; i++)
+			pluralsEvals.push(new Function('n', "return " + exps[i]));
+	}
+
+	return true;
+}
+
+
+function translatePluralInner(translations, nb, values) {
+	var form = 0;
+	for (var nbForms = pluralsEvals.length; form < nbForms; form++)
+		if (pluralsEvals[form](nb))
+			break;
+
+	values = values || {};
+	return translations[form].replace(/\{(\w+)\}/g, function(match, expr) {
+		switch (typeof values[expr]) {
+			case "number":
+				return values[expr].toLocaleString(currentLanguage);
+
+			default:
+				return values[expr];
+		}
+	});
+}
+
+
+function translatePluralByElt(elt, nb, values) {
+	if (!translatePluralInit())
+		return;
+
+	var translations = translateGetKeyByElt(elt);
+	if (!translations)
+		return;
+
+	var translation = translatePluralInner(translations, nb, values);
+	translateElement(elt, translation);
+}
+
+
 function main() {
 	function PageAuth() {
-		var page = $('#authentification_page');
+		var page = $('#authentication_page');
+		translatePage(page);
 
 		var loginInput = page.find('#identifiant');
 		var passwordInput = page.find('#password');
@@ -658,18 +831,17 @@ function main() {
 
 		function deferred() {
 			submitWrapper = page.find('div.ui-btn').has('#log_in_button');
-			if (submitWrapper.length == 0)
+			if (submitWrapper.length == 0) {
+				$document.one("pagechange", deferred);
 				return;
+			}
 
 			loginInput.on('keyup', submitEnabled);
 			loginInput.next().on('click', submitEnabled);
 			passwordInput.on('keyup', submitEnabled);
 			passwordInput.next().on('click', submitEnabled);
 			submitEnabled();
-
-			$(document).off("pagechange", deferred);
 		}
-		$(document).on("pagechange", deferred);
 		deferred();
 
 		function submitEnabled() {
@@ -698,7 +870,8 @@ function main() {
 				passwordInput.val('').textinput('refresh');
 			}, function() {
 				// popup invalid password or login
-				$.mobile.changePage(config["simple-ui url"] + "/dialog/authfailed.html", { role: "dialog" });
+				translate($('#authFailure'))
+				$.mobile.changePage("#authFailure");
 				$.mobile.loading("hide");
 			});
 
@@ -709,6 +882,7 @@ function main() {
 
 	function PageArchive() {
 		var page = $('#archivePage');
+		translatePage(page);
 
 		function preSearch(input) {
 			var search = {};
@@ -738,10 +912,12 @@ function main() {
 			},
 			template: 'template/archive.html',
 			fillTemplate: function(template, archive) {
+				translate(template);
+
 				template.find('span[data-name="uuid"]').text(archive.uuid);
-				template.find('span[data-name="starttime"]').text(archive.volumes[0].starttime.date);
-				template.find('span[data-name="endtime"]').text(archive.volumes[archive.volumes.length - 1].endtime.date);
-				template.find('span[data-name="size"]').text(convertSize(archive.size) + " (" + archive.size.toLocaleString() + " bytes)");
+				template.find('span[data-name="starttime"]').text(translateDateTime(archive.volumes[0].starttime));
+				template.find('span[data-name="endtime"]').text(translateDateTime(archive.volumes[archive.volumes.length - 1].endtime));
+				template.find('span[data-name="size"]').text(convertSize(archive.size) + " (" + translatePlural("size.long", archive.size, {size: archive.size}) + ")");
 				template.find('span[data-name="owner"]').text(archive.owner);
 				template.find('span[data-name="creator"]').text(archive.creator);
 				template.find('span[data-name="canappend"]').text(archive.canappend);
@@ -767,8 +943,11 @@ function main() {
 							cell.text(metadata.value);
 						}
 					}]);
-				} else
-					tableMetadata.replaceWith('<span>No metadata found for this object</span>');
+				} else {
+					var span = $('<span x-lang-key="archive.template.no_metadata"></span>');
+					translate(span);
+					tableMetadata.replaceWith(span);
+				}
 
 				var modelVolumes = new ModelVolume(archive.volumes);
 				var table = new TableView(template.find('table.volume'), modelVolumes, [{
@@ -776,13 +955,15 @@ function main() {
 					'sortable': 'false',
 					'fillCell': function(cell, key, volume) {
 						cell.text(volume.sequence);
-					}
+					},
+					'translate': 'archive.volume.sequence'
 				}, {
 					'name': 'size',
 					'sortable': 'false',
 					'fillCell': function(cell, key, volume) {
 						cell.text(convertSize(volume.size));
-					}
+					},
+					'translate': 'archive.volume.size'
 				}, {
 					'name': 'media',
 					'sortable': 'false',
@@ -797,7 +978,8 @@ function main() {
 							});
 							cell.empty().append(mediaBttn);
 						});
-					}
+					},
+					'translate': 'archive.volume.media'
 				}]);
 
 				template.find('span[data-name="archiveFilesButton"] a').on('click', function() {
@@ -809,11 +991,13 @@ function main() {
 				if (userInfo && userInfo.canrestore) {
 					restoreBttn.on('click', function() {
 						function restoreSucceed() {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/rSuccess.html", { role: "dialog" });
+							translate($('#restoreArchiveSuccess'));
+							$.mobile.changePage("#restoreArchiveSuccess");
 						}
 
 						function restoreFailed() {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/rFailed.html", { role: "dialog" });
+							translate($('#restoreArchiveFailed'));
+							$.mobile.changePage("#restoreArchiveFailed");
 						}
 
 						restoreArchive(archive.id, restoreSucceed, restoreFailed);
@@ -825,7 +1009,7 @@ function main() {
 		var paginationCtl = new PaginationCtl(page, model);
 		var searchCtl = new SearchCtl(page, model, preSearch);
 
-		$(document).on("pagechange", function(event, ui) {
+		$document.on("pagechange", function(event, ui) {
 			if (page.is(ui.toPage))
 				model.update();
 		});
@@ -870,6 +1054,7 @@ function main() {
 
 	function PageArchiveFile() {
 		var page = $('#archiveFilesPage');
+		translatePage(page);
 
 		function preSearch(input) {
 			var search = {};
@@ -899,15 +1084,17 @@ function main() {
 			},
 			template: 'template/archiveFiles.html',
 			fillTemplate: function(template, archivefile) {
-				template.find('span[name="name"]').text(archivefile.name);
-				template.find('span[name="mimetype"]').text(archivefile.mimetype);
-				template.find('span[name="owner"]').text(archivefile.owner);
-				template.find('span[name="groups"]').text(archivefile.groups);
-				template.find('span[name="ctime"]').text(archivefile.ctime);
-				template.find('span[name="mtime"]').text(archivefile.mtime);
-				template.find('span[name="size"]').text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
+				translate(template);
 
-				var metadata = template.find('span[name="metadata"]');
+				template.find('span[data-name="name"]').text(archivefile.name);
+				template.find('span[data-name="mimetype"]').text(archivefile.mimetype);
+				template.find('span[data-name="owner"]').text(archivefile.owner);
+				template.find('span[data-name="groups"]').text(archivefile.groups);
+				template.find('span[data-name="ctime"]').text(translateDateTime(archivefile.ctime));
+				template.find('span[data-name="mtime"]').text(translateDateTime(archivefile.mtime));
+				template.find('span[data-name="size"]').text(convertSize(archivefile.size) + ' (' + translatePlural("size.long", archivefile.size, {size: archivefile.size}) + ')');
+
+				var metadata = template.find('span[data-name="metadata"]');
 				$.ajax({
 					type: 'GET',
 					url: config["api url"] + "/api/v1/archivefile/metadata/",
@@ -916,11 +1103,11 @@ function main() {
 						metadata.text(JSON.stringlify(response));
 					},
 					error: function() {
-						metadata.text("No metadata found for this object");
+						metadata.text(translateGetKey('file.template.no_metadata'));
 					}
 				});
 
-				var archiveSelect = template.find('select[name="listLabelSelect"]');
+				var archiveSelect = template.find('select[data-name="listLabelSelect"]');
 				for (var id in archivefile.archives)
 					pageArchive.getArchiveById(id, true, function(archive) {
 						archiveSelect.append('<option value="' + archive.uuid + '">' + archive.name + ' (' + archivefile.archives[archive.id].join(", ") + ')</option>');
@@ -953,11 +1140,13 @@ function main() {
 				if (userInfo && userInfo.canrestore) {
 					restoreBttn.on('click', function() {
 						function restoreSucceed() {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/rSuccess.html", { role: "dialog" });
+							translate($('#restoreArchiveSuccess'));
+							$.mobile.changePage("#restoreArchiveSuccess");
 						}
 
 						function restoreFailed() {
-							$.mobile.changePage(config["simple-ui url"] + "/dialog/rFailed.html", { role: "dialog" });
+							translate($('#restoreArchiveFailed'));
+							$.mobile.changePage("#restoreArchiveFailed");
 						}
 
 						var archives = Object.keys(archivefile.archives);
@@ -971,7 +1160,7 @@ function main() {
 		var paginationCtl = new PaginationCtl(page, model);
 		var searchCtl = new SearchCtl(page, model, preSearch);
 
-		$(document).on("pagechange", function(event, ui) {
+		$document.on("pagechange", function(event, ui) {
 			if (page.is(ui.toPage))
 				model.update();
 		});
@@ -1012,6 +1201,8 @@ function main() {
 
 	function PagePreview() {
 		var page = $('#previewPage');
+		translatePage(page);
+
 		var video = page.find('video');
 		var lblName = page.find('ul span[data-name="name"]');
 		var lblMimetype = page.find('ul span[data-name="mimetype"]');
@@ -1048,7 +1239,7 @@ function main() {
 			}
 		}
 
-		$(document).on("pagechange", function(event, ui) {
+		$document.on("pagechange", function(event, ui) {
 			if (!page.is(ui.toPage))
 				video[0].pause();
 		});
@@ -1057,6 +1248,7 @@ function main() {
 
 	function PageMedia() {
 		var page = $('#mediaPage');
+		translatePage(page);
 
 		function preSearch(input) {
 			var search = {};
@@ -1086,14 +1278,16 @@ function main() {
 			},
 			template: 'template/media.html',
 			fillTemplate: function(template, media) {
+				translate(template);
+
 				template.find('span[data-name="name"]').text(media.name);
 				template.find('span[data-name="label"]').text(media.label);
 				if (media.pool)
 					template.find('span[data-name="pool"]').text(media.pool.name);
 				template.find('span[data-name="format"]').text(media.mediaformat.name);
 				template.find('span[data-name="uuid"]').text(media.uuid);
-				template.find('span[data-name="firstused"]').text(media.firstused.date);
-				template.find('span[data-name="usebefore"]').text(media.usebefore.date);
+				template.find('span[data-name="firstused"]').text(translateDateTime(media.firstused));
+				template.find('span[data-name="usebefore"]').text(translateDateTime(media.usebefore));
 
 				var spaceUsed = template.find('div[data-name="spaceused"]');
 				var meter = spaceUsed.find('meter');
@@ -1109,7 +1303,7 @@ function main() {
 		var paginationCtl = new PaginationCtl(page, model);
 		var searchCtl = new SearchCtl(page, model, preSearch);
 
-		$(document).on("pagechange", function(event, ui) {
+		$document.on("pagechange", function(event, ui) {
 			if (page.is(ui.toPage))
 				model.update();
 		});
@@ -1130,6 +1324,7 @@ function main() {
 
 	function PageAdministration() {
 		var page = $('#administrationPage');
+		translatePage(page);
 
 		function preSearch(input) {
 			var search = {};
@@ -1172,6 +1367,8 @@ function main() {
 			},
 			template: 'template/administration.html',
 			fillTemplate: function(template, user) {
+				translate(template);
+
 				template.find('span[data-name="id"]').text(user.id);
 				template.find('span[data-name="login"]').text(user.login);
 				template.find('span[data-name="fullname"]').text(user.fullname);
@@ -1214,11 +1411,13 @@ function main() {
 							url: config["api url"] + "/api/v1/user/?id=" + user.id,
 							dataType: 'json',
 							success: function(response) {
-								$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserSuccess.html", {role: "dialog"});
+								translate($('#removeUserSuccess'));
+								$.mobile.changePage("#removeUserSuccess");
 								model.fetch();
 							},
 							error: function(XMLHttpRequest, textStatus, errorThrown) {
-								$.mobile.changePage(config["simple-ui url"] + "/dialog/removeUserFail.html", {role: "dialog"});
+								translate($('#removeUserFailed'));
+								$.mobile.changePage("#removeUserFailed");
 								model.fetch();
 							}
 						});
@@ -1234,7 +1433,7 @@ function main() {
 			pageUser.newUser();
 		});
 
-		$(document).on("pagechange", function(event, ui) {
+		$document.on("pagechange", function(event, ui) {
 			if (page.is(ui.toPage)) {
 				var currentUser = authService.getUserInfo();
 
@@ -1257,6 +1456,7 @@ function main() {
 
 	function PageUser() {
 		var page = $('#modUserPage');
+		translatePage(page);
 
 		var headerAddUser = page.find('#headerAdd');
 		var headerEditUser = page.find('#headerEdit');
@@ -1293,7 +1493,7 @@ function main() {
 
 		// jQuery mobile hack
 		var isPageInitialized = false;
-		$(document).on("pagechange", function(event, ui) {
+		$document.on("pagechange", function(event, ui) {
 			if (page.is(ui.toPage) && !isPageInitialized) {
 				isPageInitialized = true;
 
@@ -1423,13 +1623,22 @@ function main() {
 					disabled: disabled.is(':checked')
 				}),
 				success: function(response) {
-					$.mobile.changePage(config["simple-ui url"] + "/dialog/addUserSuccess.html", {role: "dialog"});
 					pageAdministration.update();
-					$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+
+					var dialog = $("#addUserSuccess");
+					translate(dialog);
+					$.mobile.changePage("#addUserSuccess");
 					$.mobile.loading("hide");
+
+					var as = dialog.find('a');
+					dialog.find('a').on('click', function() {
+						as.off();
+						$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+					});
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
-					$.mobile.changePage(config["simple-ui url"] + "/dialog/addUserFail.html", {role: "dialog"});
+					translate($("#addUserFailed"));
+					$.mobile.changePage("#addUserFailed");
 					$.mobile.loading("hide");
 				}
 			});
@@ -1463,14 +1672,24 @@ function main() {
 				data: JSON.stringify(userInfo),
 				success: function(response) {
 					newUser();
-					$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserSuccess.html", {role: "dialog"});
+
 					pageAdministration.discardUserById(userInfo.id);
 					pageAdministration.update();
-					$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+
+					var dialog = $("#editUserSuccess");
+					translate(dialog);
+					$.mobile.changePage("#editUserSuccess");
 					$.mobile.loading("hide");
+
+					var as = dialog.find('a');
+					dialog.find('a').on('click', function() {
+						as.off();
+						$(":mobile-pagecontainer").pagecontainer("change", "#administrationPage");
+					});
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
-					$.mobile.changePage(config["simple-ui url"] + "/dialog/editUserFail.html", {role: "dialog"});
+					translate($("#editUserFailed"));
+					$.mobile.changePage("#editUserFailed");
 					$.mobile.loading("hide");
 				}
 			});
@@ -1486,6 +1705,7 @@ function main() {
 
 
 	$("[data-role=panel]").enhanceWithin().panel();
+	translate($('#menu'));
 
 	var pageAuth = new PageAuth();
 	var pageArchive = new PageArchive();

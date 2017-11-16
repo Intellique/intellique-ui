@@ -1,0 +1,229 @@
+{
+	"": {
+		"plurals form": ["n < 2"]
+	},
+
+	"administration": {
+		"button": {
+			"add_user": "Créer un nouvel utilisateur"
+		},
+		"header": "INTELLIQUE / ADMINISTRATION",
+		"page": ["Liste des utilisateurs, de {offset} sur {end}", "Liste des utilisateurs, de {offset} sur {end}"],
+		"search": "Rechercher un utilisateur",
+		"template": {
+			"can_archive": "peut archiver",
+			"disabled": "désactivé",
+			"edit_user": "Éditer l’utilisateur",
+			"email": "courriel&nbsp;:",
+			"fullname": "Nom complet&nbsp;:",
+			"homedirectory": "répertoire personnel&nbsp;:",
+			"id": "id&nbsp;:",
+			"is_admin": "est administrateur",
+			"login": "identiﬁant&nbsp;:",
+			"poolgroup": "poolgroup",
+			"remove_user": "Supprimer l’utilisateur"
+		},
+		"total_rows": ["{nb} utilisateur", "{nb} utilisateurs"]
+	},
+
+	"archive": {
+		"header": "INTELLIQUE / ARCHIVES",
+		"page": ["Liste des archives, de {offset} sur {end}", "Liste des archives, de {offset} sur {end}"],
+		"search": "Rechercher une archive",
+		"template": {
+			"archive_files_button": "Fichiers appartenant à cette archive&nbsp;:",
+			"can_append": "peur étendre&nbsp:",
+			"creator": "créateur&nbsp;:",
+			"end_time": "heure de ﬁn&nbsp;:",
+			"metadata": "métadonnées&nbsp;:",
+			"no_metadata": "Pas de métadonnée pour cette archive",
+			"owner": "gestionnaire&nbsp;:",
+			"restore_archive": "Restaurer cette archive",
+			"see_files": "Voir les ﬁchiers",
+			"start_time": "heure de début&nbsp;:",
+			"size": "taille&nbsp;:",
+			"uuid": "uuid&nbsp;:",
+			"volume": "volume&nbsp;:"
+		},
+		"total_rows": ["{nb} archive", "{nb} archives"],
+		"volume": {
+			"media": "média",
+			"sequence": "séquence",
+			"size": "taille"
+		}
+	},
+
+	"authentication": {
+		"login": "Identiﬁant",
+		"password": "Mot de passe",
+		"submit": "Se connecter"
+	},
+
+	"common": {
+		"disconnect": "Déconnection",
+		"max_displayable": "Max aﬃchable&nbsp;:"
+	},
+
+	"dialog": {
+		"add_user": {
+			"button": "&nbsp; Retour vers l’administration",
+			"header": "Création d’un utilisateur"
+		},
+
+		"add_user_failed": {
+			"content": "La création de l’utilisateur a échoué"
+		},
+
+		"add_user_succeed": {
+			"content": "La création de l’utilisateur a réussi"
+		},
+
+		"auth_failure": {
+			"button": "&nbsp; Retour à la page d'authentiﬁcation",
+			"content": "Mauvais identiﬁant ou mot de passe",
+			"header": "Erreur lors de l’authentiﬁcation"
+		},
+
+		"edit_user": {
+			"button": "&nbsp; Retour vers l’administration",
+			"header": "Modiﬁcation d’un utilisateur"
+		},
+
+		"edit_user_failed": {
+			"content": "La modiﬁcation de l’utilisateur a échoué"
+		},
+
+		"edit_user_succeed": {
+			"content": "La modiﬁcation de l’utilisateur a réussi"
+		},
+
+		"remove_user": {
+			"button": "&nbsp; Retour vers l’administration",
+			"header": "Suppression d’un utilisateur"
+		},
+
+		"remove_user_failed": {
+			"content": "La suppression de l’utilisateur a échoué"
+		},
+
+		"remove_user_succeed": {
+			"content": "La suppression de l’utilisateur a réussi"
+		},
+
+		"restore_archive": {
+			"button": "&nbsp; Retour vers les archives",
+			"header": "Restauration d’une archive"
+		},
+
+		"restore_archive_failed": {
+			"content": "La restauration de l’archive a échoué"
+		},
+
+		"restore_archive_succeed": {
+			"content": "La restauration de l’archive a réussi"
+		},
+
+		"session_timeout": {
+			"button": " &nbsp; Retour vers la page d’authentiﬁcation",
+			"content": "Vous allez être redirigé vers la page d’authentiﬁcation",
+			"header": "La session a expiré"
+		}
+	},
+
+	"file": {
+		"header": "INTELLIQUE / FICHIERS ARCHIVÉS",
+		"page": ["Liste des ﬁchiers, de {offset} sur {end}", "Liste des ﬁchiers, de {offset} sur {end}"],
+		"search": "Recherche un ﬁchier d’une archive",
+		"template": {
+			"end_time": "date de modification&nbsp;:",
+			"go_archive": "Aller à l’archive",
+			"group": "groupe&nbsp;:",
+			"list_of_archives": "Liste des archives (par médias)&nbsp;:",
+			"metadata": "métadonnées&nbsp;:",
+			"mimetype": "type mime&nbsp;:",
+			"name": "nom&nbsp;:",
+			"no_metadata": "Pas de métadonnée pour ce fichier",
+			"owner": "propriétaire&nbsp;:",
+			"preview": "Aperçu du ﬁchier",
+			"restore_file": "Restaurer ce ﬁchier",
+			"size": "taille&nbsp;:",
+			"start_date": "date de création&nbsp;:"
+		},
+		"total_rows": ["{nb} ﬁchier", "{nb} ﬁchiers"]
+	},
+
+	"media": {
+		"header": "INTELLIQUE / MÉDIAS",
+		"page": ["Liste des médias, de {offset} sur {end}", "Liste des médias, de {offset} sur {end}"],
+		"search": "Rechercher un média",
+		"template": {
+			"first_used": "premier utilisation&nbsp;:",
+			"format": "format&nbsp;:",
+			"label": "étiquette&nbsp;:",
+			"name": "nom&nbsp;:",
+			"space_used": "espace utilisé&nbsp;:",
+			"pool": "pool&nbsp;:",
+			"use_before": "à utiliser avant&nbsp;:",
+			"uuid": "uuid&nbsp;:"
+		},
+		"total_rows": ["{nb} média", "{nb} médias"]
+	},
+
+	"menu": {
+		"account": "Compte",
+		"administration": "Administration",
+		"archive": "Archives",
+		"close": "Fermer le menu",
+		"file": "Fichiers",
+		"media": "Médias"
+	},
+
+	"preview": {
+		"form": {
+			"metadata": "métadonnée&nbsp;:",
+			"mimetype": "type mime&nbsp;:",
+			"name": "nom&nbsp:",
+			"size": "taille&nbsp;:"
+		},
+		"header": "INTELLIQUE / APERÇU"
+	},
+
+	"size": {
+		"long": ["{size} octet", "{size} octets"],
+		"short": {
+			"B": "{size} o",
+			"GB": "{size} Go",
+			"KB": "{size} Ko",
+			"MB": "{size} Mo",
+			"PB": "{size} Po",
+			"TB": "{size} To"
+		}
+	},
+
+	"user": {
+		"back": "&nbsp;Retour",
+		"form": {
+			"button": {
+				"add": "Créer un nouvel utilisateur",
+				"edit": "Modiﬁer cette utilisateur"
+			},
+			"email": "Courriel&nbsp;:",
+			"fullname": "Nom complet&nbsp;:",
+			"homedirectory": "Répertoire personnel&nbsp;:",
+			"login": "Identiﬁant&nbsp;:",
+			"password": "Mot de passe&nbsp:",
+			"password_hint": "6 caractères minimum",
+			"rights": {
+				"canadmin": "Administrateur",
+				"canarchive": "Peut archiver",
+				"canrestore": "Peut restaurer",
+				"disabled": "Désactivé",
+				"legend": "Droits d’accès pour cet utilisateur"
+			}
+		},
+		"header": {
+			"add": "INTELLIQUE / AJOUTER UN UTILISATEUR",
+			"edit": "INTELLIQUE / MODIFIER L’UTILISATEUR"
+		}
+	}
+}
