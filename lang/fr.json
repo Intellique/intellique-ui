@@ -79,7 +79,7 @@
 		},
 
 		"auth_failure": {
-			"button": "&nbsp; Retour à la page d'authentiﬁcation",
+			"button": "&nbsp; Retour à la page d’authentiﬁcation",
 			"content": "Mauvais identiﬁant ou mot de passe",
 			"header": "Erreur lors de l’authentiﬁcation"
 		},
@@ -138,7 +138,7 @@
 			"end_time": "date de modification&nbsp;:",
 			"go_archive": "Aller à l’archive",
 			"group": "groupe&nbsp;:",
-			"list_of_archives": "Liste des archives (par médias)&nbsp;:",
+			"list_of_archives": "Liste des archives (par média)&nbsp;:",
 			"metadata": "métadonnées&nbsp;:",
 			"mimetype": "type mime&nbsp;:",
 			"name": "nom&nbsp;:",
@@ -157,7 +157,7 @@
 		"page": ["Liste des médias, de {offset} sur {end}", "Liste des médias, de {offset} sur {end}"],
 		"search": "Rechercher un média",
 		"template": {
-			"first_used": "premier utilisation&nbsp;:",
+			"first_used": "première utilisation&nbsp;:",
 			"format": "format&nbsp;:",
 			"label": "étiquette&nbsp;:",
 			"name": "nom&nbsp;:",
@@ -180,7 +180,7 @@
 
 	"preview": {
 		"form": {
-			"metadata": "métadonnée&nbsp;:",
+			"metadata": "métadonnées&nbsp;:",
 			"mimetype": "type mime&nbsp;:",
 			"name": "nom&nbsp:",
 			"size": "taille&nbsp;:"
@@ -205,7 +205,7 @@
 		"form": {
 			"button": {
 				"add": "Créer un nouvel utilisateur",
-				"edit": "Modiﬁer cette utilisateur"
+				"edit": "Modiﬁer cet utilisateur"
 			},
 			"email": "Courriel&nbsp;:",
 			"fullname": "Nom complet&nbsp;:",

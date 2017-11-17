@@ -8,15 +8,15 @@
 			"add_user": "Create a new user"
 		},
 		"header": "INTELLIQUE / ADMINISTRATION",
-		"page": ["List of user {offset} on {end}", "List of users {offset} on {end}"],
-		"search": "Search a user",
+		"page": ["List of users {offset} on {end}", "List of users {offset} on {end}"],
+		"search": "Search users",
 		"template": {
 			"can_archive": "can archive",
 			"disabled": "disabled",
 			"edit_user": "Edit this user",
 			"email": "email:",
-			"fullname": "fulname:",
-			"homedirectory": "homedirectory:",
+			"fullname": "full name:",
+			"homedirectory": "home directory:",
 			"id": "id:",
 			"is_admin": "is admin",
 			"login": "login:",
@@ -28,10 +28,10 @@
 
 	"archive": {
 		"header": "INTELLIQUE / ARCHIVES",
-		"page": ["List of archive {offset} on {end}", "List of archives {offset} on {end}"],
-		"search": "Search an archive",
+		"page": ["List of archives {offset} on {end}", "List of archives {offset} on {end}"],
+		"search": "Search archives",
 		"template": {
-			"archive_files_button": "Files attached to this archive:",
+			"archive_files_button": "Files member of this archive:",
 			"can_append": "can append:",
 			"creator": "creator:",
 			"end_time": "end time:",
@@ -61,7 +61,7 @@
 
 	"common": {
 		"disconnect": "Disconnect",
-		"max_displayable": "Max displayable:"
+		"max_displayable": "Diplay at most:"
 	},
 
 	"dialog": {
@@ -81,7 +81,7 @@
 		"auth_failure": {
 			"button": "&nbsp; Back to the authenfication page",
 			"content": "Bad login or password",
-			"header": "Authenfication error"
+			"header": "Authentication error"
 		},
 
 		"edit_user": {
@@ -107,7 +107,7 @@
 		},
 
 		"remove_user_succeed": {
-			"content": "Remove user task has failed"
+			"content": "Remove user task succeeded"
 		},
 
 		"restore_archive": {
@@ -120,7 +120,7 @@
 		},
 
 		"restore_archive_succeed": {
-			"content": "Restoration task has failed"
+			"content": "Restoration task has succeeded"
 		},
 
 		"session_timeout": {
@@ -132,13 +132,13 @@
 
 	"file": {
 		"header": "INTELLIQUE / FILES ARCHIVED",
-		"page": ["List of file {offset} on {end}", "List of files {offset} on {end}"],
-		"search": "Search an archive's file",
+		"page": ["List of files {offset} on {end}", "List of files {offset} on {end}"],
+		"search": "Search files",
 		"template": {
 			"end_time": "Modification date:",
 			"go_archive": "Go to this archive",
 			"group": "groups:",
-			"list_of_archives": "List of archives (w/ medias):",
+			"list_of_archives": "List of archives (w/ media):",
 			"metadata": "metadata:",
 			"mimetype": "mimetype:",
 			"name": "name:",
@@ -153,8 +153,8 @@
 	},
 
 	"media": {
-		"header": "INTELLIQUE / MEDIAS",
-		"page": ["List of media {offset} on {end}", "List of medias {offset} on {end}"],
+		"header": "INTELLIQUE / MEDIA",
+		"page": ["List of media {offset} on {end}", "List of media {offset} on {end}"],
 		"search": "Search a media",
 		"template": {
 			"first_used": "first used:",
@@ -166,7 +166,7 @@
 			"use_before": "use before:",
 			"uuid": "uuid:"
 		},
-		"total_rows": ["{nb} media", "{nb} medias"]
+		"total_rows": ["{nb} media", "{nb} media"]
 	},
 
 	"menu": {
@@ -175,7 +175,7 @@
 		"archive": "Archives",
 		"close": "Close menu",
 		"file": "Files",
-		"media": "Medias"
+		"media": "Media"
 	},
 
 	"preview": {
