@@ -14,7 +14,7 @@ $.ajax({
 	success: function(newConfig) {
 		config = newConfig;
 
-		var languagesAvailables = ['en', 'fr'];
+		var languagesAvailables = ['en', 'es', 'fr'];
 		var browserLanguages = window.navigator.languages;
 		for (var i = 0, n = browserLanguages.length; i < n; i++)
 			if (languagesAvailables.indexOf(browserLanguages[i]) != -1) {

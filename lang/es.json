@@ -1,0 +1,229 @@
+{
+	"": {
+		"plurals form": ["n == 1"]
+	},
+
+	"administration": {
+		"button": {
+			"add_user": "Creación de nuevo usuario"
+		},
+		"header": "INTELLIQUE / ADMINISTRACIÓN",
+		"page": ["Lista de usuarios {offset} de {end}", "Lista de usuarios {offset} de {end}"],
+		"search": "Buscar un usuario",
+		"template": {
+			"can_archive": "puede archivar",
+			"disabled": "desactivado",
+			"edit_user": "Editar el usuario",
+			"email": "email:",
+			"fullname": "Nombre y apellidos:",
+			"homedirectory": "directorio de inicio:",
+			"id": "id:",
+			"is_admin": "es administrador",
+			"login": "nombre de usuario:",
+			"poolgroup": "pool group",
+			"remove_user": "Suprimir el usuario"
+		},
+		"total_rows": ["{nb} usuario", "{nb} usuarios"]
+	},
+
+	"archive": {
+		"header": "INTELLIQUE / ARCHIVOS",
+		"page": ["Lista de archivos {offset} de {end}", "Lista de archivos {offset} de {end}"],
+		"search": "Buscar un archivo",
+		"template": {
+			"archive_files_button": "Ficheros que pertenecen a éste archivo:",
+			"can_append": "puede extenderse:",
+			"creator": "creador:",
+			"end_time": "hora final:",
+			"metadata": "metadatos:",
+			"no_metadata": "No existen metadatos para éste archivo",
+			"owner": "gestor:",
+			"restore_archive": "Restaurar el archivo",
+			"see_files": "Ver los archivos",
+			"start_time": "hora inicial:",
+			"size": "tamaño:",
+			"uuid": "uuid:",
+			"volume": "volumen:"
+		},
+		"total_rows": ["{nb} archivo", "{nb} archivos"],
+		"volume": {
+			"media": "medios",
+			"sequence": "secuencia",
+			"size": "tamaño"
+		}
+	},
+
+	"authentication": {
+		"login": "Nombre de usuario",
+		"password": "Clave",
+		"submit": "Iniciar sesión"
+	},
+
+	"common": {
+		"disconnect": "Desconectarse",
+		"max_displayable": "Max visualizable:"
+	},
+
+	"dialog": {
+		"add_user": {
+			"button": "&nbsp; Volver a la administratión",
+			"header": "Añadir un usuario"
+		},
+
+		"add_user_failed": {
+			"content": "Error al añadir usuario"
+		},
+
+		"add_user_succeed": {
+			"content": "Se añadió con exito el usuario"
+		},
+
+		"auth_failure": {
+			"button": "&nbsp; Volver a la pagina de inicio",
+			"content": "La cuenta o la constraseña es incorrecta",
+			"header": "Error de autenticación"
+		},
+
+		"edit_user": {
+			"button": "&nbsp; Volver a la administración",
+			"header": "Modificar el usuario"
+		},
+
+		"edit_user_failed": {
+			"content": "La modificación del usuario a fallado"
+		},
+
+		"edit_user_succeed": {
+			"content": "La modificación del usuario es un exito"
+		},
+
+		"remove_user": {
+			"button": "&nbsp; Volver a la administración",
+			"header": "Suprimir un usuario"
+		},
+
+		"remove_user_failed": {
+			"content": "La supresión del usuario a fallado"
+		},
+
+		"remove_user_succeed": {
+			"content": "La supresión del usuario es un exito"
+		},
+
+		"restore_archive": {
+			"button": "&nbsp; Volver a los archivos",
+			"header": "Restaura un archivo"
+		},
+
+		"restore_archive_failed": {
+			"content": "Restauración del archivo a fallado"
+		},
+
+		"restore_archive_succeed": {
+			"content": "Restauración del archivo es un exito"
+		},
+
+		"session_timeout": {
+			"button": " &nbsp; Volver a la pagina de autenticación",
+			"content": "Usted será redirigido a la página de autenticación",
+			"header": "Sesión caducada"
+		}
+	},
+
+	"file": {
+		"header": "INTELLIQUE / FICHEROS ARCHIVOS",
+		"page": ["Lista des ficheros {offset} de {end}", "Lista des ficheros {offset} de {end}"],
+		"search": "Buscar un fichero de un archivo",
+		"template": {
+			"end_time": "Fecha de modificación:",
+			"go_archive": "Ir al archivo",
+			"group": "grupos:",
+			"list_of_archives": "Lista de archivos (w/ medios):",
+			"metadata": "metadatos:",
+			"mimetype": "media type:",
+			"name": "nombre:",
+			"no_metadata": "No hay metadatos para este fichier",
+			"owner": "propietario:",
+			"preview": "Vista previa del fichero",
+			"restore_file": "Restaurar éste fichier",
+			"size": "tamaño:",
+			"start_date": "Fecha de creación:"
+		},
+		"total_rows": ["{nb} fichero", "{nb} ficheros"]
+	},
+
+	"media": {
+		"header": "INTELLIQUE / MEDIOS",
+		"page": ["Lista de medios {offset} de {end}", "Lista de medios {offset} de {end}"],
+		"search": "Buscar un medio",
+		"template": {
+			"first_used": "primera utilisación:",
+			"format": "formato:",
+			"label": "etiqueta:",
+			"name": "nombre:",
+			"space_used": "espacio utilizado:",
+			"pool": "pool:",
+			"use_before": "usar antes:",
+			"uuid": "uuid:"
+		},
+		"total_rows": ["{nb} medio", "{nb} medios"]
+	},
+
+	"menu": {
+		"account": "Cuenta",
+		"administration": "Administración",
+		"archive": "Archivos",
+		"close": "Cerrar el menú",
+		"file": "Ficheros",
+		"media": "Medios"
+	},
+
+	"preview": {
+		"form": {
+			"metadata": "metadato:",
+			"mimetype": "media type:",
+			"name": "nombre:",
+			"size": "tamaño:"
+		},
+		"header": "INTELLIQUE / VISTA ANTICIPADA"
+	},
+
+	"size": {
+		"long": ["{size} byte", "{size} bytes"],
+		"short": {
+			"B": "{size} B",
+			"GB": "{size} GB",
+			"KB": "{size} KB",
+			"MB": "{size} MB",
+			"PB": "{size} PB",
+			"TB": "{size} TB"
+		}
+	},
+
+	"user": {
+		"back": "&nbsp;Atras",
+		"form": {
+			"button": {
+				"add": "Crear un nuevo usuario",
+				"edit": "Moficicar este usuario"
+			},
+			"email": "E-mail:",
+			"fullname": "nombre y apellido:",
+			"homedirectory": "Directorio de inicio",
+			"login": "Nombre de usuario:",
+			"password": "Clave:",
+			"password_hint": "6 caracteres min.",
+			"rights": {
+				"canadmin": "Administrador",
+				"canarchive": "Puede archivar",
+				"canrestore": "Puede restaurar",
+				"disabled": "Desactivado",
+				"legend": "Derechos de acceso para éste usuario:"
+			}
+		},
+		"header": {
+			"add": "INTELLIQUE / AÑADIR UN USUARIO",
+			"edit": "INTELLIQUE / MODIFICAR EL USUARIO"
+		}
+	}
+}
