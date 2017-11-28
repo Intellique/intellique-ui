@@ -5,7 +5,7 @@
 
 	"administration": {
 		"button": {
-			"add_user": "Creación de nuevo usuario"
+			"add_user": "Creación de un nuevo usuario"
 		},
 		"header": "INTELLIQUE / ADMINISTRACIÓN",
 		"page": ["Lista de usuarios {offset} de {end}", "Lista de usuarios {offset} de {end}"],
@@ -132,7 +132,7 @@
 
 	"file": {
 		"header": "INTELLIQUE / FICHEROS ARCHIVOS",
-		"page": ["Lista des ficheros {offset} de {end}", "Lista des ficheros {offset} de {end}"],
+		"page": ["Lista de los ficheros {offset} de {end}", "Lista de los ficheros {offset} de {end}"],
 		"search": "Buscar un fichero de un archivo",
 		"template": {
 			"end_time": "Fecha de modificación:",
@@ -142,10 +142,10 @@
 			"metadata": "metadatos:",
 			"mimetype": "media type:",
 			"name": "nombre:",
-			"no_metadata": "No hay metadatos para este fichier",
+			"no_metadata": "No hay metadatos para ste fichero",
 			"owner": "propietario:",
 			"preview": "Vista previa del fichero",
-			"restore_file": "Restaurar éste fichier",
+			"restore_file": "Restaurar éste fichero",
 			"size": "tamaño:",
 			"start_date": "Fecha de creación:"
 		},
@@ -157,13 +157,13 @@
 		"page": ["Lista de medios {offset} de {end}", "Lista de medios {offset} de {end}"],
 		"search": "Buscar un medio",
 		"template": {
-			"first_used": "primera utilisación:",
+			"first_used": "primera utilización:",
 			"format": "formato:",
 			"label": "etiqueta:",
 			"name": "nombre:",
 			"space_used": "espacio utilizado:",
 			"pool": "pool:",
-			"use_before": "usar antes:",
+			"use_before": "usar antes de:",
 			"uuid": "uuid:"
 		},
 		"total_rows": ["{nb} medio", "{nb} medios"]
@@ -201,11 +201,11 @@
 	},
 
 	"user": {
-		"back": "&nbsp;Atras",
+		"back": "&nbsp;Atrás",
 		"form": {
 			"button": {
 				"add": "Crear un nuevo usuario",
-				"edit": "Moficicar este usuario"
+				"edit": "Modificar éste usuario"
 			},
 			"email": "E-mail:",
 			"fullname": "nombre y apellido:",
