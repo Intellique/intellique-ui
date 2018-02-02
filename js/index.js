@@ -1102,13 +1102,16 @@ function main() {
 				return config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg";
 			},
 			title: function(archivefile) {
-				return archivefile.name;
+				var userInfo = authService.getUserInfo();
+				return archivefile.name.substr(userInfo.homedirectory.length);
 			},
 			template: 'template/archiveFiles.html',
 			fillTemplate: function(template, archivefile) {
+				var userInfo = authService.getUserInfo();
+
 				translate(template);
 
-				template.find('span[data-name="name"]').text(archivefile.name);
+				template.find('span[data-name="name"]').text(archivefile.name.substr(userInfo.homedirectory.length));
 				template.find('span[data-name="mimetype"]').text(archivefile.mimetype);
 				template.find('span[data-name="owner"]').text(archivefile.owner);
 				template.find('span[data-name="groups"]').text(archivefile.groups);
@@ -1168,7 +1171,6 @@ function main() {
 					});
 				}
 
-				var userInfo = authService.getUserInfo();
 				var restoreBttn = template.find('a.restore');
 				if (userInfo && userInfo.canrestore) {
 					restoreBttn.on('click', function() {
@@ -1279,7 +1281,8 @@ function main() {
 		}
 
 		function loadMetadata(archivefile) {
-			lblName.text(archivefile.name);
+			var userInfo = authService.getUserInfo();
+			lblName.text(archivefile.name.substr(userInfo.homedirectory.length));
 			lblMimetype.text(archivefile.mimetype);
 			lblSize.text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
 
