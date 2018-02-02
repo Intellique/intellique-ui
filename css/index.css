@@ -144,7 +144,7 @@ div[role="main"] {
 	margin-left: 0.8em;
 }
 
-.template .ui-field-contain label {
+.template .ui-field-contain > label:first-child {
 	color: grey;
 	font-weight: bolder;
 	font-size : 1.2em;
@@ -224,6 +224,16 @@ div#menu .ui-btn {
 /**
  * Preview page
  */
+#previewPage div.preview {
+	min-height: 240px;
+	padding-bottom: 20px;
+}
+
+#previewPage img.imagePreview {
+	display: block;
+	margin: 10px auto;
+}
+
 #previewPage .video {
 	margin-left: auto;
 	margin-right: auto;
@@ -235,8 +245,18 @@ div#menu .ui-btn {
 }
 
 
+div.icon {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+div.icon > img {
+	max-width: 32px;
+	max-height: 32px;
+	vertical-align: middle;
+}
+
 [data-role="dialog"] .ui-content {
 	color: black;
 	text-shadow: none;
 }
-

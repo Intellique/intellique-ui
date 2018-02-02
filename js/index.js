@@ -238,7 +238,26 @@ function ListViewCtl(list, model, factory) {
 				var item = $('<div data-role="collapsible"></div>');
 
 				var title = $('<h2 class="ui-collapsible-heading"></h2>');
-				var a = $('<a class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-left ui-btn-a ui-icon-plus">' + factory.title(results[i]) + '</a>');
+				var a = $('<a class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-left ui-btn-a ui-icon-plus"><div class="icon"></div>' + factory.title(results[i]) + '</a>');
+
+				if (factory.icon) {
+					var url = factory.icon(results[i]);
+					$.ajax({
+						cache: true,
+						context: {
+							'parent': a,
+							'url': url,
+						},
+						type: "HEAD",
+						url: url,
+						success: function() {
+							var url = this.url;
+							var icon = this.parent.find('div.icon');
+							var img = $('<img src="' + url + '" />');
+							icon.append(img);
+						}
+					});
+				}
 
 				title.on('click', {'item': item, 'link': a, 'object': results[i], 'template': null}, function(evt) {
 					var ctx = evt.data;
@@ -1079,6 +1098,9 @@ function main() {
 
 		var model = new ModelAjax("/api/v1/archivefile/", 'archivefile', 'archivefiles');
 		var listViewCtl = new ListViewCtl(page.find('#archiveFilesList'), model, {
+			icon: function(archivefile) {
+				return config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg";
+			},
 			title: function(archivefile) {
 				return archivefile.name;
 			},
@@ -1125,11 +1147,22 @@ function main() {
 
 					$.ajax({
 						type: "HEAD",
+						url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg",
+						success: function() {
+							previewBttn.removeClass('ui-state-disabled');
+							previewBttn.on('click', function() {
+								pagePreview.loadImagePreview(archivefile);
+							});
+						}
+					});
+
+					$.ajax({
+						type: "HEAD",
 						url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=video/mp4",
 						success: function() {
 							previewBttn.removeClass('ui-state-disabled');
 							previewBttn.on('click', function() {
-								pagePreview.loadPreview(archivefile);
+								pagePreview.loadVideoPreview(archivefile);
 							});
 						}
 					});
@@ -1203,6 +1236,7 @@ function main() {
 		var page = $('#previewPage');
 		translatePage(page);
 
+		var image = page.find('img.imagePreview');
 		var video = page.find('video');
 		var lblName = page.find('ul span[data-name="name"]');
 		var lblMimetype = page.find('ul span[data-name="mimetype"]');
@@ -1210,33 +1244,56 @@ function main() {
 		var lblMetadata = page.find('ul span[data-name="metadata"]');
 		var currentArchiveFile = null;
 
-		this.loadPreview = function(archivefile) {
+		this.loadImagePreview = function(archivefile) {
+			if (currentArchiveFile)
+				video.children().remove();
+
+			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				image.show();
+				video.hide();
+
+				image.attr('src', config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=image/jpeg');
+
+				loadMetadata(archivefile);
+
+				currentArchiveFile = archivefile;
+			}
+		}
+
+		this.loadVideoPreview = function(archivefile) {
 			if (currentArchiveFile && currentArchiveFile.id != archivefile.id)
 				video.children().remove();
 
 			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				image.hide();
+				video.show();
+
 				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/mp4" type="video/mp4" />');
 				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/ogv" type="video/ogg" />');
 				video[0].load();
 
-				lblName.text(archivefile.name);
-				lblMimetype.text(archivefile.mimetype);
-				lblSize.text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
-
-				$.ajax({
-					type: 'GET',
-					url: config["api url"] + "/api/v1/archivefile/metadata/",
-					data: { id: archivefile.id },
-					success: function(response) {
-						lblMetadata.text(JSON.stringlify(response));
-					},
-					error: function() {
-						lblMetadata.text("No metadata found for this object");
-					}
-				});
+				loadMetadata(archivefile);
 
 				currentArchiveFile = archivefile;
 			}
+		}
+
+		function loadMetadata(archivefile) {
+			lblName.text(archivefile.name);
+			lblMimetype.text(archivefile.mimetype);
+			lblSize.text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
+
+			$.ajax({
+				type: 'GET',
+				url: config["api url"] + "/api/v1/archivefile/metadata/",
+				data: { id: archivefile.id },
+				success: function(response) {
+					lblMetadata.text(JSON.stringlify(response));
+				},
+				error: function() {
+					lblMetadata.text("No metadata found for this object");
+				}
+			});
 		}
 
 		$document.on("pagechange", function(event, ui) {
