@@ -21,7 +21,7 @@
 		<div id="menu" data-display="overlay" data-position="left" data-role="panel" data-theme="a">
 			<ul data-role="listview">
 				<li>
-					<center><img id="iconMenu" alt="icon" src="icone.png"></img></center>
+					<center><img id="iconMenu" alt="icon" src="img/icone.png"></img></center>
 				</li>
 				<li><a class="archiveButtonPage menuButton ui-btn ui-corner-all ui-icon-bullets ui-btn-icon-left" href="#archivePage" x-lang-key="menu.archive">Archives</a></li>
 				<li><a class="filesButtonPage menuButton ui-btn ui-corner-all ui-icon-grid ui-btn-icon-left" href="#archiveFilesPage" x-lang-key="menu.file">Files</a></li>
@@ -35,17 +35,17 @@
 		<!-- authentication page -->
 		<div id="authentication_page" data-role="page">
 			<div class="header ui-grid-solo" data-role="header" data-position="fixed">
-				<img id="header_stone_image" alt="Storiq one image" src="bandeau.png" />
+				<img id="header_stone_image" alt="Storiq one image" src="img/bandeau.png" />
 			</div>
 
 			<div id="authentication" class="ui-content" role="main">
 				<form>
 					<ul data-inset="true" data-role="listview">
 						<li class="ui-field-contain">
-							<input id="identifiant" name="login" placeholder="Login" type="text" data-clear-btn="true" x-lang-key="authentication.login" />
+							<input id="identifiant" autocomplete="username" name="login" placeholder="Login" type="text" data-clear-btn="true" x-lang-key="authentication.login" />
 						</li>
 						<li class="ui-field-contain">
-							<input id="password" name="password" placeholder="Password" type="password" data-clear-btn="true" x-lang-key="authentication.password" />
+							<input id="password" autocomplete="current-password" name="password" placeholder="Password" type="password" data-clear-btn="true" x-lang-key="authentication.password" />
 						</li>
 						<li class="ui-content">
 							<input id="log_in_button" type="submit" x-lang-key="authentication.submit" />
@@ -115,29 +115,61 @@
 
 			<div class="ui-content" role="main">
 				<input class="search" placeholder type="text" data-icon="search" data-type="search" data-wrapper-class="controlgroup-textinput ui-btn" x-lang-key="file.search"></input>
-				<div class="infoLines">
-					<span class="totalRows">
-						<span class="nbElts" x-lang-key="file.total_rows"></span></span>
-						<br /><br />
-						<span class="pageN" x-lang-key="file.page"></span> ↓
-					</span>
-				</div>
-				<div id="archiveFilesList" data-role="collapsibleset"></div>
-				<div class="pagination">
-					<div>
-						<label for="listLabel" x-lang-key="common.max_displayable"></label>
-						<select class="menuLimit">
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-						</select>
+				<div data-role="tabs">
+					<div class="infoLines">
+						<span class="totalRows">
+							<span class="nbElts" x-lang-key="file.total_rows"></span></span>
+							<div data-role="navbar">
+								<ul>
+									<li><a href="#ArchiveFilesTabList" x-lang-key="file.tabs.list"></a></li>
+									<li><a href="#ArchiveFilesTabGallery" x-lang-key="file.tabs.gallery"></a></li>
+								</ul>
+							</div>
+							<br /><br />
+							<span class="pageN" x-lang-key="file.page"></span> ↓
+						</span>
 					</div>
-					<div class="empty">&nbsp;</div>
-					<div class="paginationButton" data-mini="true" data-role="controlgroup" data-type="horizontal">
-						<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-u-l"></a>
-						<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-l"></a>
-						<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-r"></a>
-						<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-d-r"></a>
+					<div id="ArchiveFilesTabList" class="ui-body-d u-content">
+						<div id="archiveFilesList" data-role="collapsibleset"></div>
+					</div>
+					<div id="ArchiveFilesTabGallery" class="ui-body-d u-content">
+						<ul data-inset="true" data-role="listview">
+							<li>
+								<a>
+									<img class="ui-li-thumb" src="/storiqone-backend-test/api/v1/archivefile/preview/?id=2984&type=image/jpeg" />
+									<h2>01.JPG</h2>
+									<p>to_archive/Anniversaire_Oceane_2013</p>
+								</a>
+							</li>
+							<li class="ui-li-has-thumb">
+								<a>
+									<video class="ui-li-thumb">
+										<source src="/storiqone-backend-test/api/v1/archivefile/preview/?id=976&type=video/mp4" type="video/mp4">
+										<source src="/storiqone-backend-test/api/v1/archivefile/preview/?id=976&type=video/ogv" type="video/ogg">
+									</video>
+									<h2>VID-20170611-WA0005.mp4</h2>
+									<p>to_archive</p>
+									<img class="icon"></img>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="pagination">
+						<div>
+							<label for="listLabel" x-lang-key="common.max_displayable"></label>
+							<select class="menuLimit">
+								<option value="10">10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+							</select>
+						</div>
+						<div class="empty">&nbsp;</div>
+						<div class="paginationButton" data-mini="true" data-role="controlgroup" data-type="horizontal">
+							<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-u-l"></a>
+							<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-l"></a>
+							<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-r"></a>
+							<a class="ui-btn ui-btn-icon-bottom ui-corner-all ui-icon-arrow-d-r"></a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -309,12 +341,12 @@
 
 						<li class="ui-field-contain">
 							<label for="fullname" x-lang-key="user.form.fullname"></label>
-							<input name="fullname" type="text"></input>
+							<input autocomplete="off" name="fullname" type="text"></input>
 						</li>
 
 						<li class="ui-field-contain">
 							<label for="pwd" x-lang-key="user.form.password"></label>
-							<input name="pwd" type="password" placeholder x-lang-key="user.form.password_hint"></input>
+							<input autocomplete="new-password" name="pwd" type="password" placeholder x-lang-key="user.form.password_hint"></input>
 						</li>
 
 						<li class="ui-field-contain">

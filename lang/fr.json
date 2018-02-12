@@ -32,7 +32,7 @@
 		"search": "Rechercher une archive",
 		"template": {
 			"archive_files_button": "Fichiers appartenant à cette archive&nbsp;:",
-			"can_append": "peur étendre&nbsp:",
+			"can_append": "peut étendre&nbsp:",
 			"creator": "créateur&nbsp;:",
 			"end_time": "heure de ﬁn&nbsp;:",
 			"metadata": "métadonnées&nbsp;:",
@@ -134,6 +134,10 @@
 		"header": "INTELLIQUE / FICHIERS ARCHIVÉS",
 		"page": ["Liste des ﬁchiers, de {offset} sur {end}", "Liste des ﬁchiers, de {offset} sur {end}"],
 		"search": "Recherche un ﬁchier d’une archive",
+		"tabs": {
+			"gallery": "Galerie",
+			"list": "Liste"
+		},
 		"template": {
 			"end_time": "date de modification&nbsp;:",
 			"go_archive": "Aller à l’archive",

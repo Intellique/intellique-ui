@@ -134,6 +134,10 @@
 		"header": "INTELLIQUE / FICHEROS ARCHIVOS",
 		"page": ["Lista de los ficheros {offset} de {end}", "Lista de los ficheros {offset} de {end}"],
 		"search": "Buscar un fichero de un archivo",
+		"tabs": {
+			"gallery": "Galería",
+			"list": "Lista"
+		},
 		"template": {
 			"end_time": "Fecha de modificación:",
 			"go_archive": "Ir al archivo",

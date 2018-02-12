@@ -218,7 +218,129 @@ function getPoolGroupById(id, onSuccess) {
 }
 
 
+function GalleryViewCtl(gallery, model, factory) {
+	function display() {
+		if (!gallery.is(':empty'))
+			return;
+
+		var results = model.getResult();
+		for (var i = 0, n = results.length; i < n; i++) {
+			var link = $('<a class="ui-btn ui-btn-icon-right ui-icon-carat-r"></a>');
+			if (factory.action)
+				link.on(factory.action, results[i]);
+
+			link.append(factory.widget(results[i]));
+
+			var header = $('<h2></h2>');
+			header.text(factory.header(results[i]));
+			link.append(header);
+
+			var label = $('<p></p>');
+			label.text(factory.label(results[i]));
+			link.append(label);
+
+			if (factory.has_icon(results[i]))
+				link.append(factory.icon(results[i]));
+
+			var item = $('<li class="ui-li-has-thumb"></li>');
+			item.append(link);
+			gallery.append(item);
+		}
+
+		gallery.enhanceWithin();
+	}
+
+	model.addObserver({
+		prefetch: function() {
+			gallery.delay(200).animate({opacity: '0.5'});
+			$.mobile.loading("show");
+		},
+		fetch: function() {
+			gallery.stop(true, false).animate({opacity: '1'}, 500);
+			gallery.empty();
+
+			$.mobile.loading("hide");
+
+			if (gallery.is(':hidden'))
+				return;
+
+			display();
+		}
+	});
+
+	this.refresh = display;
+}
+
+
 function ListViewCtl(list, model, factory) {
+	function display() {
+		if (!list.is(':empty'))
+			return;
+
+		var results = model.getResult();
+		for (var i = 0, n = results.length; i < n; i++) {
+			var item = $('<div data-role="collapsible"></div>');
+
+			var title = $('<h2 class="ui-collapsible-heading"></h2>');
+			var a = $('<a class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-left ui-btn-a ui-icon-plus"><div class="icon"></div>' + factory.title(results[i]) + '</a>');
+
+			if (factory.icon) {
+				var url = factory.icon(results[i]);
+				$.ajax({
+					cache: true,
+					context: {
+						'parent': a,
+						'url': url,
+					},
+					type: "HEAD",
+					url: url,
+					success: function() {
+						var url = this.url;
+						var icon = this.parent.find('div.icon');
+						var img = $('<img src="' + url + '" />');
+						icon.append(img);
+					}
+				});
+			}
+
+			title.on('click', {'item': item, 'link': a, 'object': results[i], 'template': null}, function(evt) {
+				var ctx = evt.data;
+
+				ctx.link.toggleClass('ui-icon-plus ui-icon-minus');
+
+				if (ctx.template) {
+					ctx.template.stop(true, false).slideToggle(500);
+					return;
+				}
+
+				$.mobile.loading( "show");
+				$.ajax({
+					'url': factory.template,
+					success: function(template) {
+						ctx.template = $(template);
+						factory.fillTemplate(ctx.template, ctx.object);
+						ctx.template.hide();
+						ctx.item.append(ctx.template.enhanceWithin());
+						ctx.template.slideToggle(500);
+						$.mobile.loading("hide");
+					},
+					error: function() {
+						$.mobile.loading("hide");
+						ctx.link.toggleClass('ui-icon-plus ui-icon-minus');
+					}
+				});
+			});
+
+			title.append(a);
+			item.append(title);
+
+			list.append(item);
+
+			if (n == 1)
+				title.trigger('click');
+		}
+	}
+
 	model.addObserver({
 		prefetch: function() {
 			list.delay(200).animate({opacity: '0.5'});
@@ -233,70 +355,11 @@ function ListViewCtl(list, model, factory) {
 			if (list.is(':hidden'))
 				return;
 
-			var results = model.getResult();
-			for (var i = 0, n = results.length; i < n; i++) {
-				var item = $('<div data-role="collapsible"></div>');
-
-				var title = $('<h2 class="ui-collapsible-heading"></h2>');
-				var a = $('<a class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-left ui-btn-a ui-icon-plus"><div class="icon"></div>' + factory.title(results[i]) + '</a>');
-
-				if (factory.icon) {
-					var url = factory.icon(results[i]);
-					$.ajax({
-						cache: true,
-						context: {
-							'parent': a,
-							'url': url,
-						},
-						type: "HEAD",
-						url: url,
-						success: function() {
-							var url = this.url;
-							var icon = this.parent.find('div.icon');
-							var img = $('<img src="' + url + '" />');
-							icon.append(img);
-						}
-					});
-				}
-
-				title.on('click', {'item': item, 'link': a, 'object': results[i], 'template': null}, function(evt) {
-					var ctx = evt.data;
-
-					ctx.link.toggleClass('ui-icon-plus ui-icon-minus');
-
-					if (ctx.template) {
-						ctx.template.stop(true, false).slideToggle(500);
-						return;
-					}
-
-					$.mobile.loading( "show");
-					$.ajax({
-						'url': factory.template,
-						success: function(template) {
-							ctx.template = $(template);
-							factory.fillTemplate(ctx.template, ctx.object);
-							ctx.template.hide();
-							ctx.item.append(ctx.template.enhanceWithin());
-							ctx.template.slideToggle(500);
-							$.mobile.loading("hide");
-						},
-						error: function() {
-							$.mobile.loading("hide");
-							ctx.link.toggleClass('ui-icon-plus ui-icon-minus');
-						}
-					});
-				});
-
-				title.append(a);
-				item.append(title);
-
-				list.append(item);
-
-				if (n == 1)
-					title.trigger('click');
-			}
+			display();
 		}
 	});
+
+	this.refresh = display;
 }
 
 
@@ -1096,11 +1159,57 @@ function main() {
 			return search;
 		}
 
+		function listIcon(archivefile) {
+			return config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg";
+		}
+
+		function checkImageProxy(archivefile, isImageProxy, isNotImageProxy) {
+			$.ajax({
+				type: "HEAD",
+				url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg",
+				context: archivefile,
+				success: isImageProxy,
+				error: isNotImageProxy ? isNotImageProxy : $.noop
+			});
+		}
+
+		function checkVideoProxy(archivefile, isVideoProxy, isNotVideoProxy) {
+			$.ajax({
+				type: "HEAD",
+				url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=video/mp4",
+				context: archivefile,
+				success: isVideoProxy,
+				error: isNotVideoProxy ? isNotVideoProxy : $.noop
+			});
+		}
+
 		var model = new ModelAjax("/api/v1/archivefile/", 'archivefile', 'archivefiles');
+		model.addObserver({
+			'fetch': function() {
+				var results = model.getResult();
+				for (var i = 0, n = results.length; i < n; i++) {
+					var archivefile = results[i];
+					archivefile.proxy = {
+						'image': null,
+						'video': null
+					}
+
+					checkImageProxy(archivefile, function() {
+						this.proxy.image = true;
+					}, function() {
+						this.proxy.image = false;
+					});
+
+					checkVideoProxy(archivefile, function() {
+						this.proxy.video = true;
+					}, function() {
+						this.proxy.video = false;
+					});
+				}
+			}
+		});
 		var listViewCtl = new ListViewCtl(page.find('#archiveFilesList'), model, {
-			icon: function(archivefile) {
-				return config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg";
-			},
+			icon: config['proxy'] ? listIcon : null,
 			title: function(archivefile) {
 				var userInfo = authService.getUserInfo();
 				return archivefile.name.substr(userInfo.homedirectory.length);
@@ -1148,27 +1257,22 @@ function main() {
 				else {
 					previewBttn.addClass('ui-state-disabled');
 
-					$.ajax({
-						type: "HEAD",
-						url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg",
-						success: function() {
-							previewBttn.removeClass('ui-state-disabled');
-							previewBttn.on('click', function() {
-								pagePreview.loadImagePreview(archivefile);
-							});
-						}
-					});
+					function setProxyImage() {
+						previewBttn.removeClass('ui-state-disabled');
+						previewBttn.on('click', function() {
+							pagePreview.loadImagePreview(archivefile);
+						});
+					}
 
-					$.ajax({
-						type: "HEAD",
-						url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=video/mp4",
-						success: function() {
-							previewBttn.removeClass('ui-state-disabled');
-							previewBttn.on('click', function() {
-								pagePreview.loadVideoPreview(archivefile);
-							});
-						}
-					});
+					function setProxyVideo() {
+						previewBttn.removeClass('ui-state-disabled');
+						previewBttn.on('click', function() {
+							pagePreview.loadVideoPreview(archivefile);
+						});
+					}
+
+					checkImageProxy(archivefile, setProxyImage);
+					checkVideoProxy(archivefile, setProxyVideo);
 				}
 
 				var restoreBttn = template.find('a.restore');
@@ -1192,6 +1296,54 @@ function main() {
 					restoreBttn.addClass('ui-state-disabled');
 			}
 		});
+		var galleryViewCtl = new GalleryViewCtl(page.find('#ArchiveFilesTabGallery > ul'), model, {
+			action: {
+				'click': function(event) {
+					var archivefile = event.data;
+					if (archivefile.proxy.image)
+						pagePreview.loadImagePreview(archivefile);
+					else if (archivefile.proxy.video)
+						pagePreview.loadVideoPreview(archivefile);
+
+					if (archivefile.proxy.image || archivefile.proxy.video)
+						$.mobile.changePage("#previewPage");
+				}
+			},
+			widget: function(archivefile) {
+				var img = $('<img class="no-proxy" src="img/file_does_not_exists.png">');
+
+				function setImage() {
+					img.replaceWith('<img class="ui-li-thumb" src="' + config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg" + '" />');
+				}
+
+				function setVideo() {
+					var video = $('<video class="ui-li-thumb"></video>');
+					video.append('<source src="' + config["api url"] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/mp4" type="video/mp4" />');
+					video.append('<source src="' + config["api url"] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/ogv" type="video/ogg" />');
+					img.replaceWith(video);
+				}
+
+				checkImageProxy(archivefile, setImage);
+				checkVideoProxy(archivefile, setVideo);
+
+				return img;
+			},
+			header: function(archivefile) {
+				return archivefile.name.split('/').pop();
+			},
+			label: function(archivefile) {
+				var userInfo = authService.getUserInfo();
+				var filename_parts = archivefile.name.substr(userInfo.homedirectory.length).split('/');
+				filename_parts.pop();
+				return filename_parts.join('/');
+			},
+			has_icon: function(archivefile) {
+				return archivefile.mimetype.startsWith('video/');
+			},
+			icon: function(archivefile) {
+				return $('<img class="icon" />');
+			}
+		});
 		var paginationCtl = new PaginationCtl(page, model);
 		var searchCtl = new SearchCtl(page, model, preSearch);
 
@@ -1199,6 +1351,23 @@ function main() {
 			if (page.is(ui.toPage))
 				model.update();
 		});
+
+		var tabs = page.find('[data-role="tabs"]');
+		var tabGallery = tabs.find('[data-role="navbar"] li').has('[href="#ArchiveFilesTabGallery"]');
+		var tabList = tabs.find('[data-role="navbar"] li').has('[href="#ArchiveFilesTabList"]');
+		var navBar = tabs.find('.ui-navbar');
+
+		if (config['proxy'])
+			tabs.tabs({
+				beforeActivate: function(event, ui) {
+					if (ui.newTab.is(tabGallery))
+						galleryViewCtl.refresh();
+					else if (ui.newTab.is(tabList))
+						listViewCtl.refresh();
+				}
+			});
+		else
+			navBar.hide();
 
 		function restoreArchiveFile(archive, files, onSuccess, onError) {
 			onSuccess = onSuccess || $.noop;

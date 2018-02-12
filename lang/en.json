@@ -134,6 +134,10 @@
 		"header": "INTELLIQUE / FILES ARCHIVED",
 		"page": ["List of files {offset} on {end}", "List of files {offset} on {end}"],
 		"search": "Search files",
+		"tabs": {
+			"gallery": "Gallery",
+			"list": "List"
+		},
 		"template": {
 			"end_time": "Modification date:",
 			"go_archive": "Go to this archive",
