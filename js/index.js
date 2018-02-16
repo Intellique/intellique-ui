@@ -1216,11 +1216,10 @@ function main() {
 			},
 			template: 'template/archiveFiles.html',
 			fillTemplate: function(template, archivefile) {
-				var userInfo = authService.getUserInfo();
-
 				translate(template);
 
-				template.find('span[data-name="name"]').text(archivefile.name.substr(userInfo.homedirectory.length));
+				var base_directory = archivefile.parent.replace(/\/+$/, '').split('/').slice(0, -1).join('/');
+				template.find('span[data-name="name"]').text(archivefile.name.substr(base_directory.length + 1));
 				template.find('span[data-name="mimetype"]').text(archivefile.mimetype);
 				template.find('span[data-name="owner"]').text(archivefile.owner);
 				template.find('span[data-name="groups"]').text(archivefile.groups);
@@ -1276,6 +1275,7 @@ function main() {
 				}
 
 				var restoreBttn = template.find('a.restore');
+				var userInfo = authService.getUserInfo();
 				if (userInfo && userInfo.canrestore) {
 					restoreBttn.on('click', function() {
 						function restoreSucceed() {
@@ -1450,8 +1450,8 @@ function main() {
 		}
 
 		function loadMetadata(archivefile) {
-			var userInfo = authService.getUserInfo();
-			lblName.text(archivefile.name.substr(userInfo.homedirectory.length));
+			var base_directory = archivefile.parent.replace(/\/+$/, '').split('/').slice(0, -1).join('/');
+			lblName.text(archivefile.name.substr(archivefile.name.substr(base_directory.length + 1)));
 			lblMimetype.text(archivefile.mimetype);
 			lblSize.text(convertSize(archivefile.size) + ' (' + archivefile.size.toLocaleString() + ' bytes)');
 
