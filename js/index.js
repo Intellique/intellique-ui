@@ -14,6 +14,22 @@ $.ajax({
 	success: function(newConfig) {
 		config = newConfig;
 
+		// check token
+		var params = decodeURI(location.search.substr(1)).split('&');
+		for (var i = 0, n = params.length; i < n; i++) {
+			var param = params[i].split('=');
+			if (param.length < 2)
+				continue;
+
+			if (param[0] == 'token') {
+				function refresh() {
+					location.href = location.pathname;
+				}
+				authService.doAuthWithToken(param[1], refresh, refresh);
+				return;
+			}
+		}
+
 		var languagesAvailables = ['en', 'es', 'fr'];
 		var browserLanguages = window.navigator.languages;
 		for (var i = 0, n = browserLanguages.length; i < n; i++)
@@ -127,6 +143,25 @@ function AuthService() {
 			contentType: "application/json",
 			success: connected(onSuccess),
 			error: notConnected(onError)
+		});
+	}
+
+	this.doAuthWithToken = function(token, onSuccess, onError) {
+		var authData = {
+			apikey: config["apikey"]
+		};
+
+		$.ajax({
+			type: "POST",
+			url: config["api url"] + "/api/v1/auth/",
+			headers: {
+				'Authorization': token
+			},
+			data: JSON.stringify(authData),
+			dataType: "json",
+			contentType: "application/json",
+			success: onSuccess,
+			error: onError
 		});
 	}
 
