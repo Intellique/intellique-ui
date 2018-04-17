@@ -14,22 +14,6 @@ $.ajax({
 	success: function(newConfig) {
 		config = newConfig;
 
-		// check token
-		var params = decodeURI(location.search.substr(1)).split('&');
-		for (var i = 0, n = params.length; i < n; i++) {
-			var param = params[i].split('=');
-			if (param.length < 2)
-				continue;
-
-			if (param[0] == 'token') {
-				function refresh() {
-					location.href = location.pathname;
-				}
-				authService.doAuthWithToken(param[1], refresh, refresh);
-				return;
-			}
-		}
-
 		var languagesAvailables = ['en', 'es', 'fr'];
 		var browserLanguages = window.navigator.languages;
 		for (var i = 0, n = browserLanguages.length; i < n; i++)
@@ -47,12 +31,37 @@ $.ajax({
 			success: function(newLang) {
 				currentLanguageDict = newLang;
 
+				// check token
+				var params = decodeURI(location.search.substr(1)).split('&');
+				var token = null;
+				for (var i = 0, n = params.length; i < n; i++) {
+					var param = params[i].split('=');
+					if (param.length < 2)
+						continue;
+
+					if (param[0] == 'token') {
+						token = param[1];
+						break;
+					}
+				}
+
+				function refresh() {
+					location.href = location.pathname;
+				}
+
 				authService.checkAuth(function() {
 					$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
-					main();
+					if (token)
+						refresh();
+					else
+						main();
 				}, function() {
 					$(":mobile-pagecontainer").pagecontainer("change", "#authentication_page");
-					main();
+
+					if (token) {
+						authService.doAuthWithToken(param[1], refresh, refresh);
+					} else
+						main();
 				});
 			}
 		});
