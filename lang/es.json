@@ -12,6 +12,7 @@
 		"search": "Buscar un usuario",
 		"template": {
 			"can_archive": "puede archivar",
+			"can_restore": "puede restaurar",
 			"disabled": "desactivado",
 			"edit_user": "Editar el usuario",
 			"email": "email:",

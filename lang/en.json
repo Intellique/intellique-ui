@@ -12,6 +12,7 @@
 		"search": "Search users",
 		"template": {
 			"can_archive": "can archive",
+			"can_restore": "can restore",
 			"disabled": "disabled",
 			"edit_user": "Edit this user",
 			"email": "email:",
