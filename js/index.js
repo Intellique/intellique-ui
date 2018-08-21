@@ -1295,6 +1295,11 @@ function main() {
 					}
 				});
 
+				if (archivefile.minver == archivefile.maxver)
+					template.find('span[data-name="version"]').text(archivefile.minver);
+				else
+					template.find('span[data-name="version"]').text(archivefile.minver + ' - ' + archivefile.maxver);
+
 				var archiveSelect = template.find('select[data-name="listLabelSelect"]');
 				for (var id in archivefile.archives)
 					pageArchive.getArchiveById(id, true, function(archive) {
