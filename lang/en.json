@@ -36,6 +36,7 @@
 			"creator": "creator:",
 			"end_time": "end time:",
 			"metadata": "metadata:",
+			"last_version": "latest version:",
 			"no_metadata": "No metadata found for this archive",
 			"owner": "owner:",
 			"restore_archive": "Restore this archive",
@@ -49,7 +50,8 @@
 		"volume": {
 			"media": "media",
 			"sequence": "sequence",
-			"size": "size"
+			"size": "size",
+			"version": "version"
 		}
 	},
 

@@ -35,6 +35,7 @@
 			"can_append": "peut étendre&nbsp:",
 			"creator": "créateur&nbsp;:",
 			"end_time": "heure de ﬁn&nbsp;:",
+			"last_version": "dernière version&nbsp;:",
 			"metadata": "métadonnées&nbsp;:",
 			"no_metadata": "Pas de métadonnée pour cette archive",
 			"owner": "gestionnaire&nbsp;:",
@@ -49,7 +50,8 @@
 		"volume": {
 			"media": "média",
 			"sequence": "séquence",
-			"size": "taille"
+			"size": "taille",
+			"version": "version"
 		}
 	},
 

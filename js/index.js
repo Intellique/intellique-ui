@@ -1047,6 +1047,7 @@ function main() {
 				template.find('span[data-name="owner"]').text(archive.owner);
 				template.find('span[data-name="creator"]').text(archive.creator);
 				template.find('span[data-name="canappend"]').text(archive.canappend);
+				template.find('span[data-name="lastversion"]').text(archive.currentver);
 
 				getUserInfo(archive.owner, function(response) {
 					template.find('span[data-name="owner"]').text(response.user.login);
@@ -1106,6 +1107,16 @@ function main() {
 						});
 					},
 					'translate': 'archive.volume.media'
+				}, {
+					'name': 'version',
+					'sortable': 'false',
+					'fillCell': function(cell, key, volume) {
+						if (volume.minversion == volume.maxversion)
+							cell.text(volume.minversion);
+						else
+							cell.text(volume.minversion + ' - ' + volume.maxversion);
+					},
+					'translate': 'archive.volume.version'
 				}]);
 
 				template.find('span[data-name="archiveFilesButton"] a').on('click', function() {
