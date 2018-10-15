@@ -1266,6 +1266,11 @@ function main() {
 		var listViewCtl = new ListViewCtl(page.find('#archiveFilesList'), model, {
 			icon: config['proxy'] ? listIcon : null,
 			title: function(archivefile) {
+				var rg = new RegExp('^' + config['home directory'].replace('<login>', '.*'));
+				var mt = rg.exec(archivefile.name);
+				if (mt !== null)
+					return archivefile.name.substr(mt[0].length);
+
 				var userInfo = authService.getUserInfo();
 				return archivefile.name.substr(userInfo.homedirectory.length);
 			},
