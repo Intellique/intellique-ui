@@ -408,7 +408,7 @@ function ListViewCtl(list, model, factory) {
 
 
 function Model(observers) {
-	var limit =	10, offset = 0;
+	var limit = 10, offset = 0, rounded = false;
 
 	this.addObserver = function(observer) {
 		if (observers.indexOf(observer) < 0)
@@ -425,6 +425,10 @@ function Model(observers) {
 
 	this.getOffset = function() {
 		return offset;
+	}
+
+	this.isTotalRowRounded = function() {
+		return rounded;
 	}
 
 	this.removeObserver = function(observer) {
@@ -457,6 +461,10 @@ function Model(observers) {
 			offset = checkedNewOffset;
 			this.update();
 		}
+	}
+
+	this.setTotalRowRounded = function(is_rounded) {
+		rounded = is_rounded;
 	}
 
 	this.update = function() {
@@ -513,6 +521,7 @@ function ModelAjax(url, keyIndex, keySearch) {
 			success: function(response) {
 				ids = response[keySearch];
 				totalRows = response.total_rows;
+				this.setTotalRowRounded(response.rounded || false);
 
 				var got = 0;
 				for (var i = 0, n = ids.length; i < n; i++) {
@@ -671,7 +680,7 @@ function PaginationCtl(page, model) {
 			var firstLine = totalRows > 0 ? offset + 1 : 0;
 			var lastLine = offset + limit > totalRows ? totalRows : offset + limit;
 
-			translatePluralByElt(nbElts, totalRows, {'nb': totalRows});
+			translatePluralByElt(nbElts, totalRows, {'nb': totalRows}, model.isTotalRowRounded());
 			translatePluralByElt(pageN, lastLine, {'offset': firstLine, 'end': lastLine});
 			nbElts.stop(true, false).animate({opacity: '1'}, 500);
 			pageN.stop(true, false).animate({opacity: '1'}, 500);
@@ -887,7 +896,7 @@ function translatePage(page) {
 }
 
 
-function translatePlural(key, nb, values) {
+function translatePlural(key, nb, values, rounded) {
 	if (!translatePluralInit())
 		return;
 
@@ -895,7 +904,7 @@ function translatePlural(key, nb, values) {
 	if (!translations)
 		return;
 
-	return translatePluralInner(translations, nb, values);
+	return translatePluralInner(translations, nb, values, rounded);
 }
 
 
@@ -914,7 +923,9 @@ function translatePluralInit() {
 }
 
 
-function translatePluralInner(translations, nb, values) {
+function translatePluralInner(translations, nb, values, rounded) {
+	rounded = (!!rounded) || false;
+
 	var form = 0;
 	for (var nbForms = pluralsEvals.length; form < nbForms; form++)
 		if (pluralsEvals[form](nb))
@@ -924,7 +935,7 @@ function translatePluralInner(translations, nb, values) {
 	return translations[form].replace(/\{(\w+)\}/g, function(match, expr) {
 		switch (typeof values[expr]) {
 			case "number":
-				return values[expr].toLocaleString(currentLanguage);
+				return (rounded ? '~ ' : '') + values[expr].toLocaleString(currentLanguage);
 
 			default:
 				return values[expr];
@@ -933,7 +944,7 @@ function translatePluralInner(translations, nb, values) {
 }
 
 
-function translatePluralByElt(elt, nb, values) {
+function translatePluralByElt(elt, nb, values, rounded) {
 	if (!translatePluralInit())
 		return;
 
@@ -941,7 +952,7 @@ function translatePluralByElt(elt, nb, values) {
 	if (!translations)
 		return;
 
-	var translation = translatePluralInner(translations, nb, values);
+	var translation = translatePluralInner(translations, nb, values, rounded);
 	translateElement(elt, translation);
 }
 
@@ -1228,6 +1239,16 @@ function main() {
 			});
 		}
 
+		function checkSoundProxy(archivefile, isImageProxy, isNotImageProxy) {
+			$.ajax({
+				type: "HEAD",
+				url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=audio/mpeg",
+				context: archivefile,
+				success: isImageProxy,
+				error: isNotImageProxy ? isNotImageProxy : $.noop
+			});
+		}
+
 		function checkVideoProxy(archivefile, isVideoProxy, isNotVideoProxy) {
 			$.ajax({
 				type: "HEAD",
@@ -1245,9 +1266,16 @@ function main() {
 				for (var i = 0, n = results.length; i < n; i++) {
 					var archivefile = results[i];
 					archivefile.proxy = {
+						'audio': null,
 						'image': null,
 						'video': null
 					}
+
+					checkSoundProxy(archivefile, function() {
+						this.proxy.audio = true;
+					}, function() {
+						this.proxy.audio = false;
+					});
 
 					checkImageProxy(archivefile, function() {
 						this.proxy.image = true;
@@ -1321,6 +1349,13 @@ function main() {
 				else {
 					previewBttn.addClass('ui-state-disabled');
 
+					function setProxyAudio() {
+						previewBttn.removeClass('ui-state-disabled');
+						previewBttn.on('click', function() {
+							pagePreview.loadSoundPreview(archivefile);
+						});
+					}
+
 					function setProxyImage() {
 						previewBttn.removeClass('ui-state-disabled');
 						previewBttn.on('click', function() {
@@ -1335,6 +1370,7 @@ function main() {
 						});
 					}
 
+					checkSoundProxy(archivefile, setProxyAudio);
 					checkImageProxy(archivefile, setProxyImage);
 					checkVideoProxy(archivefile, setProxyVideo);
 				}
@@ -1367,6 +1403,8 @@ function main() {
 					var archivefile = event.data;
 					if (archivefile.proxy.image)
 						pagePreview.loadImagePreview(archivefile);
+					else if (archivefile.proxy.audio)
+						pagePreview.loadSoundPreview(archivefile);
 					else if (archivefile.proxy.video)
 						pagePreview.loadVideoPreview(archivefile);
 
@@ -1472,6 +1510,8 @@ function main() {
 		var page = $('#previewPage');
 		translatePage(page);
 
+		var divPreview = page.find('.preview');
+		var audio = page.find('audio');
 		var image = page.find('img.imagePreview');
 		var video = page.find('video');
 		var lblName = page.find('ul span[data-name="name"]');
@@ -1481,13 +1521,17 @@ function main() {
 		var currentArchiveFile = null;
 
 		this.loadImagePreview = function(archivefile) {
-			if (currentArchiveFile)
+			if (currentArchiveFile) {
+				audio.children().remove();
 				video.children().remove();
+			}
 
 			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				audio.hide();
 				image.show();
 				video.hide();
 
+				divPreview.removeClass('audio video').addClass('image');
 				image.attr('src', config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=image/jpeg');
 
 				loadMetadata(archivefile);
@@ -1496,14 +1540,39 @@ function main() {
 			}
 		}
 
-		this.loadVideoPreview = function(archivefile) {
-			if (currentArchiveFile && currentArchiveFile.id != archivefile.id)
+		this.loadSoundPreview = function(archivefile) {
+			if (currentArchiveFile) {
+				audio.children().remove();
 				video.children().remove();
+			}
 
 			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				audio.show();
+				image.hide();
+				video.hide();
+
+				divPreview.removeClass('image video').addClass('audio');
+				audio.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=audio/mpeg" type="audio/mpeg" />');
+				audio[0].load();
+
+				loadMetadata(archivefile);
+
+				currentArchiveFile = archivefile;
+			}
+		}
+
+		this.loadVideoPreview = function(archivefile) {
+			if (currentArchiveFile) {
+				audio.children().remove();
+				video.children().remove();
+			}
+
+			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				audio.hide();
 				image.hide();
 				video.show();
 
+				divPreview.removeClass('audio image').addClass('video');
 				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/mp4" type="video/mp4" />');
 				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/ogv" type="video/ogg" />');
 				video[0].load();
@@ -1534,8 +1603,10 @@ function main() {
 		}
 
 		$document.on("pagechange", function(event, ui) {
-			if (!page.is(ui.toPage))
+			if (!page.is(ui.toPage)) {
+				audio[0].pause();
 				video[0].pause();
+			}
 		});
 	}
 
