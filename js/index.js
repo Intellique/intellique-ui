@@ -1228,6 +1228,16 @@ function main() {
 			});
 		}
 
+		function checkSoundProxy(archivefile, isImageProxy, isNotImageProxy) {
+			$.ajax({
+				type: "HEAD",
+				url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=audio/mpeg",
+				context: archivefile,
+				success: isImageProxy,
+				error: isNotImageProxy ? isNotImageProxy : $.noop
+			});
+		}
+
 		function checkVideoProxy(archivefile, isVideoProxy, isNotVideoProxy) {
 			$.ajax({
 				type: "HEAD",
@@ -1245,9 +1255,16 @@ function main() {
 				for (var i = 0, n = results.length; i < n; i++) {
 					var archivefile = results[i];
 					archivefile.proxy = {
+						'audio': null,
 						'image': null,
 						'video': null
 					}
+
+					checkSoundProxy(archivefile, function() {
+						this.proxy.audio = true;
+					}, function() {
+						this.proxy.audio = false;
+					});
 
 					checkImageProxy(archivefile, function() {
 						this.proxy.image = true;
@@ -1316,6 +1333,13 @@ function main() {
 				else {
 					previewBttn.addClass('ui-state-disabled');
 
+					function setProxyAudio() {
+						previewBttn.removeClass('ui-state-disabled');
+						previewBttn.on('click', function() {
+							pagePreview.loadSoundPreview(archivefile);
+						});
+					}
+
 					function setProxyImage() {
 						previewBttn.removeClass('ui-state-disabled');
 						previewBttn.on('click', function() {
@@ -1330,6 +1354,7 @@ function main() {
 						});
 					}
 
+					checkSoundProxy(archivefile, setProxyAudio);
 					checkImageProxy(archivefile, setProxyImage);
 					checkVideoProxy(archivefile, setProxyVideo);
 				}
@@ -1362,6 +1387,8 @@ function main() {
 					var archivefile = event.data;
 					if (archivefile.proxy.image)
 						pagePreview.loadImagePreview(archivefile);
+					else if (archivefile.proxy.audio)
+						pagePreview.loadSoundPreview(archivefile);
 					else if (archivefile.proxy.video)
 						pagePreview.loadVideoPreview(archivefile);
 
@@ -1467,6 +1494,8 @@ function main() {
 		var page = $('#previewPage');
 		translatePage(page);
 
+		var divPreview = page.find('.preview');
+		var audio = page.find('audio');
 		var image = page.find('img.imagePreview');
 		var video = page.find('video');
 		var lblName = page.find('ul span[data-name="name"]');
@@ -1476,13 +1505,17 @@ function main() {
 		var currentArchiveFile = null;
 
 		this.loadImagePreview = function(archivefile) {
-			if (currentArchiveFile)
+			if (currentArchiveFile) {
+				audio.children().remove();
 				video.children().remove();
+			}
 
 			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				audio.hide();
 				image.show();
 				video.hide();
 
+				divPreview.removeClass('audio video').addClass('image');
 				image.attr('src', config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=image/jpeg');
 
 				loadMetadata(archivefile);
@@ -1491,14 +1524,39 @@ function main() {
 			}
 		}
 
-		this.loadVideoPreview = function(archivefile) {
-			if (currentArchiveFile && currentArchiveFile.id != archivefile.id)
+		this.loadSoundPreview = function(archivefile) {
+			if (currentArchiveFile) {
+				audio.children().remove();
 				video.children().remove();
+			}
 
 			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				audio.show();
+				image.hide();
+				video.hide();
+
+				divPreview.removeClass('image video').addClass('audio');
+				audio.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=audio/mpeg" type="audio/mpeg" />');
+				audio[0].load();
+
+				loadMetadata(archivefile);
+
+				currentArchiveFile = archivefile;
+			}
+		}
+
+		this.loadVideoPreview = function(archivefile) {
+			if (currentArchiveFile) {
+				audio.children().remove();
+				video.children().remove();
+			}
+
+			if (currentArchiveFile == null || currentArchiveFile.id != archivefile.id) {
+				audio.hide();
 				image.hide();
 				video.show();
 
+				divPreview.removeClass('audio image').addClass('video');
 				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/mp4" type="video/mp4" />');
 				video.append('<source src="' + config['api url'] + '/api/v1/archivefile/preview/?id=' + archivefile.id + '&type=video/ogv" type="video/ogg" />');
 				video[0].load();
@@ -1529,8 +1587,10 @@ function main() {
 		}
 
 		$document.on("pagechange", function(event, ui) {
-			if (!page.is(ui.toPage))
+			if (!page.is(ui.toPage)) {
+				audio[0].pause();
 				video[0].pause();
+			}
 		});
 	}
 
