@@ -408,7 +408,7 @@ function ListViewCtl(list, model, factory) {
 
 
 function Model(observers) {
-	var limit =	10, offset = 0;
+	var limit = 10, offset = 0, rounded = false;
 
 	this.addObserver = function(observer) {
 		if (observers.indexOf(observer) < 0)
@@ -425,6 +425,10 @@ function Model(observers) {
 
 	this.getOffset = function() {
 		return offset;
+	}
+
+	this.isTotalRowRounded = function() {
+		return rounded;
 	}
 
 	this.removeObserver = function(observer) {
@@ -457,6 +461,10 @@ function Model(observers) {
 			offset = checkedNewOffset;
 			this.update();
 		}
+	}
+
+	this.setTotalRowRounded = function(is_rounded) {
+		rounded = is_rounded;
 	}
 
 	this.update = function() {
@@ -513,6 +521,7 @@ function ModelAjax(url, keyIndex, keySearch) {
 			success: function(response) {
 				ids = response[keySearch];
 				totalRows = response.total_rows;
+				this.setTotalRowRounded(response.rounded || false);
 
 				var got = 0;
 				for (var i = 0, n = ids.length; i < n; i++) {
@@ -671,7 +680,7 @@ function PaginationCtl(page, model) {
 			var firstLine = totalRows > 0 ? offset + 1 : 0;
 			var lastLine = offset + limit > totalRows ? totalRows : offset + limit;
 
-			translatePluralByElt(nbElts, totalRows, {'nb': totalRows});
+			translatePluralByElt(nbElts, totalRows, {'nb': totalRows}, model.isTotalRowRounded());
 			translatePluralByElt(pageN, lastLine, {'offset': firstLine, 'end': lastLine});
 			nbElts.stop(true, false).animate({opacity: '1'}, 500);
 			pageN.stop(true, false).animate({opacity: '1'}, 500);
@@ -887,7 +896,7 @@ function translatePage(page) {
 }
 
 
-function translatePlural(key, nb, values) {
+function translatePlural(key, nb, values, rounded) {
 	if (!translatePluralInit())
 		return;
 
@@ -895,7 +904,7 @@ function translatePlural(key, nb, values) {
 	if (!translations)
 		return;
 
-	return translatePluralInner(translations, nb, values);
+	return translatePluralInner(translations, nb, values, rounded);
 }
 
 
@@ -914,7 +923,9 @@ function translatePluralInit() {
 }
 
 
-function translatePluralInner(translations, nb, values) {
+function translatePluralInner(translations, nb, values, rounded) {
+	rounded = (!!rounded) || false;
+
 	var form = 0;
 	for (var nbForms = pluralsEvals.length; form < nbForms; form++)
 		if (pluralsEvals[form](nb))
@@ -924,7 +935,7 @@ function translatePluralInner(translations, nb, values) {
 	return translations[form].replace(/\{(\w+)\}/g, function(match, expr) {
 		switch (typeof values[expr]) {
 			case "number":
-				return values[expr].toLocaleString(currentLanguage);
+				return (rounded ? '~ ' : '') + values[expr].toLocaleString(currentLanguage);
 
 			default:
 				return values[expr];
@@ -933,7 +944,7 @@ function translatePluralInner(translations, nb, values) {
 }
 
 
-function translatePluralByElt(elt, nb, values) {
+function translatePluralByElt(elt, nb, values, rounded) {
 	if (!translatePluralInit())
 		return;
 
@@ -941,7 +952,7 @@ function translatePluralByElt(elt, nb, values) {
 	if (!translations)
 		return;
 
-	var translation = translatePluralInner(translations, nb, values);
+	var translation = translatePluralInner(translations, nb, values, rounded);
 	translateElement(elt, translation);
 }
 
