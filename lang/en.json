@@ -153,6 +153,7 @@
 			"owner": "owner:",
 			"preview": "Preview this file",
 			"restore_file": "Restore this file",
+			"restore_folder": "Restore this folder and its contents",
 			"size": "size:",
 			"start_date": "Creation date:",
 			"version": "version:"

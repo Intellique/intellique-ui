@@ -153,6 +153,7 @@
 			"owner": "propietario:",
 			"preview": "Vista previa del fichero",
 			"restore_file": "Restaurar éste fichero",
+			"restore_folder": "Restaurar esta carpeta y su contenido",
 			"size": "tamaño:",
 			"start_date": "Fecha de creación:",
 			"version": "versión:"

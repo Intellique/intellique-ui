@@ -1376,6 +1376,12 @@ function main() {
 				}
 
 				var restoreBttn = template.find('a.restore');
+
+				if (archivefile.mimetype == "inode/directory")
+					restoreBttn.filter('.file').remove();
+				else
+					restoreBttn.filter('.folder').remove();
+
 				var userInfo = authService.getUserInfo();
 				if (userInfo && userInfo.canrestore) {
 					restoreBttn.on('click', function() {
