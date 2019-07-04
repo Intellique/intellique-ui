@@ -1314,10 +1314,6 @@ function main() {
 				template.find('span[data-name="ctime"]').text(translateDateTime(archivefile.ctime));
 				template.find('span[data-name="mtime"]').text(translateDateTime(archivefile.mtime));
 				template.find('span[data-name="size"]').text(convertSize(archivefile.size) + ' (' + translatePlural("size.long", archivefile.size, {size: archivefile.size}) + ')');
-				// Restaurer ce dossier et son contenu
-
-				//"restore_folder"
-				//find('a.restore')
 
 				var metadata = template.find('span[data-name="metadata"]');
 				$.ajax({
