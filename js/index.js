@@ -14,7 +14,7 @@ $.ajax({
 	success: function(newConfig) {
 		config = newConfig;
 
-		var languagesAvailables = ['en', 'es', 'fr'];
+		var languagesAvailables = ['en', 'es', 'fr', 'ta'];
 		var browserLanguages = window.navigator.languages;
 		for (var i = 0, n = browserLanguages.length; i < n; i++)
 			if (languagesAvailables.indexOf(browserLanguages[i]) != -1) {
@@ -1314,6 +1314,10 @@ function main() {
 				template.find('span[data-name="ctime"]').text(translateDateTime(archivefile.ctime));
 				template.find('span[data-name="mtime"]').text(translateDateTime(archivefile.mtime));
 				template.find('span[data-name="size"]').text(convertSize(archivefile.size) + ' (' + translatePlural("size.long", archivefile.size, {size: archivefile.size}) + ')');
+				// Restaurer ce dossier et son contenu
+
+				//"restore_folder"
+				//find('a.restore')
 
 				var metadata = template.find('span[data-name="metadata"]');
 				$.ajax({
