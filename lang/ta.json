@@ -1,0 +1,238 @@
+{
+	"": {
+		"plurals form": ["n < 2"]
+	},
+
+	"administration": {
+		"button": {
+			"add_user": "புதிய பயனரை உருவாக்க"
+		},
+		"header": "INTELLIQUE / நிர்வாகம்",
+		"page": ["பயனர்களின் பட்டியல், {offset} முதல் {end} வரை", "பயனர்களின் பட்டியல், {offset} முதல் {end} வரை"],
+		"search": "பயனரைத் தேட",
+		"template": {
+			"can_archive": "காப்பகப்படுத்த முடியும்",
+			"can_restore": "மீட்டமைக்க முடியும்",
+			"disabled": "முடக்கப்பட்டது",
+			"edit_user": "பயனரை தொகுக்க",
+			"email": "மின்னஞ்சல்&nbsp;:",
+			"fullname": "முழு பெயர்&nbsp;:",
+			"homedirectory": "தனிப்பட்ட அடைவு&nbsp;:",
+			"id": "id&nbsp;:",
+			"is_admin": "ஒரு நிர்வாகி",
+			"login": "உள்நுழைவு&nbsp;:",
+			"poolgroup": "poolgroup",
+			"remove_user": "பயனரை நீக்க"
+		},
+		"total_rows": ["{nb} பயனர்", "{nb} பயனர்கள்"]
+	},
+
+	"archive": {
+		"header": "INTELLIQUE / காப்பகங்கள்",
+		"page": ["காப்பகங்கள் பட்டியல், {offset} முதல் {end} வரை", "காப்பகங்கள் பட்டியல், {offset} முதல் {end} வரை"],
+		"search": "காப்பகத்தைத் தேட",
+		"template": {
+			"archive_files_button": "இந்த காப்பகத்திற்கு சொந்தமான கோப்புகள்&nbsp;:",
+			"can_append": "விரிவாக்க முடியும்&nbsp:",
+			"creator": "உருவாக்கியவர்&nbsp;:",
+			"end_time": "முடிவு நேரம் &nbsp;:",
+			"last_version": "சமீபத்திய பதிப்பு(Version)&nbsp;:",
+			"metadata": "மெட்டா தரவு&nbsp;:",
+			"no_metadata": "இந்த காப்பகத்திற்கு மெட்டா தரவு இல்லை ",
+			"owner": "நிர்வாகி&nbsp;:",
+			"restore_archive": "இந்த காப்பகத்தை மீட்டமைக்கவும்",
+			"see_files": "கோப்புகளை பார்க்க",
+			"start_time": "தொடக்க நேரம்&nbsp;:",
+			"size": "அளவு&nbsp;:",
+			"uuid": "uuid&nbsp;:",
+			"volume": "தொகுதி&nbsp;:"
+		},
+		"total_rows": ["{nb} காப்பகம்", "{nb} காப்பகங்கள்"],
+		"volume": {
+			"media": "மீடியா",
+			"sequence": "வரிசை",
+			"size": "அளவு",
+			"version": "பதிப்பு(Version)"
+		}
+	},
+
+	"authentication": {
+		"login": "உள்நுழைவு",
+		"password": "கடவுச்சொல்லை",
+		"submit": "உள்நுழைய"
+	},
+
+	"common": {
+		"disconnect": "வெளியேற",
+		"max_displayable": "அதிகபட்சம் கட்டுவதற்கு&nbsp;:"
+	},
+
+	"dialog": {
+		"add_user": {
+			"button": "&nbsp; நிர்வாகத்திற்குத் திரும்ப",
+			"header": "பயனரை உருவாக்குதல்"
+		},
+
+		"add_user_failed": {
+			"content": "பயனர் உருவாக்கம் தோல்வியுற்றது"
+		},
+
+		"add_user_succeed": {
+			"content": "பயனரின் உருவாக்கம் வெற்றி பெற்றது"
+		},
+
+		"auth_failure": {
+			"button": "&nbsp; அங்கீகார பக்கத்திற்குத் திரும்ப",
+			"content": "தவறான உள்நுழைவு அல்லது கடவுச்சொல்",
+			"header": "அங்கீகாரத்தின் போது பிழை"
+		},
+
+		"edit_user": {
+			"button": "&nbsp; நிர்வாகத்திற்குத் திரும்ப",
+			"header": "ஒரு பயனரை திருத்தம் செய்ய"
+		},
+
+		"edit_user_failed": {
+			"content": "பயனர் திருத்தம் தோல்வியுற்றது"
+		},
+
+		"edit_user_succeed": {
+			"content": "பயனர் திருத்தம்  வெற்றி பெற்றது"
+		},
+
+		"remove_user": {
+			"button": "&nbsp; நிர்வாகத்திற்குத் திரும்ப",
+			"header": "பயனரை நீக்க"
+		},
+
+		"remove_user_failed": {
+			"content": "பயனர் நீக்கம் தோல்வியுற்றது"
+		},
+
+		"remove_user_succeed": {
+			"content": "பயனர் நீக்கம் வெற்றி பெற்றது"
+		},
+
+		"restore_archive": {
+			"button": "&nbsp; காப்பகங்களுக்குத் திரும்ப",
+			"header": "காப்பகத்தை மீட்க"
+		},
+
+		"restore_archive_failed": {
+			"content": "காப்பகத்தை மீட்டமைப்பது தோல்வியுற்றது"
+		},
+
+		"restore_archive_succeed": {
+			"content": "காப்பகத்தை மீட்டெடுப்பது வெற்றி பெற்றது"
+		},
+
+		"session_timeout": {
+			"button": " &nbsp; அங்கீகார பக்கத்திற்குத் திரும்ப",
+			"content": "அங்கீகார பக்கத்திற்கு நீங்கள் திருப்பி விடப்படுவீர்கள்",
+			"header": "அமர்வு காலாவதியானது"
+		}
+	},
+
+	"file": {
+		"header": "INTELLIQUE / காப்பகப்படுத்தப்பட்ட கோப்புகள்",
+		"page": ["கோப்பு பட்டியல், {offset} முதல் {end} வரை", "கோப்பு பட்டியல், {offset} முதல் {end} வரை"],
+		"search": "காப்பகத்திலிருந்து ஒரு கோப்பைத் தேட",
+		"tabs": {
+			"gallery": "கேலரி",
+			"list": "பட்டியல்"
+		},
+		"template": {
+			"end_time": "மாற்றம் செய்யப்பட்ட திகதி&nbsp;:",
+			"go_archive": "காப்பகத்திற்குச் செல்ல",
+			"group": "குழு&nbsp;:",
+			"list_of_archives": "காப்பகங்களின் பட்டியல் (ஊடகங்களில்)&nbsp;:",
+			"metadata": "மெட்டா தரவு&nbsp;:",
+			"mimetype": "மெட்டா தரவு வகை&nbsp;:",
+			"name": "பெயர்&nbsp;:",
+			"no_metadata": "இந்த கோப்புகளுக்கு மெட்டா தரவு இல்லை",
+			"owner": "உரிமையாளர்&nbsp;:",
+			"preview": "கோப்பு முன்னோட்டம் ",
+			"restore_file": "கோப்பை மீட்க",
+			"restore_folder": "இந்த கோப்புறையையும் அதன் உள்ளடக்கங்களையும் மீட்டெடுக்க",
+			"size": "அளவ&nbsp;:",
+			"start_date": "உருவாக்கும் தேதி&nbsp;:",
+			"version": "பதிப்பு(Version)&nbsp;:"
+		},
+		"total_rows": ["{nb} கோப்பு", "{nb} கோப்புகள்"]
+	},
+
+	"media": {
+		"header": "INTELLIQUE / மீடியாக்கள்",
+		"page": ["மீடிய பட்டியல்,{offset} முதல் {end} வரை", "மீடிய பட்டியல்,{offset} முதல் {end} வர"],
+		"search": "மீடியாவை தேட",
+		"template": {
+			"first_used": "முதல் பாவனை&nbsp;:",
+			"format": "வடிவம்&nbsp;:",
+			"label": "லேபிள்&nbsp;:",
+			"name": "பெயர்&nbsp;:",
+			"space_used": "பயன்படுத்தப்பட்ட அளவு&nbsp;:",
+			"pool": "pool&nbsp;:",
+			"use_before": "முன்பு பயன்படுத்த&nbsp;:",
+			"uuid": "uuid&nbsp;:"
+		},
+		"total_rows": ["{nb} மீடியா", "{nb} மீடியாக்கள்"]
+	},
+
+	"menu": {
+		"account": "அக்கௌன்ட்",
+		"administration": "நிர்வாகம்",
+		"archive": "காப்பகங்கள்",
+		"close": "மெனுவ மூட",
+		"file": "கோப்புகள்",
+		"media": "மீடியாக்கள்"
+	},
+
+	"preview": {
+		"form": {
+			"metadata": "மெட்டா தரவு&nbsp;:",
+			"mimetype": "மைம் வகை&nbsp;:",
+			"name": "பெயர்&nbsp:",
+			"size": "அளவு&nbsp;:"
+		},
+		"header": "INTELLIQUE / APERÇU"
+	},
+
+	"size": {
+		"long": ["{size} பைட்", "{size} பைட்டுகள்"],
+		"short": {
+			"B": "{size} b",
+			"GB": "{size} Gb",
+			"KB": "{size} Kb",
+			"MB": "{size} Mb",
+			"PB": "{size} Pb",
+			"TB": "{size} Tb"
+		}
+	},
+
+	"user": {
+		"back": "&nbsp;திரும்ப",
+		"form": {
+			"button": {
+				"add": "புதிய பயனரை உருவாக்க",
+				"edit": "பயனரை தொகுக்க"
+			},
+			"email": "மின்னஞ்சல்&nbsp;:",
+			"fullname": "முழு பெயர்&nbsp;:",
+			"homedirectory": "தனிப்பட்ட அடைவு&nbsp;:",
+			"login": "உள்நுழைவு&nbsp;:",
+			"password": "கடவுச்சொல்லை&nbsp:",
+			"password_hint": "குறைந்தபட்சம் 6 எழுத்துக்கள்",
+			"rights": {
+				"canadmin": "நிர்வாகி",
+				"canarchive": "காப்பகப்படுத்த முடியும்",
+				"canrestore": "மீட்டமைக்க முடியும்",
+				"disabled": "முடக்கப்பட்டது",
+				"legend": "இந்த பயனருக்கான அணுகல் உரிமைகள்"
+			}
+		},
+		"header": {
+			"add": "INTELLIQUE / புதிய பயனரை உருவாக்க",
+			"edit": "INTELLIQUE / பயனரை தொகுக்க"
+		}
+	}
+}
