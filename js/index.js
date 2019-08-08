@@ -83,7 +83,7 @@ function AuthService() {
 				if (adminMenuItem == null)
 					adminMenuItem = $('#adminPage');
 
-				currentUserInfo = getUserInfo(response.user_id, function(response) {
+				getUserInfo(response.user_id, function(response) {
 					currentUserInfo = response.user;
 					authTimer = window.setInterval(checkAuth, 20000);
 
