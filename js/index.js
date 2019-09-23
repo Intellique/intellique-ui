@@ -1242,13 +1242,13 @@ function main() {
 			});
 		}
 
-		function checkSoundProxy(archivefile, isImageProxy, isNotImageProxy) {
+		function checkSoundProxy(archivefile, isSoundProxy, isNotSoundProxy) {
 			$.ajax({
 				type: "HEAD",
 				url: config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=audio/mpeg",
 				context: archivefile,
-				success: isImageProxy,
-				error: isNotImageProxy ? isNotImageProxy : $.noop
+				success: isSoundProxy,
+				error: isNotSoundProxy ? isNotSoundProxy : $.noop
 			});
 		}
 
