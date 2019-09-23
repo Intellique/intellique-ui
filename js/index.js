@@ -2103,6 +2103,11 @@ function main() {
 		var currentUser = authService.getUserInfo();
 		pageUser.editUser(currentUser, !currentUser.isadmin);
 	});
+
+	$('#menu li a.menuButton').on('click', function(event) {
+		if (this.href == window.location)
+			closeMenuItem.trigger('click');
+	});
 }
 
 
