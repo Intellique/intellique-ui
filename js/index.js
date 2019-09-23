@@ -1052,9 +1052,12 @@ function main() {
 				translate(template);
 
 				template.find('span[data-name="uuid"]').text(archive.uuid);
-				template.find('span[data-name="starttime"]').text(translateDateTime(archive.volumes[0].starttime));
-				template.find('span[data-name="endtime"]').text(translateDateTime(archive.volumes[archive.volumes.length - 1].endtime));
-				template.find('span[data-name="size"]').text(convertSize(archive.size) + " (" + translatePlural("size.long", archive.size, {size: archive.size}) + ")");
+				if (archive.volumes.length > 0) {
+					template.find('span[data-name="starttime"]').text(translateDateTime(archive.volumes[0].starttime));
+					template.find('span[data-name="endtime"]').text(translateDateTime(archive.volumes[archive.volumes.length - 1].endtime));
+					template.find('span[data-name="size"]').text(convertSize(archive.size) + " (" + translatePlural("size.long", archive.size, {size: archive.size}) + ")");
+				} else
+					template.find('span[data-name="size"]').text(convertSize(0) + " (" + translatePlural("size.long", 0, {size: 0}) + ")");
 				template.find('span[data-name="owner"]').text(archive.owner);
 				template.find('span[data-name="creator"]').text(archive.creator);
 				template.find('span[data-name="canappend"]').text(archive.canappend);
