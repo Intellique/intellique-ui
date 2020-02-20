@@ -227,7 +227,7 @@
 				"canarchive": "Peut archiver",
 				"canrestore": "Peut restaurer",
 				"disabled": "Désactivé",
-				"legend": "Droits d’accès pour cet utilisateur"
+				"legend": "Droits d’accès pour cet utilisateur&nbsp;:"
 			}
 		},
 		"header": {
