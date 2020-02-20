@@ -1422,10 +1422,10 @@ function main() {
 				}
 			},
 			widget: function(archivefile) {
-				var img = $('<img class="no-proxy" src="img/file_does_not_exists.png">');
+				var img = $('<img class="proxy" src="img/file_does_not_exists.png">');
 
 				function setImage() {
-					img.replaceWith('<img class="ui-li-thumb" src="' + config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg" + '" />');
+					img.attr('src', config["api url"] + "/api/v1/archivefile/preview/?id=" + archivefile.id + "&type=image/jpeg");
 				}
 
 				function setVideo() {

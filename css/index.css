@@ -291,9 +291,10 @@ div#menu .ui-btn {
 	}
 
 	#ArchiveFilesTabGallery .ui-listview li.ui-li-has-thumb video.ui-li-thumb {
-		height: 12em;
-		width: 12em;
-		object-fit: fill;
+		min-width: 90%;
+		min-height: 90%;
+		padding: 5%;
+		object-fit: scale-down;
 	}
 
 	#ArchiveFilesTabGallery .ui-listview li, #ArchiveFilesTabGallery .ui-listview li .ui-btn, #ArchiveFilesTabGallery .ui-listview .ui-li-thumb {
@@ -304,18 +305,14 @@ div#menu .ui-btn {
 		display: none;
 	}
 
-	#ArchiveFilesTabGallery .ui-listview h2, #ArchiveFilesTabGallery .ui-listview p {
-		display: none;
-	}
-
-	#ArchiveFilesTabGallery .ui-listview img.no-proxy {
+	#ArchiveFilesTabGallery .ui-listview img.proxy {
 		min-width: 90%;
 		min-height: 90%;
 		padding: 5%;
-		object-fit: contain;
+		object-fit: scale-down;
 	}
 
-	#ArchiveFilesTabGallery .ui-listview img.no-proxy ~ h2 {
+	#ArchiveFilesTabGallery .ui-listview img.proxy ~ h2, #ArchiveFilesTabGallery .ui-listview video ~ h2 {
 		display: block;
 		position: absolute;
 		top: 5%;
@@ -327,7 +324,7 @@ div#menu .ui-btn {
 		padding: 2%;
 	}
 
-	#ArchiveFilesTabGallery .ui-listview img.no-proxy ~ p {
+	#ArchiveFilesTabGallery .ui-listview img.proxy ~ p, #ArchiveFilesTabGallery .ui-listview video ~ p {
 		display: block;
 		position: absolute;
 		bottom: 5%;
