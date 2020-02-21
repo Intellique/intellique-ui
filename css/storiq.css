@@ -125,17 +125,14 @@ label.ui-btn {
 -----------------------------------------------------------------------------------------------------------*/
 .ui-shadow {
 	-webkit-box-shadow: 0 1px 3px /*{global-box-shadow-size}*/ rgba(234,103,70,0.3) /*{global-box-shadow-color}*/;
-	-moz-box-shadow: 0 1px 3px /*{global-box-shadow-size}*/ rgba(234,103,70,0.3) /*{global-box-shadow-color}*/;
 	box-shadow: 0 1px 3px /*{global-box-shadow-size}*/ rgba(234,103,70,0.3) /*{global-box-shadow-color}*/;
 }
 .ui-shadow-inset {
 	-webkit-box-shadow: inset 0 1px 3px /*{global-box-shadow-size}*/ rgba(234,103,70,0.3) /*{global-box-shadow-color}*/;
-	-moz-box-shadow: inset 0 1px 3px /*{global-box-shadow-size}*/ rgba(234,103,70,0.3) /*{global-box-shadow-color}*/;
 	box-shadow: inset 0 1px 3px /*{global-box-shadow-size}*/ rgba(234,103,70,0.3) /*{global-box-shadow-color}*/;
 }
 .ui-overlay-shadow {
 	-webkit-box-shadow: 0 0 12px 		rgba(0,0,0,.6);
-	-moz-box-shadow: 0 0 12px 			rgba(0,0,0,.6);
 	box-shadow: 0 0 12px 				rgba(0,0,0,.6);
 }
 /* Icons
@@ -170,7 +167,6 @@ html .ui-alt-icon .ui-radio-off:after {
 .ui-shadow-icon.ui-btn:after,
 .ui-shadow-icon .ui-btn:after {
 	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,.4) /*{global-icon-shadow}*/;
-	-moz-box-shadow: 0 1px 0 rgba(255,255,255,.4) /*{global-icon-shadow}*/;
 	box-shadow: 0 1px 0 rgba(255,255,255,.4) /*{global-icon-shadow}*/;
 }
 /* Checkbox and radio */
@@ -185,7 +181,6 @@ html .ui-alt-icon .ui-radio-off:after {
 }
 .ui-checkbox-off:after,
 .ui-btn.ui-radio-off:after {
-	filter: Alpha(Opacity=30);
 	opacity: .3;
 }
 .ui-btn.ui-checkbox-off:after,
@@ -374,7 +369,6 @@ html body .ui-group-theme-a .ui-focus,
 html head + body .ui-btn-a.ui-focus,
 html head + body .ui-body-a.ui-focus {
 	-webkit-box-shadow: 0 0 12px #ea6746 /*{a-active-background-color}*/;
-	-moz-box-shadow: 0 0 12px #ea6746 /*{a-active-background-color}*/;
 	box-shadow: 0 0 12px #ea6746 /*{a-active-background-color}*/;
 }
 /* B
@@ -536,7 +530,6 @@ html body .ui-group-theme-b .ui-focus,
 html head + body .ui-btn-b.ui-focus,
 html head + body .ui-body-b.ui-focus {
 	-webkit-box-shadow: 0 0 12px #3388cc /*{b-active-background-color}*/;
-	-moz-box-shadow: 0 0 12px #3388cc /*{b-active-background-color}*/;
 	box-shadow: 0 0 12px #3388cc /*{b-active-background-color}*/;
 }
 
@@ -700,7 +693,6 @@ html body .ui-group-theme-c .ui-focus,
 html head + body .ui-btn-c.ui-focus,
 html head + body .ui-body-c.ui-focus {
 	-webkit-box-shadow: 0 0 12px #3388cc /*{c-active-background-color}*/;
-	-moz-box-shadow: 0 0 12px #3388cc /*{c-active-background-color}*/;
 	box-shadow: 0 0 12px #3388cc /*{c-active-background-color}*/;
 }
 
@@ -713,7 +705,6 @@ html head + body .ui-body-c.ui-focus {
 .ui-state-disabled,
 button[disabled],
 .ui-select .ui-btn.ui-state-disabled {
-	filter: Alpha(Opacity=30);
 	opacity: .3;
 	cursor: default !important;
 	pointer-events: none;
@@ -735,7 +726,6 @@ button[disabled],
 .ui-noboxshadow  input:focus,
 .ui-noboxshadow .ui-panel {
 	-webkit-box-shadow: none !important;
-	-moz-box-shadow: none !important;
 	box-shadow: none !important;
 }
 .ui-noboxshadow .ui-btn:focus,
