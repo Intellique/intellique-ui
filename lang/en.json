@@ -64,7 +64,7 @@
 
 	"common": {
 		"disconnect": "Disconnect",
-		"max_displayable": "Diplay at most:"
+		"max_displayable": "Display at most:"
 	},
 
 	"dialog": {
