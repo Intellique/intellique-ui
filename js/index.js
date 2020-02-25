@@ -888,7 +888,7 @@ function SearchCtl(page, model, searchFunc) {
 		switch (evt.which) {
 			case 13: // key ENTER
 				if (autocompletion_index !== null) {
-					validate(autocompletion.children().eq(autocompletion_index).attr('data-insert'));
+					validate(autocompletion.children().not('.hidden').eq(autocompletion_index).attr('data-insert'));
 					autocompletion_index = null;
 				} else
 					hideAutoCompletion();
@@ -1304,7 +1304,7 @@ function main() {
 		var searchCtl = new SearchCtl(page, model, preSearch);
 		searchCtl.setAutoCompletion({
 			'archivefile:': {
-				display: 'archivefile &lt;<em>id</em> | <em>name</em>&gt;',
+				display: 'archivefile &lt;<em>name</em>&gt;',
 				insert: 'archivefile: ',
 				autocompletion: function(cmd, refresh, text) {
 					var searchParams = {
@@ -1330,6 +1330,52 @@ function main() {
 										cmd.list[response.archivefile.id] = {
 											display: response.archivefile.name,
 											insert: response.archivefile.name,
+										};
+									},
+								}));
+							}
+
+							Promise.all(new_promises).then(function() {
+								refresh(cmd.list, true);
+							});
+						},
+						error: function() {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							refresh(cmd.list, true);
+						}
+					});
+				}
+			},
+			'creator:': {
+				display: 'creator &lt;<em>name</em>&gt;',
+				insert: 'creator: ',
+				autocompletion: function(cmd, refresh, text) {
+					var searchParams = {
+						login: text,
+						limit: 10
+					};
+					$.ajax({
+						type: "GET",
+						url: config["api url"] + '/api/v1/user/search/',
+						data: searchParams,
+						success: function(response) {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							var new_promises = [];
+							for (i = 0, n = response.users.length; i < n; i++) {
+								new_promises.push($.ajax({
+									type: "GET",
+									url: config["api url"] + '/api/v1/user/',
+									data: { id: response.users[i] },
+									success: function(response) {
+										cmd.list[response.user.id] = {
+											display: response.user.login,
+											insert: response.user.login,
 										};
 									},
 								}));
