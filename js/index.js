@@ -744,13 +744,23 @@ function PaginationCtl(page, model) {
 function SearchCtl(page, model, searchFunc) {
 	var input = page.find('input.search');
 	var clearBttn = null;
+
+	var autocompletion = $('<div class="list">');
+	var autocompletion_current_key = null;
+	var autocompletion_index = null;
+	var autocompletion_list = {};
+	var autocompletion_current_list = autocompletion_list;
+
 	searchFunc = searchFunc || function(search) { return search };
 
 	function deferred(event, ui) {
 		if (page.is(ui.toPage) && clearBttn == null) {
+			autocompletion.insertAfter(input.parent());
+
 			clearBttn = page.find('a.ui-input-clear');
 			clearBttn.on('click', function() {
 				model.search(searchFunc(''));
+				hideAutoCompletion();
 			});
 		} else
 			$document.one("pagechange", deferred);
@@ -759,7 +769,18 @@ function SearchCtl(page, model, searchFunc) {
 
 	this.search = function(lookingFor) {
 		input.val(lookingFor);
-		model.search(searchFunc(lookingFor));
+		searchNow();
+	}
+
+	this.setAutoCompletion = function(list) {
+		autocompletion_list = list;
+		autocompletion_index = null;
+		updateAutoCompletion(list);
+	}
+
+	function hideAutoCompletion() {
+		autocompletion_index = null;
+		autocompletion.children().addClass('hidden');
 	}
 
 	var delaySearch = null;
@@ -777,11 +798,133 @@ function SearchCtl(page, model, searchFunc) {
 		model.search(searchFunc(input.val()));
 	}
 
+	function updateAutoCompletion(list) {
+		if (autocompletion_current_list !== list) {
+			autocompletion_current_list = list;
+			autocompletion_current_key = null;
+		}
+		autocompletion.empty();
+
+		var keys = Object.keys(list).sort();
+		for (var i = 0, n = keys.length; i < n; i++) {
+			var div = $('<div>');
+			div.addClass('hidden');
+			div.attr('data-insert', list[keys[i]].insert);
+			div.html(list[keys[i]].display);
+
+			div.on('click', list[keys[i]], function(event) {
+				validate(event.data.insert);
+				input.focus();
+				searchNow();
+			});
+
+			autocompletion.append(div);
+		}
+	}
+
+	function updateIndex() {
+		autocompletion.find('.selected').removeClass('selected');
+		if (autocompletion_current_list !== null)
+			autocompletion.children().not('.hidden').eq(autocompletion_index).addClass('selected');
+	}
+
+	function updateList() {
+		var match, regex = /(\w+:)?\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)"|([^'"\n\s]+)|'([^'\\]*(?:\\.[^'\\]*)*)')/g
+
+		var text = input.val();
+		text = text.substring(0, input[0].selectionStart);
+
+		var last_key = null, last_matched;
+		while ((match = regex.exec(text)) != null) {
+			if ((match[1] || match[3]) in autocompletion_list) {
+				last_key = match[1] || match[3];
+			} else {
+				last_key = null;
+			}
+			last_matched = match[2] || match[3] || match[4];
+		}
+
+		function refreshList(list, update) {
+			if (update)
+				updateAutoCompletion(list);
+
+			var nodes = autocompletion.children();
+			var keys = Object.keys(list).sort();
+			for (var i = 0, n = keys.length; i < n; i++) {
+				if (update && list[keys[i]].insert.indexOf(last_matched) >= 0)
+					nodes.eq(i).removeClass('hidden');
+				else if (list[keys[i]].insert.startsWith(last_matched))
+					nodes.eq(i).removeClass('hidden');
+				else
+					nodes.eq(i).addClass('hidden');
+			}
+		}
+
+		var list;
+		if (last_key) {
+			let cmd_autocompletion = autocompletion_list[last_key];
+			cmd_autocompletion.list = cmd_autocompletion.list || {};
+
+			updateAutoCompletion(cmd_autocompletion.list);
+			cmd_autocompletion.autocompletion(cmd_autocompletion, refreshList, last_matched);
+		} else {
+			updateAutoCompletion(autocompletion_list);
+			refreshList(autocompletion_list, false);
+		}
+	}
+
+	function validate(new_text) {
+		if (new_text.trimEnd().indexOf(' ') >= 0)
+			new_text = '"' + new_text + '"';
+
+		var text = input.val();
+		var index = text.lastIndexOf(' ') + 1;
+		input.val(text.substring(0, index) + new_text);
+
+		hideAutoCompletion();
+	}
+
 	input.on('keyup', function(evt) {
-		if (evt.which == 13)
-			searchNow();
-		else
-			searchDelayed();
+		switch (evt.which) {
+			case 13: // key ENTER
+				if (autocompletion_index !== null) {
+					validate(autocompletion.children().eq(autocompletion_index).attr('data-insert'));
+					autocompletion_index = null;
+				} else
+					hideAutoCompletion();
+				searchNow();
+				break;
+
+			case 27: // key ESC
+				hideAutoCompletion();
+				break;
+
+			case 38: // key UP
+				if (autocompletion_index !== null) {
+					if (autocompletion_index == 0)
+						autocompletion_index = null;
+					else
+						autocompletion_index--;
+					updateIndex();
+				}
+				break;
+
+			case 40: // key DOWN
+				if (autocompletion_index !== null) {
+					if (autocompletion_index + 1 < Object.keys(autocompletion_current_list).length) {
+						autocompletion_index++;
+						updateIndex();
+					}
+				} else if (autocompletion.children().not('.hidden').length > 0) {
+					autocompletion_index = 0;
+					updateIndex();
+				}
+				break;
+
+			default:
+				updateList();
+				searchDelayed();
+		}
 	});
 }
 
@@ -1159,6 +1302,54 @@ function main() {
 		});
 		var paginationCtl = new PaginationCtl(page, model);
 		var searchCtl = new SearchCtl(page, model, preSearch);
+		searchCtl.setAutoCompletion({
+			'archivefile:': {
+				display: 'archivefile &lt;<em>id</em> | <em>name</em>&gt;',
+				insert: 'archivefile: ',
+				autocompletion: function(cmd, refresh, text) {
+					var searchParams = {
+						name: text,
+						limit: 10
+					};
+					$.ajax({
+						type: "GET",
+						url: config["api url"] + '/api/v1/archivefile/search/',
+						data: searchParams,
+						success: function(response) {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							var new_promises = [];
+							for (i = 0, n = response.archivefiles.length; i < n; i++) {
+								new_promises.push($.ajax({
+									type: "GET",
+									url: config["api url"] + '/api/v1/archivefile/',
+									data: { id: response.archivefiles[i] },
+									success: function(response) {
+										cmd.list[response.archivefile.id] = {
+											display: response.archivefile.name,
+											insert: response.archivefile.name,
+										};
+									},
+								}));
+							}
+
+							Promise.all(new_promises).then(function() {
+								refresh(cmd.list, true);
+							});
+						},
+						error: function() {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							refresh(cmd.list, true);
+						}
+					});
+				}
+			}
+		});
 
 		$document.on("pagechange", function(event, ui) {
 			if (page.is(ui.toPage))

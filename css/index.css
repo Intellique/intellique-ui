@@ -32,6 +32,32 @@ div[role="main"] {
 	margin-right: auto;
 }
 
+
+div.search-ctl > div.list {
+	background-color: white;
+	border: 1px solid #d4d4d4;
+	border-bottom: none;
+	border-top: none;
+	margin-left: 42px;
+	margin-top: -24px;
+	position: absolute;
+	z-index: 1;
+}
+
+div.search-ctl > div.list > div {
+	padding: 4px 12px;
+	color: #948e84;
+}
+
+div.search-ctl > div.list > div.hidden {
+	display: none;
+}
+
+div.search-ctl > div.list > div:hover, div.search-ctl > div.list > div.selected {
+	background-color: #f6f6f6;
+}
+
+
 .pagination {
 	display: flex;
 	flex-direction: row;
