@@ -844,6 +844,11 @@ function SearchCtl(page, model, searchFunc) {
 			last_matched = match[2] || match[3] || match[4];
 		}
 
+		if (last_key == last_matched)
+			last_matched = '';
+		else if (text.endsWith(' '))
+			last_matched = last_key = '';
+
 		function refreshList(list, update) {
 			if (update)
 				updateAutoCompletion(list);
@@ -882,6 +887,7 @@ function SearchCtl(page, model, searchFunc) {
 		input.val(text.substring(0, index) + new_text);
 
 		hideAutoCompletion();
+		updateList();
 	}
 
 	input.on('keyup', function(evt) {
@@ -1422,6 +1428,52 @@ function main() {
 										cmd.list[response.media.id] = {
 											display: response.media.name,
 											insert: response.media.name,
+										};
+									},
+								}));
+							}
+
+							Promise.all(new_promises).then(function() {
+								refresh(cmd.list, true);
+							});
+						},
+						error: function() {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							refresh(cmd.list, true);
+						}
+					});
+				}
+			},
+			'owner:': {
+				display: 'owner &lt;<em>login of user</em>&gt;',
+				insert: 'owner: ',
+				autocompletion: function(cmd, refresh, text) {
+					var searchParams = {
+						login: text,
+						limit: 10
+					};
+					$.ajax({
+						type: "GET",
+						url: config["api url"] + '/api/v1/user/search/',
+						data: searchParams,
+						success: function(response) {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							var new_promises = [];
+							for (i = 0, n = response.users.length; i < n; i++) {
+								new_promises.push($.ajax({
+									type: "GET",
+									url: config["api url"] + '/api/v1/user/',
+									data: { id: response.users[i] },
+									success: function(response) {
+										cmd.list[response.user.id] = {
+											display: response.user.login,
+											insert: response.user.login,
 										};
 									},
 								}));
