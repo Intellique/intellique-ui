@@ -1492,6 +1492,53 @@ function main() {
 						}
 					});
 				}
+			},
+			'pool:': {
+				display: 'pool &lt;<em>name of pool</em>&gt;',
+				insert: 'pool: ',
+				autocompletion: function(cmd, refresh, text) {
+					var searchParams = {
+						name: text,
+						backuppool: false,
+						limit: 10
+					};
+					$.ajax({
+						type: "GET",
+						url: config["api url"] + '/api/v1/pool/search/',
+						data: searchParams,
+						success: function(response) {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							var new_promises = [];
+							for (i = 0, n = response.pools.length; i < n; i++) {
+								new_promises.push($.ajax({
+									type: "GET",
+									url: config["api url"] + '/api/v1/pool/',
+									data: { id: response.pools[i] },
+									success: function(response) {
+										cmd.list[response.pool.id] = {
+											display: response.pool.name,
+											insert: response.pool.name,
+										};
+									},
+								}));
+							}
+
+							Promise.all(new_promises).then(function() {
+								refresh(cmd.list, true);
+							});
+						},
+						error: function() {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							refresh(cmd.list, true);
+						}
+					});
+				}
 			}
 		});
 
