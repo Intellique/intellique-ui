@@ -883,12 +883,35 @@ function SearchCtl(page, model, searchFunc) {
 			new_text = '"' + new_text + '"';
 
 		var text = input.val();
-		var index = text.lastIndexOf(' ') + 1;
-		input.val(text.substring(0, index) + new_text);
+		var caret = input[0].selectionStart;
+
+		var leftPart = text.substring(0, caret);
+		var indexSpace = leftPart.lastIndexOf(' ') + 1;
+		var indexColon = leftPart.lastIndexOf(':') + 1;
+
+		var rightPart = text.substring(caret);
+		if (rightPart.length > 0) {
+			let indexSpace = rightPart.indexOf(' ');
+			if (indexSpace > 0)
+				rightPart = rightPart.substring(indexSpace);
+			else if (rightPart == 0)
+				rightPart = ' ' + rightPart;
+		}
+
+		input.val(text.substring(0, indexSpace > indexColon ? indexSpace : indexColon) + new_text + rightPart);
 
 		hideAutoCompletion();
 		updateList();
 	}
+
+	input.on('keydown', function(evt) {
+		switch (evt.which) {
+			case 38: // key UP
+			case 40: // key DOWN
+				evt.preventDefault();
+				break;
+		}
+	});
 
 	input.on('keyup', function(evt) {
 		switch (evt.which) {
