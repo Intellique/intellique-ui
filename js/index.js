@@ -2128,6 +2128,49 @@ function main() {
 		var paginationCtl = new PaginationCtl(page, model);
 		var searchCtl = new SearchCtl(page, model, preSearch);
 		searchCtl.setAutoCompletion({
+			'archiveformat:': {
+				display: 'archive format &lt;<em>name of archive format</em>&gt;',
+				insert: 'archiveformat: ',
+				autocompletion: function(cmd, refresh, text) {
+					$.ajax({
+						type: "GET",
+						url: config["api url"] + '/api/v1/archiveformat/',
+						success: function(response) {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							var new_promises = [];
+							var reg = /\s*\(.+\)\s*/;
+							for (i = 0, n = response['archive formats'].length; i < n; i++) {
+								new_promises.push($.ajax({
+									type: "GET",
+									url: config["api url"] + '/api/v1/archiveformat/',
+									data: { id: response['archive formats'][i] },
+									success: function(response) {
+										response.archiveformat.name = response.archiveformat.name.replace(reg, "$'");
+										cmd.list[response.archiveformat.id] = {
+											display: response.archiveformat.name,
+											insert: response.archiveformat.name,
+										};
+									},
+								}));
+							}
+
+							Promise.all(new_promises).then(function() {
+								refresh(cmd.list, true);
+							});
+						},
+						error: function() {
+							var keys = Object.keys(cmd.list);
+							for (var i = 0, n = keys.length; i < n; i++)
+								delete cmd.list[keys[i]];
+
+							refresh(cmd.list, true);
+						}
+					});
+				}
+			},
 			'pool:': {
 				display: 'pool &lt;<em>name of pool</em>&gt;',
 				insert: 'pool: ',
