@@ -49,19 +49,29 @@ $.ajax({
 					location.href = location.pathname;
 				}
 
+				var currentHash = location.hash;
+				var validPages = ['#archivePage', '#archiveFilesPage', '#mediaPage', '#modUserPage', '#administrationPage'];
 				authService.checkAuth(function() {
-					$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
+					if (validPages.indexOf(currentHash) < 0)
+						$(":mobile-pagecontainer").pagecontainer("change", "#archivePage");
+
 					if (token)
 						refresh();
 					else
-						main();
+						main({
+							'page': currentHash,
+							'search': location.search.length > 0 ? location.search.substr(1) : null
+						});
 				}, function() {
 					$(":mobile-pagecontainer").pagecontainer("change", "#authentication_page");
 
 					if (token) {
 						authService.doAuthWithToken(param[1], refresh, refresh);
 					} else
-						main();
+						main({
+							'page': currentHash,
+							'search': location.search.length > 0 ? location.search.substr(1) : null
+						});
 				});
 			}
 		});
@@ -1129,7 +1139,7 @@ function translatePluralByElt(elt, nb, values, rounded) {
 }
 
 
-function main() {
+function main(option) {
 	function PageAuth() {
 		var page = $('#authentication_page');
 		translatePage(page);
@@ -2651,7 +2661,9 @@ function main() {
 		if (this.href == window.location)
 			closeMenuItem.trigger('click');
 	});
-}
 
+	if (option && option.page == '#archivePage' && option.search)
+		pageArchive.search(option.search.replace('=', ':'));
+}
 
 })(window, jQuery);
